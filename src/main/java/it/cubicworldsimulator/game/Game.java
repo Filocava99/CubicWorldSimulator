@@ -54,4 +54,9 @@ public class Game implements GameLogic {
         window.setClearColor(color, color, color, 0.0f);
         renderer.clear();
     }
+
+    @Override
+    public void cleanUp() {
+
+    }
 }

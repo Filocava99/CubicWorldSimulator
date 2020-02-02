@@ -66,6 +66,8 @@ public class GameEngine implements Runnable {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ie) {
+            }finally {
+                cleanUp();
             }
         }
     }
@@ -81,5 +83,9 @@ public class GameEngine implements Runnable {
     protected void render() {
         gameLogic.render(window);
         window.update();
+    }
+
+    protected void cleanUp(){
+        gameLogic.cleanUp();
     }
 }
