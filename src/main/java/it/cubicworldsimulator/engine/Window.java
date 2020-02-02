@@ -71,6 +71,7 @@ public class Window {
 
         // Get the resolution of the primary monitor
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
         // Center our window
         glfwSetWindowPos(
                 windowHandle,
