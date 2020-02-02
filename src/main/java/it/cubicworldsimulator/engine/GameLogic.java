@@ -8,4 +8,6 @@ public interface GameLogic {
     void update(float interval);
 
     void render(Window window);
+
+    void cleanUp();
 }
