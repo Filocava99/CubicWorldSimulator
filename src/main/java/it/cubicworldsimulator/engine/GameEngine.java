@@ -65,7 +65,7 @@ public class GameEngine implements Runnable {
         while (timer.getTime() < endTime) {
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException ie) {
+            } catch (InterruptedException ignored) {
             }finally {
                 cleanUp();
             }
