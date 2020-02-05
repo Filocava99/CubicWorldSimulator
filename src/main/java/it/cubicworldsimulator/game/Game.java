@@ -36,12 +36,6 @@ public class Game implements GameLogic {
 
     @Override
     public void update(float interval) {
-        color += direction * 0.01f;
-        if (color > 1) {
-            color = 1.0f;
-        } else if ( color < 0 ) {
-            color = 0.0f;
-        }
     }
 
     @Override
@@ -51,8 +45,9 @@ public class Game implements GameLogic {
             window.setResized(false);
         }
 
+        renderer.render(window, null);
+
         window.setClearColor(color, color, color, 0.0f);
-        renderer.clear();
     }
 
     @Override
