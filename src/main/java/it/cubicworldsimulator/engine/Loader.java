@@ -1,5 +1,5 @@
 package it.cubicworldsimulator.engine;
 
 public interface Loader {
-    void init();
+    void init(ShaderProgram shaderProgram);
 }
