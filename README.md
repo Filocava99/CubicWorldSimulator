@@ -1,7 +1,7 @@
 # CubicWorldSimulator
 
-This project is supported by<br>
-[![YourKit logo](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com/)
+This project is supported by  
+[![YourKit logo](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com/)  
 YourKit supports open source projects with innovative and intelligent tools
 for monitoring and profiling Java and .NET applications.
 YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourKit Java Profiler</a>,
