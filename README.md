@@ -2,6 +2,9 @@
 
 ## This project is supported by
 ***
+[![Atlassian logo](https://www.atlassian.com/it/dam/jcr:93075b1a-484c-4fe5-8a4f-942710e51760/Atlassian-horizontal-blue@2x-rgb.png =250x100)](https://www.atlassian.com/)
+
+***
 
 [![JProfiler logo](https://www.ej-technologies.com/images/product_banners/jprofiler_large.png)](https://www.ej-technologies.com/products/jprofiler/overview.html)  
 
