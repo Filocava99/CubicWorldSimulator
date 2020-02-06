@@ -33,7 +33,7 @@ public class Game implements GameLogic {
 
     @Override
     public void init(Window window) throws Exception {
-        renderer.init();
+        renderer.init(window);
         float aspectRatio = (float) window.getWidth() / window.getHeight();
         projectionMatrix = new Matrix4f().setPerspective(FOV, aspectRatio,
                 Z_NEAR, Z_FAR);
