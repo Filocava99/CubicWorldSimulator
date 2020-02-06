@@ -35,7 +35,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
-
+    implementation 'org.openjfx:javafx-web:15-ea+1'
     implementation "org.lwjgl:lwjgl"
     implementation "org.lwjgl:lwjgl-assimp"
     implementation "org.lwjgl:lwjgl-glfw"
