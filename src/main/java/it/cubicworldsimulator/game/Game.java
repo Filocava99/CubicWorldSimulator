@@ -3,6 +3,7 @@ package it.cubicworldsimulator.game;
 import it.cubicworldsimulator.engine.GameLogic;
 import it.cubicworldsimulator.engine.Renderer;
 import it.cubicworldsimulator.engine.Window;
+import org.joml.Matrix4f;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glViewport;
@@ -12,6 +13,18 @@ public class Game implements GameLogic {
 
     private float color = 0.0f;
 
+    /**
+     * Field of View in Radians
+     */
+    private static final float FOV = (float) Math.toRadians(60.0f);
+
+    private static final float Z_NEAR = 0.01f;
+
+    private static final float Z_FAR = 1000.f;
+
+    private Matrix4f projectionMatrix;
+
+
     private final Renderer renderer;
 
     public Game() {
@@ -19,8 +32,11 @@ public class Game implements GameLogic {
     }
 
     @Override
-    public void init() throws Exception {
+    public void init(Window window) throws Exception {
         renderer.init();
+        float aspectRatio = (float) window.getWidth() / window.getHeight();
+        projectionMatrix = new Matrix4f().setPerspective(FOV, aspectRatio,
+                Z_NEAR, Z_FAR);
     }
 
     @Override
