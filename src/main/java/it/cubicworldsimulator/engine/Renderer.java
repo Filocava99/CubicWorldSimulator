@@ -30,6 +30,7 @@ public class Renderer {
     public void render(Window window, Mesh mesh) {
         clear();
 
+        //TODO Spostarlo all'interno della classe Window? Qualcosa del tipo, ad ogli ciclo di rendering, quindi ogni volta che viene chiamato il metodo render() della classe Game, chiamare un metodo di window tipo window.update(), il quale ridimensiona la finestra. Viva l'italiano
         if (window.isResized()) {
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);

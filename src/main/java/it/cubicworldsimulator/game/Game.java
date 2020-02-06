@@ -40,14 +40,8 @@ public class Game implements GameLogic {
 
     @Override
     public void render(Window window) {
-        if (window.isResized()) {
-            glViewport(0, 0, window.getWidth(), window.getHeight());
-            window.setResized(false);
-        }
-
-        renderer.render(window, null);
-
         window.setClearColor(color, color, color, 0.0f);
+        renderer.render(window, null);
     }
 
     @Override
