@@ -2,14 +2,7 @@ package it.cubicworldsimulator.engine;
 
 import org.joml.Matrix4f;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glDrawElements;
-import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL11.*;
 
 public class Renderer {
 
@@ -33,8 +26,8 @@ public class Renderer {
     public void init(Window window) throws Exception {
         // Create shader
         shaderProgram = new ShaderProgram();
-        shaderProgram.createVertexShader(Utils.loadResource("/vertex.vs"));
-        shaderProgram.createFragmentShader(Utils.loadResource("/fragment.fs"));
+        shaderProgram.createVertexShader(Utils.loadResource("/vertex.vert"));
+        shaderProgram.createFragmentShader(Utils.loadResource("/fragment.frag"));
         shaderProgram.link();
 
         // Create uniforms for world and projection matrices
@@ -82,5 +75,4 @@ public class Renderer {
             shaderProgram.cleanup();
         }
     }
-}
 }

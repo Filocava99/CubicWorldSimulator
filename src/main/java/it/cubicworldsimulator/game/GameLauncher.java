@@ -6,34 +6,51 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.awt.*;
 
 
 public class GameLauncher extends Application {
 
-    private Stage primaryStage;
+    private Stage stage;
 
     @Override
     public void start(final Stage primaryStage) {
-        this.primaryStage = primaryStage;
+        this.stage = new Stage();
         this.initView();
-        this.primaryStage.showAndWait();
+        this.stage.showAndWait();
     }
 
     private void initView() {
-        this.primaryStage.setTitle("Cubic World Simulator");
-        this.primaryStage.setWidth(1920);
-        this.primaryStage.setHeight(1080);
-        this.primaryStage.initModality(Modality.WINDOW_MODAL);
+        this.stage.setTitle("Cubic World Simulator");
+        this.stage.setWidth(1920);
+        this.stage.setHeight(1080);
+        this.stage.initModality(Modality.WINDOW_MODAL);
         Button launchGameButton = new Button("Launch game");
-        launchGameButton.setStyle("-fx-font-size: 15pt;");
+        Button settingsButton = new Button("Settings");
+        this.setProprietyButton(launchGameButton);
+        this.setProprietyButton(settingsButton);
         launchGameButton.setOnAction( actionEvent -> {
             this.runGame();
         });
-        launchGameButton.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(launchGameButton, 200, 100);
-        this.primaryStage.setScene(scene);
+        settingsButton.setOnAction( actionEvent -> {
+            this.showSettingsWindow();
+        });
+        TilePane tilePane = new TilePane();
+        tilePane.setAlignment(Pos.CENTER);
+        tilePane.getChildren().add(launchGameButton);
+        tilePane.getChildren().add(settingsButton);
+        Scene scene = new Scene(tilePane, 200, 100);
+        this.stage.setScene(scene);
+    }
+
+    private void setProprietyButton(Button button) {
+        button.setStyle("-fx-font-size: 20pt;");
+        button.setMaxSize(200, 100);
+        button.setAlignment(Pos.CENTER);
     }
 
     private void runGame() {
@@ -46,5 +63,10 @@ public class GameLauncher extends Application {
             excp.printStackTrace();
             System.exit(-1);
         }
+    }
+
+    //TODO Settings window
+    private void showSettingsWindow() {
+
     }
 }

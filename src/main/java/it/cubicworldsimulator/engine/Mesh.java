@@ -82,6 +82,10 @@ public class Mesh {
         }
     }
 
+    public void render() {
+
+    }
+
     public int getVaoId() {
         return vaoId;
     }
