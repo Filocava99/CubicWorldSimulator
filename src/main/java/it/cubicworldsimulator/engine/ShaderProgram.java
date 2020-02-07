@@ -1,17 +1,21 @@
 package it.cubicworldsimulator.engine;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.lwjgl.opengl.GL20.*;
 
 public class ShaderProgram {
 
     private final int programId;
-
+    private final Map<String, Integer> uniforms;
     private int vertexShaderId;
-
     private int fragmentShaderId;
+
 
     public ShaderProgram() throws Exception {
         programId = glCreateProgram();
+        this.uniforms = new HashMap<>();
         if (programId == 0) {
             throw new Exception("Could not create Shader");
         }
@@ -61,6 +65,20 @@ public class ShaderProgram {
             System.err.println("Warning validating Shader code: " + glGetProgramInfoLog(programId, 1024));
         }
 
+    }
+
+    public void createUniform(String uniformName) throws Exception {
+        int uniformLocation = glGetUniformLocation(programId,
+                uniformName);
+        if (uniformLocation < 0) {
+            throw new Exception("Could not find uniform:" +
+                    uniformName);
+        }
+        uniforms.put(uniformName, uniformLocation);
+    }
+
+    public void setUniform(String uniformName, int value) {
+        glUniform1i(uniforms.get(uniformName), value);
     }
 
     public void bind() {

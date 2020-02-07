@@ -10,11 +10,16 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.stb.STBImage.*;
 
-public class TextureLoaderImpl implements TextureLoader {
+public class TextureImpl implements Texture {
 
     private int height;
     private int width;
     private ByteBuffer byteBuffer;
+    private int id;
+
+    public int getId() {
+        return this.id;
+    }
 
     @Override
     public void loadTexture(String filename) throws Exception {
@@ -31,7 +36,7 @@ public class TextureLoaderImpl implements TextureLoader {
             if (this.byteBuffer == null) {
                 throw new FileNotFoundException("Texture file [" + filename + "] not loaded. Reason: " + stbi_failure_reason());
             }
-            this.generateTexture();
+            int textureID = this.generateTexture();
             this.generateMipMap();
             this.clean();
         }
@@ -42,7 +47,7 @@ public class TextureLoaderImpl implements TextureLoader {
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 
-    private void generateTexture() {
+    private int generateTexture() {
         int textureId = glGenTextures();
         // Bind the texture
         glBindTexture(GL_TEXTURE_2D, textureId);
@@ -61,6 +66,7 @@ public class TextureLoaderImpl implements TextureLoader {
          */
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this.width, this.height,
                 0, GL_RGBA, GL_UNSIGNED_BYTE, this.byteBuffer);
+        return textureId;
     }
 
     private void clean() {
