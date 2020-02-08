@@ -34,7 +34,7 @@ public class Mesh {
     private final List<Integer> textureVboList = new ArrayList<>();
     private final Texture texture;
 
-    public Mesh(float[] positions, float[] textCoords, int[] indices, TextureImpl texture) {
+    public Mesh(float[] positions, float[] textCoords, int[] indices, Texture texture) {
         FloatBuffer posBuffer = null;
         FloatBuffer colourBuffer = null;
         IntBuffer indicesBuffer = null;
