@@ -10,19 +10,14 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.stb.STBImage.*;
 
-public class TextureImpl implements Texture {
+public class TextureLoaderImpl implements TextureLoader {
 
     private int height;
     private int width;
     private ByteBuffer byteBuffer;
-    private int id;
-
-    public int getId() {
-        return this.id;
-    }
 
     @Override
-    public void loadTexture(String filename) throws Exception {
+    public Texture loadTexture(String filename) throws Exception {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             //Height, width and colour channels are 1 byte each
             IntBuffer w = stack.mallocInt(1);
@@ -39,6 +34,7 @@ public class TextureImpl implements Texture {
             int textureID = this.generateTexture();
             this.generateMipMap();
             this.clean();
+            return new Texture(textureID);
         }
     }
 

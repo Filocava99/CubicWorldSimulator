@@ -1,15 +1,14 @@
 package it.cubicworldsimulator.engine;
 
-public interface Texture {
-    /**
-     * It loads up texture file in memory
-     * @param filename of texture
-     * @throws Exception
-     */
-    void loadTexture(String filename) throws Exception;
+public class Texture {
 
-    /**
-     * @return id of texture
-     */
-    int getId();
+    private final int id;
+
+    public Texture(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
 }
