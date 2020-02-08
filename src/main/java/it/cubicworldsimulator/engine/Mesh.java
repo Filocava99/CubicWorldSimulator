@@ -96,12 +96,12 @@ public class Mesh {
     }
 
     public void render() {
-        // Draw the mesh
-        glBindVertexArray(getVaoId());
         // Activate first texture unit
         glActiveTexture(GL_TEXTURE0);
         // Bind the texture
         glBindTexture(GL_TEXTURE_2D, texture.getId());
+        // Draw the mesh
+        glBindVertexArray(getVaoId());
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
         // Restore state
         glBindVertexArray(0);

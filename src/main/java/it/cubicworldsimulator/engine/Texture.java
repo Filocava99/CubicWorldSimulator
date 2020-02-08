@@ -3,11 +3,11 @@ package it.cubicworldsimulator.engine;
 public class Texture {
     private final int id;
 
-    public Texture(final int id) {
+    public Texture(int id) {
         this.id = id;
     }
 
-    int getId() {
-        return this.id;
+    public int getId() {
+        return id;
     }
 }
