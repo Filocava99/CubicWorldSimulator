@@ -1,4 +1,4 @@
-package it.cubicworldsimulator.engine;
+package it.cubicworldsimulator.engine.Model;
 
 public class Texture {
     private final int id;

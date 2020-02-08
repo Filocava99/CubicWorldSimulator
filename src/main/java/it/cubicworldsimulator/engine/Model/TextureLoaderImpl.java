@@ -1,5 +1,7 @@
-package it.cubicworldsimulator.engine;
+package it.cubicworldsimulator.engine.Model;
 
+import it.cubicworldsimulator.engine.Model.Texture;
+import it.cubicworldsimulator.engine.Model.TextureLoader;
 import org.lwjgl.system.MemoryStack;
 
 import java.io.FileNotFoundException;

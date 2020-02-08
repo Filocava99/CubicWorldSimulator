@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.engine;
 
+import it.cubicworldsimulator.engine.Model.Mesh;
 import org.joml.Vector3f;
 
 public class GameItem {
