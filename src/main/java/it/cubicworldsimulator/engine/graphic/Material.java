@@ -1,7 +1,6 @@
 package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.Texture;
-import org.w3c.dom.Text;
 
 public class Material {
 

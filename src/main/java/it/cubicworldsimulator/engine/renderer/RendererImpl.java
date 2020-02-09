@@ -20,7 +20,7 @@ public class RendererImpl implements Renderer {
     private final Transformation transformation;
 
     private ShaderProgram shaderProgram;
-    /* TODO pasare i nomi delle shader come argomenti del costruttore? Credo sia effettivamente meglio. Fare una interfaccia per il renderer? In questo modo non occorre passare le shader per argomento */
+    /* TODO Passare i nomi delle shader come argomenti del costruttore? Credo sia effettivamente meglio. Fare una interfaccia per il renderer? In questo modo non occorre passare le shader per argomento */
     public RendererImpl() {
         transformation = new Transformation();
     }
@@ -61,8 +61,14 @@ public class RendererImpl implements Renderer {
 
         // Render each gameItem
         for (Mesh mesh : scene.getMeshMap().keySet()) {
-            //TODO Mi serve la parte delle luci per completare
-            mesh.renderList(scene.getMeshMap().get(mesh), (GameItem gameItem) -> {});
+            //TODO Mi serve la parte della per completare al 100%
+            mesh.renderList(scene.getMeshMap().get(mesh), (GameItem gameItem) -> {
+                Matrix4f worldMatrix = transformation.getWorldMatrix(
+                        gameItem.getPosition(),
+                        gameItem.getRotation(),
+                        gameItem.getScale());
+                shaderProgram.setUniform("worldMatrix",worldMatrix);
+            });
         }
         shaderProgram.unbind();
     }
