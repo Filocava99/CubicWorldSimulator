@@ -1,13 +1,14 @@
 package it.cubicworldsimulator.engine;
 
+import it.cubicworldsimulator.engine.graphic.Mesh;
 import org.joml.FrustumIntersection;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.util.List;
 import java.util.Map;
 
+//TODO Aggiungere un flag globale e uno ad ogni gameItem per abiltiare/disabilitare il frustumCulling
 public class FrustumCullingFilter {
 
     private final Matrix4f prjViewMatrix;

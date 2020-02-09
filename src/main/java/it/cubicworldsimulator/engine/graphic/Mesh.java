@@ -1,5 +1,7 @@
-package it.cubicworldsimulator.engine;
+package it.cubicworldsimulator.engine.graphic;
 
+import it.cubicworldsimulator.engine.GameItem;
+import it.cubicworldsimulator.engine.Texture;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.system.MemoryUtil;
 
@@ -7,6 +9,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -32,15 +35,15 @@ public class Mesh {
     private final int idxVboId;
     private final int vertexCount;
     private final List<Integer> textureVboList = new ArrayList<>();
-    private final Texture texture;
+    private final Material material;
     private final float boundingRadius;
 
-    public Mesh(float[] positions, float[] textCoords, int[] indices, Texture texture, float boundingRadius) {
+    public Mesh(float[] positions, float[] textCoords, int[] indices, Material texture, float boundingRadius) {
         FloatBuffer posBuffer = null;
         FloatBuffer colourBuffer = null;
         IntBuffer indicesBuffer = null;
         FloatBuffer textCoordsBuffer = null;
-        this.texture = texture;
+        this.material = texture;
         this.boundingRadius = boundingRadius;
 
         try {
@@ -101,12 +104,45 @@ public class Mesh {
         // Activate first texture unit
         glActiveTexture(GL_TEXTURE0);
         // Bind the texture
-        glBindTexture(GL_TEXTURE_2D, texture.getId());
+        glBindTexture(GL_TEXTURE_2D, material.getTexture().getId());
         // Draw the mesh
         glBindVertexArray(getVaoId());
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
         // Restore state
         glBindVertexArray(0);
+    }
+
+    private void initRender() {
+        Texture texture = material.getTexture();
+        if (texture != null) {
+            // Activate firs texture bank
+            glActiveTexture(GL_TEXTURE0);
+            // Bind the texture
+            glBindTexture(GL_TEXTURE_2D, texture.getId());
+        }
+
+        // Draw the mesh
+        glBindVertexArray(getVaoId());
+    }
+
+    private void endRender() {
+        // Restore state
+        glBindVertexArray(0);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer) {
+        initRender();
+
+        for (GameItem gameItem : gameItems) {
+            // Set up data required by gameItem
+            consumer.accept(gameItem);
+            // Render this game item
+            glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+        }
+
+        endRender();
     }
 
     public int getVaoId() {
@@ -133,5 +169,9 @@ public class Mesh {
 
     public float getBoundingRadius() {
         return boundingRadius;
+    }
+
+    public Material getMaterial() {
+        return material;
     }
 }
