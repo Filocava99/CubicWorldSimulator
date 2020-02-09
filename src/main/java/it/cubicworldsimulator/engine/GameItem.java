@@ -12,6 +12,8 @@ public class GameItem {
 
     private final Vector3f rotation;
 
+    private boolean insideFrustum;
+
     public GameItem(Mesh mesh) {
         this.mesh = mesh;
         position = new Vector3f();
@@ -49,5 +51,13 @@ public class GameItem {
 
     public Mesh getMesh() {
         return mesh;
+    }
+
+    public boolean isInsideFrustum() {
+        return insideFrustum;
+    }
+
+    public void setInsideFrustum(boolean insideFrustum) {
+        this.insideFrustum = insideFrustum;
     }
 }

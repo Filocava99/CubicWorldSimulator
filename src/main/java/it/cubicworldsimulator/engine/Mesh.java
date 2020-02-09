@@ -33,13 +33,15 @@ public class Mesh {
     private final int vertexCount;
     private final List<Integer> textureVboList = new ArrayList<>();
     private final Texture texture;
+    private final float boundingRadius;
 
-    public Mesh(float[] positions, float[] textCoords, int[] indices, Texture texture) {
+    public Mesh(float[] positions, float[] textCoords, int[] indices, Texture texture, float boundingRadius) {
         FloatBuffer posBuffer = null;
         FloatBuffer colourBuffer = null;
         IntBuffer indicesBuffer = null;
         FloatBuffer textCoordsBuffer = null;
         this.texture = texture;
+        this.boundingRadius = boundingRadius;
 
         try {
             vertexCount = indices.length;
@@ -127,5 +129,9 @@ public class Mesh {
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+    }
+
+    public float getBoundingRadius() {
+        return boundingRadius;
     }
 }
