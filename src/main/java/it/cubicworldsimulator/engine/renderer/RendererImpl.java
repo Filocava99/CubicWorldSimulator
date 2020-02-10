@@ -1,10 +1,12 @@
-package it.cubicworldsimulator.engine;
+package it.cubicworldsimulator.engine.renderer;
 
+import it.cubicworldsimulator.engine.*;
+import it.cubicworldsimulator.engine.graphic.Mesh;
 import org.joml.Matrix4f;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class Renderer {
+public class RendererImpl implements Renderer {
 
     /**
      * Field of View in Radians
@@ -18,8 +20,8 @@ public class Renderer {
     private final Transformation transformation;
 
     private ShaderProgram shaderProgram;
-    /* TODO pasare i nomi delle shader come argomenti del costruttore? Credo sia effettivamente meglio. Fare una interfaccia per il renderer? In questo modo non occorre passare le shader per argomento */
-    public Renderer() {
+    /* TODO Passare i nomi delle shader come argomenti del costruttore? Credo sia effettivamente meglio. Fare una interfaccia per il renderer? In questo modo non occorre passare le shader per argomento */
+    public RendererImpl() {
         transformation = new Transformation();
     }
 
@@ -42,7 +44,7 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Window window, GameItem[] gameItems) {
+    public void render(Window window, Scene scene) {
         clear();
 
         if (window.isResized()) {
@@ -58,21 +60,20 @@ public class Renderer {
         shaderProgram.setUniform("texture_sampler", 0);
 
         // Render each gameItem
-        for (GameItem gameItem : gameItems) {
-            // Set world matrix for this item
-            Matrix4f worldMatrix = transformation.getWorldMatrix(
-                    gameItem.getPosition(),
-                    gameItem.getRotation(),
-                    gameItem.getScale());
-            shaderProgram.setUniform("worldMatrix", worldMatrix);
-            // Render the mes for this game item
-            gameItem.getMesh().render();
+        for (Mesh mesh : scene.getMeshMap().keySet()) {
+            //TODO Mi serve la parte della per completare al 100%
+            mesh.renderList(scene.getMeshMap().get(mesh), (GameItem gameItem) -> {
+                Matrix4f worldMatrix = transformation.getWorldMatrix(
+                        gameItem.getPosition(),
+                        gameItem.getRotation(),
+                        gameItem.getScale());
+                shaderProgram.setUniform("worldMatrix",worldMatrix);
+            });
         }
-
         shaderProgram.unbind();
     }
 
-    public void cleanup() {
+    public void cleanUp() {
         if (shaderProgram != null) {
             shaderProgram.cleanup();
         }

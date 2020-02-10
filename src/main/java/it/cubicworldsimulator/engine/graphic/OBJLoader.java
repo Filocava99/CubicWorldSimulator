@@ -1,4 +1,4 @@
-package it.cubicworldsimulator.engine.Model;
+package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.Utils;
 import org.joml.Vector2f;
@@ -13,6 +13,7 @@ public final class OBJLoader {
     private final List<Vector2f> textures;
     private final List<Vector3f> normals;
     private final List<Face> faces;
+    private String textureFileName;
 
     public OBJLoader() {
         this.vertices = new ArrayList<>();
@@ -21,8 +22,9 @@ public final class OBJLoader {
         this.faces = new ArrayList<>();
     }
 
-    public Mesh loadFromOBJ(String fileName) throws Exception {
-        final List<String> lines = Utils.readAllLines(fileName);
+    public Mesh loadFromOBJ(String objFileName, String textureFileName) throws Exception {
+        this.textureFileName = textureFileName;
+        final List<String> lines = Utils.readAllLines(objFileName);
         for (String line : lines) {
             final List<String> tokens = List.of(line.split("\\s+"));
             switch (tokens.get(0)) {
@@ -61,7 +63,7 @@ public final class OBJLoader {
         return this.reorderLists();
     }
 
-    private Mesh reorderLists() {
+    private Mesh reorderLists() throws Exception {
         List<Integer> indices = new ArrayList<>();
         // Create position array in the order it has been declared
         float[] posArr = new float[this.vertices.size() * 3];
@@ -85,7 +87,7 @@ public final class OBJLoader {
         int[] indicesArr = indices.stream()
                             .mapToInt((Integer v) -> v)
                             .toArray();
-        return new Mesh(posArr, textCoordArr, normArr, indicesArr);
+        return new Mesh(posArr, textCoordArr, indicesArr, "/" + this.textureFileName);
     }
 
     private void processFaceVertex(final IdxGroup indices, final List<Vector2f> textCoordList,

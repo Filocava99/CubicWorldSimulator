@@ -1,13 +1,9 @@
-package it.cubicworldsimulator.engine.Model;
+package it.cubicworldsimulator.engine.graphic;
 
-import it.cubicworldsimulator.engine.Model.Texture;
-import it.cubicworldsimulator.engine.Model.TextureLoader;
 import org.lwjgl.system.MemoryStack;
-
 import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.stb.STBImage.*;

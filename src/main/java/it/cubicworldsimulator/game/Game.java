@@ -1,12 +1,11 @@
 package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.GameLogic;
-import it.cubicworldsimulator.engine.Renderer;
+import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.engine.Window;
 import org.joml.Matrix4f;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.glViewport;
 
 public class Game implements GameLogic {
     private int direction = 0;
@@ -25,10 +24,10 @@ public class Game implements GameLogic {
     private Matrix4f projectionMatrix;
 
 
-    private final Renderer renderer;
+    private final RendererImpl renderer;
 
     public Game() {
-        renderer = new Renderer();
+        renderer = new RendererImpl();
     }
 
     @Override

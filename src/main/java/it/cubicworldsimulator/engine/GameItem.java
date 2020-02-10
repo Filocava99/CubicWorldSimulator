@@ -1,6 +1,6 @@
 package it.cubicworldsimulator.engine;
 
-import it.cubicworldsimulator.engine.Model.Mesh;
+import it.cubicworldsimulator.engine.graphic.Mesh;
 import org.joml.Vector3f;
 
 public class GameItem {
@@ -12,6 +12,8 @@ public class GameItem {
     private float scale;
 
     private final Vector3f rotation;
+
+    private boolean insideFrustum;
 
     public GameItem(Mesh mesh) {
         this.mesh = mesh;
@@ -50,5 +52,13 @@ public class GameItem {
 
     public Mesh getMesh() {
         return mesh;
+    }
+
+    public boolean isInsideFrustum() {
+        return insideFrustum;
+    }
+
+    public void setInsideFrustum(boolean insideFrustum) {
+        this.insideFrustum = insideFrustum;
     }
 }
