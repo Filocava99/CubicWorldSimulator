@@ -1,4 +1,4 @@
-package it.cubicworldsimulator.game.chunk;
+package it.cubicworldsimulator.game.world.chunk;
 
 import it.cubicworldsimulator.game.utility.Constants;
 import org.joml.Vector3f;
