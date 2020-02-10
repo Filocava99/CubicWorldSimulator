@@ -1,4 +1,4 @@
-package it.cubicworldsimulator.engine;
+package it.cubicworldsimulator.engine.graphic;
 
 public interface TextureLoader {
     /**

@@ -1,7 +1,6 @@
 package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.GameItem;
-import it.cubicworldsimulator.engine.Texture;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.system.MemoryUtil;
 
@@ -38,9 +37,12 @@ public class Mesh {
     private final Material material;
     private final float boundingRadius;
 
+    public Mesh (float[] positions, float[] textCoords, int[] indices, String textureFileName) throws Exception {
+        this(positions, textCoords, indices, new Material(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
+    }
+
     public Mesh(float[] positions, float[] textCoords, int[] indices, Material texture, float boundingRadius) {
         FloatBuffer posBuffer = null;
-        FloatBuffer colourBuffer = null;
         IntBuffer indicesBuffer = null;
         FloatBuffer textCoordsBuffer = null;
         this.material = texture;
