@@ -1,5 +1,7 @@
 # CubicWorldSimulator
 
+Use -XstartOnFirstThread JVM argument to launch game on Mac OS platform.
+
 ## This project is supported by
 ***
 [![Atlassian logo](https://www.atlassian.com/it/dam/jcr:93075b1a-484c-4fe5-8a4f-942710e51760/Atlassian-horizontal-blue@2x-rgb.png =250x100)](https://www.atlassian.com/)
