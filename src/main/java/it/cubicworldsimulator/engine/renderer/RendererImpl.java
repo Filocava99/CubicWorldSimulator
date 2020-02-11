@@ -28,8 +28,8 @@ public class RendererImpl implements Renderer {
     public void init(Window window) throws Exception {
         // Create shader
         shaderProgram = new ShaderProgram();
-        shaderProgram.createVertexShader(Utils.loadResource("/vertex.vert"));
-        shaderProgram.createFragmentShader(Utils.loadResource("/fragment.frag"));
+        shaderProgram.createVertexShader(Utils.loadResource("/shaders/vertex.vert"));
+        shaderProgram.createFragmentShader(Utils.loadResource("/shaders/fragment.frag"));
         shaderProgram.link();
 
         // Create uniforms for world and projection matrices
