@@ -1,6 +1,11 @@
 package it.cubicworldsimulator.game.world.chunk;
 
+import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.game.utility.math.OpenSimplexNoise;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+
+import java.util.Arrays;
 
 public class ChunkGenerator {
     private final OpenSimplexNoise noise;
@@ -21,17 +26,17 @@ public class ChunkGenerator {
                 //System.out.println(height);
                 for(int y = 0; y < height; y++){
                     if(y <= stoneLevel){
-                        blocks[(x)+(y*256)+(z*16)] = Material.STONE.getId();
+                        //blocks[(x)+(y*256)+(z*16)] = Material.STONE.getId();
                     }else{
-                        blocks[(x)+(y*256)+(z*16)] = Material.DIRT.getId();
+                        //blocks[(x)+(y*256)+(z*16)] = Material.DIRT.getId();
                     }
                 }
-                blocks[(x)+((int)height<<8)+(z<<4)] = Material.GRASS.getId();
+               // blocks[(x)+((int)height<<8)+(z<<4)] = Material.GRASS.getId();
                 for(int y = (int)height+1; y<256; y++){
                     if(y <= waterLevel){
-                        blocks[(x)+(y<<8)+(z<<4)] = Material.WATER.getId();
+                        //blocks[(x)+(y<<8)+(z<<4)] = Material.WATER.getId();
                     }else{
-                        blocks[(x)+(y<<8)+(z<<4)] = Material.AIR.getId();
+                        //blocks[(x)+(y<<8)+(z<<4)] = Material.AIR.getId();
                     }
                 }
             }
