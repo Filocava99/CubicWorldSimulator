@@ -1,15 +1,19 @@
 package it.cubicworldsimulator.game.world.chunk;
 
 import it.cubicworldsimulator.game.utility.math.OpenSimplexNoise;
+import it.cubicworldsimulator.game.world.World;
+import it.cubicworldsimulator.game.world.WorldManager;
 
 public class ChunkGenerator {
     private final OpenSimplexNoise noise;
-
-    public ChunkGenerator(long seed) {
-        this.noise = new OpenSimplexNoise(seed);
-    }
+    private final WorldManager worldManager;
     private int waterLevel = 30;
     private int stoneLevel = 60;
+
+    public ChunkGenerator(long seed, WorldManager worldManager) {
+        this.noise = new OpenSimplexNoise(seed);
+        this.worldManager = worldManager;
+    }
 
     public ChunkColumn generateChunkColumn(int chunkX, int chunkZ){
         //System.out.println("Generazione colonna x:  " + chunkX + "  z:  " + chunkZ);
@@ -21,7 +25,7 @@ public class ChunkGenerator {
                 //System.out.println(height);
                 for(int y = 0; y < height; y++){
                     if(y <= stoneLevel){
-                        blocks[(x)+(y*256)+(z*16)] = Material.STONE.getId();
+                        blocks[(x)+(y*256)+(z*16)] = ;
                     }else{
                         blocks[(x)+(y*256)+(z*16)] = Material.DIRT.getId();
                     }
