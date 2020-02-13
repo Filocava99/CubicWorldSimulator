@@ -1,6 +1,8 @@
 package it.cubicworldsimulator.engine;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Utils {
@@ -12,6 +14,11 @@ public class Utils {
             result = scanner.useDelimiter("\\A").next();
         }
         return result;
+    }
+
+    //TODO
+    public static List<String> readAllLines(String fileName) {
+        return new ArrayList<String>();
     }
 
 }
