@@ -3,6 +3,8 @@ package it.cubicworldsimulator.game;
 import it.cubicworldsimulator.engine.GameLogic;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.engine.Window;
+import it.cubicworldsimulator.game.world.World;
+import it.cubicworldsimulator.game.world.WorldManager;
 import org.joml.Matrix4f;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -36,6 +38,7 @@ public class Game implements GameLogic {
         float aspectRatio = (float) window.getWidth() / window.getHeight();
         projectionMatrix = new Matrix4f().setPerspective(FOV, aspectRatio,
                 Z_NEAR, Z_FAR);
+        new WorldManager(new World("test",4242L));
     }
 
     @Override
