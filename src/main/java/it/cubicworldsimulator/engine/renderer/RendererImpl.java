@@ -2,6 +2,7 @@ package it.cubicworldsimulator.engine.renderer;
 
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.OBJLoader;
 import org.joml.Matrix4f;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -26,6 +27,11 @@ public class RendererImpl implements Renderer {
     }
 
     public void init(Window window) throws Exception {
+        try {
+            Mesh lamp = new OBJLoader().loadFromOBJ("lamp.obj", "texture.png");
+        }catch (Exception e) {
+
+        }
         // Create shader
         shaderProgram = new ShaderProgram();
         shaderProgram.createVertexShader(Utils.loadResource("/shaders/vertex.vert"));

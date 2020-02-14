@@ -2,9 +2,14 @@ package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.GameEngine;
 import it.cubicworldsimulator.engine.GameLogic;
+import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.OBJLoader;
+
+import static org.lwjgl.opengl.GL11C.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+
         try {
             GameLogic gameLogic = new Game();
             GameEngine gameEngine = new GameEngine("CubicWorldSimulator", 600, 480,

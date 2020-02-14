@@ -1,6 +1,7 @@
 package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.GameItem;
+import it.cubicworldsimulator.engine.LoaderImpl;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.system.MemoryUtil;
 
@@ -10,25 +11,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL11C.*;
+import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13C.glActiveTexture;
+import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15C.GL_ELEMENT_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15C.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15C.glBindBuffer;
+import static org.lwjgl.opengl.GL15C.glBufferData;
+import static org.lwjgl.opengl.GL15C.glDeleteBuffers;
+import static org.lwjgl.opengl.GL15C.glGenBuffers;
+import static org.lwjgl.opengl.GL20C.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20C.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30C.glBindVertexArray;
+import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
+import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
 
 public class Mesh {
-
     private final int vaoId;
     private final int posVboId;
     private final int idxVboId;
@@ -69,7 +69,6 @@ public class Mesh {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
 
             //Texture VBO
             int vboId = glGenBuffers();
