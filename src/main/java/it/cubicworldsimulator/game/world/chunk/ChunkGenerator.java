@@ -2,6 +2,7 @@ package it.cubicworldsimulator.game.world.chunk;
 
 import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.game.utility.math.OpenSimplexNoise;
+import it.cubicworldsimulator.game.world.WorldManager;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -9,12 +10,14 @@ import java.util.Arrays;
 
 public class ChunkGenerator {
     private final OpenSimplexNoise noise;
-
-    public ChunkGenerator(long seed) {
-        this.noise = new OpenSimplexNoise(seed);
-    }
+    private final WorldManager worldManager;
     private int waterLevel = 30;
     private int stoneLevel = 60;
+
+    public ChunkGenerator(long seed, WorldManager worldManager) {
+        this.noise = new OpenSimplexNoise(seed);
+        this.worldManager = worldManager;
+    }
 
     public ChunkColumn generateChunkColumn(int chunkX, int chunkZ){
         //System.out.println("Generazione colonna x:  " + chunkX + "  z:  " + chunkZ);
@@ -26,6 +29,7 @@ public class ChunkGenerator {
                 //System.out.println(height);
                 for(int y = 0; y < height; y++){
                     if(y <= stoneLevel){
+<<<<<<< HEAD
                         //blocks[(x)+(y*256)+(z*16)] = Material.STONE.getId();
                     }else{
                         //blocks[(x)+(y*256)+(z*16)] = Material.DIRT.getId();
@@ -37,6 +41,19 @@ public class ChunkGenerator {
                         //blocks[(x)+(y<<8)+(z<<4)] = Material.WATER.getId();
                     }else{
                         //blocks[(x)+(y<<8)+(z<<4)] = Material.AIR.getId();
+=======
+                        blocks[(x)+(y*256)+(z*16)] = worldManager.getBlockTypes().get("stone").getId();
+                    }else{
+                        blocks[(x)+(y*256)+(z*16)] = worldManager.getBlockTypes().get("dirt").getId();
+                    }
+                }
+                blocks[(x)+((int)height<<8)+(z<<4)] = worldManager.getBlockTypes().get("grass").getId();
+                for(int y = (int)height+1; y<256; y++){
+                    if(y <= waterLevel){
+                        blocks[(x)+(y<<8)+(z<<4)] = worldManager.getBlockTypes().get("water").getId();
+                    }else{
+                        blocks[(x)+(y<<8)+(z<<4)] = worldManager.getBlockTypes().get("air").getId();
+>>>>>>> cava
                     }
                 }
             }
