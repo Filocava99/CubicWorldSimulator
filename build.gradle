@@ -35,6 +35,8 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
     compile "com.amihaiemil.web:eo-yaml:2.0.1"
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.0'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.0'
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
     implementation 'org.openjfx:javafx-web:15-ea+1'
     implementation "org.lwjgl:lwjgl"
