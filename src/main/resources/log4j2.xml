@@ -4,13 +4,36 @@
         <Console name="LogToConsole" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
+        <File name="LogToFile" fileName="logs/app.log">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </File>
+        <RollingRandomAccessFile name="LogToRollingRandomAccessFile" fileName="logs/app.log"
+                                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingRandomAccessFile>
+
+        <Async name="Async">
+            <!-- reference to other appenders -->
+            <AppenderRef ref="LogToRollingRandomAccessFile"/>
+        </Async>
     </Appenders>
     <Loggers>
-        <Logger name="com.mkyong" level="debug" additivity="false">
+        <Logger name="it.cubicworldsimulator.*" level="debug" additivity="false">
             <AppenderRef ref="LogToConsole"/>
+            <AppenderRef ref="LogToRollingRandomAccessFile"/>
         </Logger>
         <Root level="error">
             <AppenderRef ref="LogToConsole"/>
+            <AppenderRef ref="LogToRollingRandomAccessFile"/>
         </Root>
     </Loggers>
 </Configuration>
