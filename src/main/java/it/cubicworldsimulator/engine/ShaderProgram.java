@@ -15,7 +15,6 @@ public class ShaderProgram {
     private int vertexShaderId;
     private int fragmentShaderId;
 
-
     public ShaderProgram() throws Exception {
         programId = glCreateProgram();
         this.uniforms = new HashMap<>();
@@ -63,11 +62,10 @@ public class ShaderProgram {
             glDetachShader(programId, fragmentShaderId);
         }
 
-        glValidateProgram(programId);
+       glValidateProgram(programId);
         if (glGetProgrami(programId, GL_VALIDATE_STATUS) == 0) {
             System.err.println("Warning validating Shader code: " + glGetProgramInfoLog(programId, 1024));
         }
-
     }
 
     public void createUniform(String uniformName) throws Exception {

@@ -23,7 +23,7 @@ public class WorldManager {
     private void loadBlockTypes() throws IOException {
         YamlMapping yamlMapping = Yaml.createYamlInput("default.yml").readYamlMapping();
         yamlMapping.string("prova");
-        Material dirt = new Material(1,"dirt",new BlockTexture(0,null));
+        Material dirt = new Material((byte) 1,"dirt",new BlockTexture(0,null));
         blockTypes.put(1,"dirt",dirt);
     }
 
