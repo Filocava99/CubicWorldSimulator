@@ -1,5 +1,12 @@
 package it.cubicworldsimulator.engine;
 
+import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.OBJLoader;
+import org.lwjgl.opengl.GL;
+
+import static org.lwjgl.opengl.GL11C.GL_VERSION;
+import static org.lwjgl.opengl.GL11C.nglGetString;
+
 public class GameEngine implements Runnable {
 
     public static final int TARGET_FPS = 75; //frames per second
@@ -29,7 +36,9 @@ public class GameEngine implements Runnable {
     }
 
     protected void init() throws Exception {
+
         window.init();
+        GL.createCapabilities();
         timer.init();
         gameLogic.init(window);
     }

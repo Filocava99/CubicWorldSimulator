@@ -4,6 +4,7 @@ import it.cubicworldsimulator.engine.GameLogic;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.engine.Window;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -55,6 +56,7 @@ public class Game implements GameLogic {
 
     @Override
     public void render(Window window) {
+
         window.setClearColor(color, color, color, 0.0f);
         renderer.render(window, null);
     }
