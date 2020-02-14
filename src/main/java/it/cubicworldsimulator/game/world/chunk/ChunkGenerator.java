@@ -29,19 +29,6 @@ public class ChunkGenerator {
                 //System.out.println(height);
                 for(int y = 0; y < height; y++){
                     if(y <= stoneLevel){
-<<<<<<< HEAD
-                        //blocks[(x)+(y*256)+(z*16)] = Material.STONE.getId();
-                    }else{
-                        //blocks[(x)+(y*256)+(z*16)] = Material.DIRT.getId();
-                    }
-                }
-               // blocks[(x)+((int)height<<8)+(z<<4)] = Material.GRASS.getId();
-                for(int y = (int)height+1; y<256; y++){
-                    if(y <= waterLevel){
-                        //blocks[(x)+(y<<8)+(z<<4)] = Material.WATER.getId();
-                    }else{
-                        //blocks[(x)+(y<<8)+(z<<4)] = Material.AIR.getId();
-=======
                         blocks[(x)+(y*256)+(z*16)] = worldManager.getBlockTypes().get("stone").getId();
                     }else{
                         blocks[(x)+(y*256)+(z*16)] = worldManager.getBlockTypes().get("dirt").getId();
@@ -53,7 +40,6 @@ public class ChunkGenerator {
                         blocks[(x)+(y<<8)+(z<<4)] = worldManager.getBlockTypes().get("water").getId();
                     }else{
                         blocks[(x)+(y<<8)+(z<<4)] = worldManager.getBlockTypes().get("air").getId();
->>>>>>> cava
                     }
                 }
             }
