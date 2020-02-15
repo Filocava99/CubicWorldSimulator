@@ -1,6 +1,8 @@
 package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.GameItem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.system.MemoryUtil;
 
@@ -13,21 +15,13 @@ import java.util.function.Consumer;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Mesh {
+
+    private static final Logger logger = LogManager.getLogger(Mesh.class);
 
     private final int vaoId;
     private final int posVboId;
@@ -62,15 +56,6 @@ public class Mesh {
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
-            /* Colour VBO
-            colourVboId = glGenBuffers();
-            colourBuffer = MemoryUtil.memAllocFloat(colours.length);
-            colourBuffer.put(colours).flip();
-            glBindBuffer(GL_ARRAY_BUFFER, colourVboId);
-            glBufferData(GL_ARRAY_BUFFER, colourBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);*/
-
             // Index VBO
             idxVboId = glGenBuffers();
             indicesBuffer = MemoryUtil.memAllocInt(indices.length);
@@ -102,49 +87,11 @@ public class Mesh {
         }
     }
 
-    public void render() {
-        // Activate first texture unit
-        glActiveTexture(GL_TEXTURE0);
-        // Bind the texture
-        glBindTexture(GL_TEXTURE_2D, meshMaterial.getTexture().getId());
-        // Draw the mesh
-        glBindVertexArray(getVaoId());
-        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-        // Restore state
-        glBindVertexArray(0);
-    }
-
-    private void initRender() {
-        Texture texture = meshMaterial.getTexture();
-        if (texture != null) {
-            // Activate firs texture bank
-            glActiveTexture(GL_TEXTURE0);
-            // Bind the texture
-            glBindTexture(GL_TEXTURE_2D, texture.getId());
-        }
-
-        // Draw the mesh
-        glBindVertexArray(getVaoId());
-    }
-
     private void endRender() {
         // Restore state
         glBindVertexArray(0);
 
         glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer) {
-        initRender();
-
-        for (GameItem gameItem : gameItems) {
-            // Set up data required by gameItem
-            consumer.accept(gameItem);
-            // Render this game item
-            glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-        }
-
-        endRender();
     }
 
     public int getVaoId() {

@@ -5,6 +5,8 @@ import it.cubicworldsimulator.engine.graphic.MeshMaterial;
 import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -15,6 +17,8 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 public class ChunkMesh implements Serializable {
+    private final Logger logger = LogManager.getLogger(ChunkMesh.class);
+
     private transient List<Vector3f> verticesList;
     private transient List<Integer> indicesList;
     private transient List<Float> uvsList;
@@ -156,6 +160,11 @@ public class ChunkMesh implements Serializable {
         uvsArray = floatListToArray(uvsList);
         normalsArray = vectorListToArray(normalsList);
         indicesArray = intListToArray(indicesList);
+        logger.debug("Prepared VBOs arrays");
+        logger.debug("Indices: " + indicesArray.length);
+        logger.debug("UVs: " + uvsArray.length);
+        logger.debug("Normals: " + normalsArray.length);
+        logger.debug("Vertices: " + verticesArray.length);
         cleanLists();
     }
     public Mesh getMesh() {
@@ -210,14 +219,14 @@ public class ChunkMesh implements Serializable {
     }
 
     private void addTexture(Vector2f v1, Vector2f v2, Vector2f v3, Vector2f v4) {
-        uvsList.add((float) v1.x);
-        uvsList.add((float) v1.y);
-        uvsList.add((float) v2.x);
-        uvsList.add((float) v2.y);
-        uvsList.add((float) v3.x);
-        uvsList.add((float) v3.y);
-        uvsList.add((float) v4.x);
-        uvsList.add((float) v4.y);
+        uvsList.add(v1.x);
+        uvsList.add(v1.y);
+        uvsList.add(v2.x);
+        uvsList.add(v2.y);
+        uvsList.add(v3.x);
+        uvsList.add(v3.y);
+        uvsList.add(v4.x);
+        uvsList.add(v4.y);
     }
 
     private boolean isTopFaceVisible(int x, int y, int z) {
@@ -289,6 +298,7 @@ public class ChunkMesh implements Serializable {
     }
 
     private void cleanLists() {
+        logger.debug("Cleaning lists");
         this.verticesList = null;
         this.indicesList = null;
         this.uvsList = null;

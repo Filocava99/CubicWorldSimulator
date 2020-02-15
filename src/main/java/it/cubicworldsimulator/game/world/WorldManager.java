@@ -38,7 +38,7 @@ public class WorldManager {
             MeshMaterial meshMaterial = new MeshMaterial(texture);
             ChunkGenerator chunkGenerator = new ChunkGenerator(world.getSeed(), this);
             ChunkColumn chunkColumn = chunkGenerator.generateChunkColumn(0,0);
-            Chunk chunk = chunkColumn.getChunks()[15];
+            Chunk chunk = chunkColumn.getChunks()[0];
             ChunkMesh chunkMesh = new ChunkMesh(chunk, getBlockTypes(), meshMaterial);
             chunkMesh.prepareVAOContent();
             chunkMesh.buildMesh();

@@ -5,9 +5,9 @@ import it.cubicworldsimulator.engine.Window;
 
 public interface Renderer {
 
-    void init(Window window) throws Exception;
+    void init();
 
-    void render(Window window, Scene scene);
+    void render(Scene scene, float width, float height);
 
     void clear();
 

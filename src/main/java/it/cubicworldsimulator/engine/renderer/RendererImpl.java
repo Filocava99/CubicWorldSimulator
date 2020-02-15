@@ -2,11 +2,16 @@ package it.cubicworldsimulator.engine.renderer;
 
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.Texture;
 import org.joml.Matrix4f;
 
 import java.nio.file.Paths;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class RendererImpl implements Renderer {
 
@@ -22,59 +27,67 @@ public class RendererImpl implements Renderer {
     private final Transformation transformation;
 
     private ShaderProgram shaderProgram;
+
     /* TODO Passare i nomi delle shader come argomenti del costruttore? Credo sia effettivamente meglio. Fare una interfaccia per il renderer? In questo modo non occorre passare le shader per argomento */
     public RendererImpl() {
         transformation = new Transformation();
     }
 
-    public void init(Window window) throws Exception {
-        // Create shader
-        shaderProgram = new ShaderProgram();
-        shaderProgram.createVertexShader(Utils.loadResource("/shaders/vertex.vert"));
-        shaderProgram.createFragmentShader(Utils.loadResource("/shaders/fragment.frag"));
-        shaderProgram.link();
-
-        // Create uniforms for world and projection matrices
-        shaderProgram.createUniform("projectionMatrix");
-        shaderProgram.createUniform("worldMatrix");
-        shaderProgram.createUniform("texture_sampler");
-
-        window.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    public void init() {
     }
 
     public void clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Window window, Scene scene) {
+    public void render(Scene scene, float width, float height) {
         clear();
 
-        if (window.isResized()) {
-            glViewport(0, 0, window.getWidth(), window.getHeight());
-            window.setResized(false);
-        }
-
-        if(scene != null && scene.getMeshMap() != null){
-            shaderProgram.bind();
+        if (scene != null && scene.getMeshMap() != null) {
+            scene.getShaderProgram().bind();
 
             // Update projection Matrix
-            Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+            Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, width, height, Z_NEAR, Z_FAR);
             shaderProgram.setUniform("projectionMatrix", projectionMatrix);
             shaderProgram.setUniform("texture_sampler", 0);
 
             // Render each gameItem
-            for (Mesh mesh : scene.getMeshMap().keySet()) {
-                //TODO Mi serve la parte della per completare al 100%
-                mesh.renderList(scene.getMeshMap().get(mesh), (GameItem gameItem) -> {
-                    Matrix4f worldMatrix = transformation.getWorldMatrix(
-                            gameItem.getPosition(),
-                            gameItem.getRotation(),
-                            gameItem.getScale());
-                    shaderProgram.setUniform("worldMatrix",worldMatrix);
-                });
-            }
+            scene.getMeshMap().entrySet().stream().forEach(entry -> renderList(entry.getKey(), entry.getValue()));
             shaderProgram.unbind();
         }
+    }
+
+    private void renderList(Mesh mesh, List<GameItem> gameItems){
+        initRender(mesh);
+        gameItems.forEach(gameItem -> {
+            Matrix4f worldMatrix = transformation.getWorldMatrix(
+                    gameItem.getPosition(),
+                    gameItem.getRotation(),
+                    gameItem.getScale());
+            shaderProgram.setUniform("worldMatrix", worldMatrix);
+            glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+        });
+        endRender();
+    }
+
+    private void initRender(Mesh mesh) {
+        Texture texture = mesh.getMeshMaterial().getTexture();
+        if (texture != null) {
+            // Activate firs texture bank
+            glActiveTexture(GL_TEXTURE0);
+            // Bind the texture
+            glBindTexture(GL_TEXTURE_2D, texture.getId());
+        }
+
+        //Bind the VAO
+        glBindVertexArray(mesh.getVaoId());
+    }
+
+    private void endRender() {
+        // Restore state
+        glBindVertexArray(0);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     public void cleanUp() {
