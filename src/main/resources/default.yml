@@ -1,5 +1,8 @@
+file: "textures/default.jpg"
+step: 0.0625
 blocks:
   air:
+    test: "ciao"
     id: 0
   dirt:
     id: 1
