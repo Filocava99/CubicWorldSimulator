@@ -29,7 +29,7 @@ public class RendererImpl implements Renderer {
     public void init(Window window) throws Exception {
         try {
             Mesh lamp = new OBJLoader().loadFromOBJ("lamp.obj", "texture.png");
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
         // Create shader
