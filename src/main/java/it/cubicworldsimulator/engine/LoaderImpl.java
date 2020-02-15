@@ -6,6 +6,8 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL15C.*;
@@ -13,6 +15,14 @@ import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15C.GL_STATIC_DRAW;
 
 public class LoaderImpl implements Loader {
+
+    private final List<FloatBuffer> floatBuffersList;
+    private final List<IntBuffer> intBuffersList;
+
+    public LoaderImpl() {
+        this.floatBuffersList = new ArrayList<>();
+        this.intBuffersList = new ArrayList<>();
+    }
 
     @Override
     public int createVao() {
@@ -30,6 +40,7 @@ public class LoaderImpl implements Loader {
     @Override
     public void insertFloatIntoVbo(int vboId, float[] data, int index, int target, int elementDimension) {
         FloatBuffer buffer = MemoryUtil.memAllocFloat(data.length);
+        this.floatBuffersList.add(buffer);
         buffer.put(data).flip();
         glBindBuffer(target, vboId);
         glBufferData(target, buffer, GL_STATIC_DRAW);
@@ -40,9 +51,15 @@ public class LoaderImpl implements Loader {
     @Override
     public void insertIntIntoVbo(int vboId, int[] data, int index, int target) {
         IntBuffer buffer = MemoryUtil.memAllocInt(data.length);
+        this.intBuffersList.add(buffer);
         buffer.put(data).flip();
         glBindBuffer(target, vboId);
         glBufferData(target, buffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    public void cleanUp() {
+        this.floatBuffersList.forEach(this.floatBuffersList::remove);
+        this.intBuffersList.forEach(this.intBuffersList::remove);
     }
 }
