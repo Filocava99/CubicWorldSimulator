@@ -1,20 +1,18 @@
 package it.cubicworldsimulator.game;
 
-
 import it.cubicworldsimulator.engine.GameEngine;
 import it.cubicworldsimulator.engine.GameLogic;
-import javafx.application.Application;
 
 public class Main {
-    public static void main(String[] args) {
-        boolean vSync = true;
-        GameLogic gameLogic = new Game();
-        GameEngine gameEng = null;
+    public static void main(String[] args) throws Exception {
         try {
-            gameEng = new GameEngine("CubicWorldSimulator", 600, 480, vSync, gameLogic);
+            GameLogic gameLogic = new Game();
+            GameEngine gameEngine = new GameEngine("CubicWorldSimulator", 600, 480,
+                    true, gameLogic);
+                    gameEngine.run();
         } catch (Exception e) {
             e.printStackTrace();
+            System.exit(-1);
         }
-        gameEng.run();
     }
 }

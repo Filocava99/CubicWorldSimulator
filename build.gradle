@@ -38,7 +38,6 @@ dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.0'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.0'
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
-    implementation 'org.openjfx:javafx-web:15-ea+1'
     implementation "org.lwjgl:lwjgl"
     implementation "org.lwjgl:lwjgl-assimp"
     implementation "org.lwjgl:lwjgl-glfw"
