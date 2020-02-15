@@ -34,8 +34,7 @@ public class LoaderImpl implements Loader {
 
     @Override
     public int createVbo() {
-        int vboId = glGenBuffers();
-        return vboId;
+        return glGenBuffers();
     }
 
     @Override
