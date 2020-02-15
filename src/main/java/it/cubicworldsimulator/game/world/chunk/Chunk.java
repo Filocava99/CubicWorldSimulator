@@ -1,14 +1,17 @@
 package it.cubicworldsimulator.game.world.chunk;
 
 import it.cubicworldsimulator.game.utility.Constants;
+import it.cubicworldsimulator.game.utility.math.SerializableVector3f;
 import org.joml.Vector3f;
 
-public class Chunk {
+import java.io.Serializable;
+
+public class Chunk implements Serializable {
     private final byte[] blocks;
-    private final Vector3f position;
+    private final SerializableVector3f position;
     private final boolean wasModified;
 
-    public Chunk(byte[] blocks, Vector3f position) {
+    public Chunk(byte[] blocks, SerializableVector3f position) {
         if(blocks.length != Constants.chunkTotalBlocks){
             throw new IllegalArgumentException("Blocks array must be of exactly " + Constants.chunkTotalBlocks + " elements!");
         }
