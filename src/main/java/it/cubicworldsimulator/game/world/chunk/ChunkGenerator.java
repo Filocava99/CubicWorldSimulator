@@ -1,6 +1,7 @@
 package it.cubicworldsimulator.game.world.chunk;
 
 import it.cubicworldsimulator.game.utility.math.OpenSimplexNoise;
+import it.cubicworldsimulator.game.utility.math.SerializableVector3f;
 import it.cubicworldsimulator.game.world.WorldManager;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -45,7 +46,7 @@ public class ChunkGenerator {
         }
         //TODO Fix magic numbers | 4096 * 16 = 65536
         for(int i = 0; i < 16; i++){
-            chunks[i] = new Chunk(Arrays.copyOfRange(blocks,4096*i,4096*i+4096), new Vector3f(chunkX,i,chunkZ));
+            chunks[i] = new Chunk(Arrays.copyOfRange(blocks,4096*i,4096*i+4096), new SerializableVector3f(chunkX,i,chunkZ));
         }
         //System.out.println("Fine generazione");
         return  new ChunkColumn(chunks, new Vector2f(chunkX,chunkZ));
