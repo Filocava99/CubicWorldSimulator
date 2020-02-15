@@ -13,6 +13,7 @@ import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL15C.*;
 import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15C.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class LoaderImpl implements Loader {
 
@@ -38,7 +39,7 @@ public class LoaderImpl implements Loader {
     }
 
     @Override
-    public void insertFloatIntoVbo(int vboId, float[] data, int index, int target, int elementDimension) {
+    public void insertDataIntoVbo(int vboId, float[] data, int index, int target, int elementDimension) {
         FloatBuffer buffer = MemoryUtil.memAllocFloat(data.length);
         this.floatBuffersList.add(buffer);
         buffer.put(data).flip();
@@ -49,13 +50,14 @@ public class LoaderImpl implements Loader {
     }
 
     @Override
-    public void insertIntIntoVbo(int vboId, int[] data, int index, int target) {
-        IntBuffer buffer = MemoryUtil.memAllocInt(data.length);
+    public void insertIndices(int vboId, int[] indices, int indexToBind, int target) {
+        IntBuffer buffer = MemoryUtil.memAllocInt(indices.length);
         this.intBuffersList.add(buffer);
-        buffer.put(data).flip();
+        buffer.put(indices).flip();
         glBindBuffer(target, vboId);
         glBufferData(target, buffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(indexToBind);
     }
 
     public void cleanUp() {

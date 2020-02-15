@@ -45,16 +45,16 @@ public class Mesh {
 
         // Position VBO
         this.posVboId = this.loader.createVbo();
-        this.loader.insertFloatIntoVbo(posVboId, positions, 0, GL_ARRAY_BUFFER, 3);
+        this.loader.insertDataIntoVbo(posVboId, positions, 0, GL_ARRAY_BUFFER, 3);
 
         // Index VBO
         this.idxVboId = this.loader.createVbo();
-        this.loader.insertIntIntoVbo(idxVboId, indices, 0, GL_ELEMENT_ARRAY_BUFFER);
+        this.loader.insertIndices(idxVboId, indices, 0, GL_ELEMENT_ARRAY_BUFFER);
 
         //Texture VBO
         int textureVboId = this.loader.createVbo();
         this.textureVboList.add(textureVboId);
-        this.loader.insertFloatIntoVbo(textureVboId, textCoords, 1, GL_ARRAY_BUFFER, 2);
+        this.loader.insertDataIntoVbo(textureVboId, textCoords, 1, GL_ARRAY_BUFFER, 2);
 
         //Cleanup
         this.loader.cleanUp();
