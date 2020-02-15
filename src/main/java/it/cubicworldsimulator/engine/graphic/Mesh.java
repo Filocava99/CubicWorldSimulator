@@ -57,7 +57,7 @@ public class Mesh {
         this.loader.insertFloatIntoVbo(textureVboId, textCoords, 1, GL_ARRAY_BUFFER, 2);
 
         //Cleanup
-        this.cleanUp();
+        this.loader.cleanUp();
     }
 
     public void render() {
