@@ -36,7 +36,6 @@ public class GameEngine implements Runnable {
     }
 
     protected void init() throws Exception {
-
         window.init();
         GL.createCapabilities();
         timer.init();

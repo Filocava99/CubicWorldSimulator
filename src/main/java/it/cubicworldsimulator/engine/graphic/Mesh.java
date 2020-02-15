@@ -1,12 +1,10 @@
 package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.GameItem;
+import it.cubicworldsimulator.engine.Loader;
 import it.cubicworldsimulator.engine.LoaderImpl;
 import org.lwjgl.opengl.GL15;
-import org.lwjgl.system.MemoryUtil;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -16,19 +14,15 @@ import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13C.glActiveTexture;
 import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15C.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15C.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL15C.glBindBuffer;
-import static org.lwjgl.opengl.GL15C.glBufferData;
 import static org.lwjgl.opengl.GL15C.glDeleteBuffers;
-import static org.lwjgl.opengl.GL15C.glGenBuffers;
 import static org.lwjgl.opengl.GL20C.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20C.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
+
 
 public class Mesh {
+    private final Loader loader;
     private final int vaoId;
     private final int posVboId;
     private final int idxVboId;
@@ -42,54 +36,28 @@ public class Mesh {
     }
 
     public Mesh(float[] positions, float[] textCoords, int[] indices, Material texture, float boundingRadius) {
-        FloatBuffer posBuffer = null;
-        IntBuffer indicesBuffer = null;
-        FloatBuffer textCoordsBuffer = null;
+        this.loader = new LoaderImpl();
         this.material = texture;
         this.boundingRadius = boundingRadius;
 
-        try {
-            vertexCount = indices.length;
-            vaoId = glGenVertexArrays();
-            glBindVertexArray(vaoId);
+        this.vaoId = this.loader.createVao();
+        vertexCount = indices.length;
 
-            // Position VBO
-            posVboId = glGenBuffers();
-            posBuffer = MemoryUtil.memAllocFloat(positions.length);
-            posBuffer.put(positions).flip();
-            glBindBuffer(GL_ARRAY_BUFFER, posVboId);
-            glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        // Position VBO
+        this.posVboId = this.loader.createVbo();
+        this.loader.insertFloatIntoVbo(posVboId, positions, 0, GL_ARRAY_BUFFER, 3);
 
-            // Index VBO
-            idxVboId = glGenBuffers();
-            indicesBuffer = MemoryUtil.memAllocInt(indices.length);
-            indicesBuffer.put(indices).flip();
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // Index VBO
+        this.idxVboId = this.loader.createVbo();
+        this.loader.insertIntIntoVbo(idxVboId, indices, 0, GL_ELEMENT_ARRAY_BUFFER);
 
-            //Texture VBO
-            int vboId = glGenBuffers();
-            textureVboList.add(vboId);
-            textCoordsBuffer = MemoryUtil.memAllocFloat(textCoords.length);
-            textCoordsBuffer.put(textCoords).flip();
-            glBindBuffer(GL_ARRAY_BUFFER, vboId);
-            glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
-        } finally {
-            if (posBuffer != null) {
-                MemoryUtil.memFree(posBuffer);
-            }
-            if (indicesBuffer != null) {
-                MemoryUtil.memFree(indicesBuffer);
-            }
-            if (textCoordsBuffer != null) {
-                MemoryUtil.memFree(textCoordsBuffer);
-            }
-        }
+        //Texture VBO
+        int textureVboId = this.loader.createVbo();
+        this.textureVboList.add(textureVboId);
+        this.loader.insertFloatIntoVbo(textureVboId, textCoords, 1, GL_ARRAY_BUFFER, 2);
+
+        //Cleanup
+        this.cleanUp();
     }
 
     public void render() {
