@@ -1,9 +1,12 @@
 package it.cubicworldsimulator.game.world;
 
+import it.cubicworldsimulator.engine.graphic.*;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
-import org.apache.commons.collections4.keyvalue.MultiKey;
-import org.apache.commons.collections4.map.MultiKeyMap;
+import it.cubicworldsimulator.game.world.chunk.Chunk;
+import it.cubicworldsimulator.game.world.chunk.ChunkColumn;
+import it.cubicworldsimulator.game.world.chunk.ChunkGenerator;
+import it.cubicworldsimulator.game.world.chunk.ChunkMesh;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
@@ -13,6 +16,8 @@ import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public class WorldManager {
@@ -20,11 +25,28 @@ public class WorldManager {
     private static final Logger logger = LogManager.getLogger(WorldManager.class);
 
     private final World world;
-    private final MultiKeyMap blockTypes = new MultiKeyMap();
+    private final Map<Object,Material> blockTypes = new HashMap<>();
+    private String textureFile;
+    public Mesh mesh;
 
     public WorldManager(World world) {
         loadBlockTypes();
         this.world = world;
+        TextureLoader loader = new TextureLoaderImpl();
+        try{
+            Texture texture = loader.loadTexture(textureFile);
+            MeshMaterial meshMaterial = new MeshMaterial(texture);
+            ChunkGenerator chunkGenerator = new ChunkGenerator(world.getSeed(), this);
+            ChunkColumn chunkColumn = chunkGenerator.generateChunkColumn(0,0);
+            Chunk chunk = chunkColumn.getChunks()[15];
+            ChunkMesh chunkMesh = new ChunkMesh(chunk, getBlockTypes(), meshMaterial);
+            chunkMesh.prepareVAOContent();
+            chunkMesh.buildMesh();
+            mesh = chunkMesh.getMesh();
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
     }
 
     private void loadBlockTypes() {
@@ -36,7 +58,7 @@ public class WorldManager {
         }
         Load load = new Load(new LoadSettingsBuilder().setLabel("test").build());
         Map<String, Object> textureConfig = (Map<String, Object>) load.loadFromInputStream(inputStream);
-        String textureFile = textureConfig.get("file").toString();
+        textureFile = textureConfig.get("file").toString();
         float textureStep = Float.parseFloat(textureConfig.get("step").toString());
         Map<String, Object> blocksList = (Map<String, Object>) textureConfig.get("blocks");
         blocksList.entrySet().stream().forEach(entry -> {
@@ -57,18 +79,20 @@ public class WorldManager {
                     Map<String, Object> faceInfo = (Map<String, Object>) iterator.next().getValue();
                     float x = Float.parseFloat(faceInfo.get("x").toString()) * textureStep;
                     float y = Float.parseFloat(faceInfo.get("y").toString()) * textureStep;
-                    logger.debug("x " + x + " y" + y);
                     coords[i] = new Vector2f(x, y);
                     i++;
                 }
                 material = new Material(blockId,blockName,new BlockTexture(textureStep, coords));
             }
-            blockTypes.put(blockName, blockId, material);
+            if(material == null){
+                material = new Material(blockId,blockName,null);
+            }
+            blockTypes.put(blockName, material);
+            blockTypes.put(blockId, material);
         });
     }
 
-    //TODO Creare metodi espliciti in modo da ritornare il valore senza ritornare la mappa
-    public MultiKeyMap<MultiKey, Material> getBlockTypes() {
-        return blockTypes;
+    public Map<Object, Material> getBlockTypes() {
+        return Collections.unmodifiableMap(blockTypes);
     }
 }

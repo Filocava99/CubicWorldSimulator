@@ -1,17 +1,17 @@
 package it.cubicworldsimulator.game.world.chunk;
 
-import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.MeshMaterial;
 import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
-import org.apache.commons.collections4.keyvalue.MultiKey;
-import org.apache.commons.collections4.map.MultiKeyMap;
+import it.cubicworldsimulator.game.world.block.Material;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 public class ChunkMesh implements Serializable {
@@ -28,13 +28,13 @@ public class ChunkMesh implements Serializable {
 
     private final transient Chunk chunk;
     private transient Mesh mesh;
-    private final transient MultiKeyMap<MultiKey, it.cubicworldsimulator.game.world.block.Material> blocksTypes;
-    private final transient Material material;
+    private final transient Map<Object, Material> blocksTypes;
+    private final transient MeshMaterial meshMaterial;
 
-    public ChunkMesh(final Chunk chunk, MultiKeyMap blocksTypes, Material material) {
+    public ChunkMesh(final Chunk chunk, Map<Object, Material> blocksTypes, MeshMaterial meshMaterial) {
         this.chunk = chunk;
         this.blocksTypes = blocksTypes;
-        this.material = material;
+        this.meshMaterial = meshMaterial;
     }
 
     public void buildMesh(){
@@ -44,7 +44,7 @@ public class ChunkMesh implements Serializable {
         }
         if (!areVBOsArraysEmpty()) {
             try {
-                mesh = new Mesh(verticesArray, uvsArray, indicesArray, material, Constants.chunkAxisSize);
+                mesh = new Mesh(verticesArray, uvsArray, indicesArray, meshMaterial, Constants.chunkAxisSize);
             } catch (Exception e) {
                 e.printStackTrace();
             }

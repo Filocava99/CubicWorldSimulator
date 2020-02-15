@@ -7,11 +7,9 @@ import java.util.*;
 public class Scene {
 
     private Map<Mesh, List<GameItem>> meshMap = new HashMap<>();
-    private final ShaderProgram shaderProgram;
 
-    public Scene(Map<Mesh, List<GameItem>> meshMap, ShaderProgram shaderProgram) {
+    public Scene(Map<Mesh, List<GameItem>> meshMap) {
         this.meshMap = meshMap;
-        this.shaderProgram = shaderProgram;
     }
 
     public void setGameItems(GameItem[] gameItems) {
@@ -33,7 +31,4 @@ public class Scene {
         return Collections.unmodifiableMap(meshMap);
     }
 
-    public ShaderProgram getShaderProgram() {
-        return shaderProgram;
-    }
 }

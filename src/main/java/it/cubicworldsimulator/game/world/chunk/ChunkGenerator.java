@@ -3,11 +3,15 @@ package it.cubicworldsimulator.game.world.chunk;
 import it.cubicworldsimulator.game.utility.math.OpenSimplexNoise;
 import it.cubicworldsimulator.game.utility.math.SerializableVector3f;
 import it.cubicworldsimulator.game.world.WorldManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 
 import java.util.Arrays;
 
 public class ChunkGenerator {
+    private static final Logger logger = LogManager.getLogger(ChunkGenerator.class);
+
     private final OpenSimplexNoise noise;
     private final WorldManager worldManager;
     private int waterLevel = 30;
