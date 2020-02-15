@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Chunk implements Serializable {
     private final byte[] blocks;
     private final SerializableVector3f position;
-    private final boolean wasModified;
+    private boolean wasModified;
 
     public Chunk(byte[] blocks, SerializableVector3f position) {
         if(blocks.length != Constants.chunkTotalBlocks){
@@ -38,5 +38,9 @@ public class Chunk implements Serializable {
 
     public boolean wasModified() {
         return wasModified;
+    }
+
+    public void setWasModified(boolean flag){
+        this.wasModified = flag;
     }
 }
