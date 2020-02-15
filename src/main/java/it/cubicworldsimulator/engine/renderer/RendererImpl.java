@@ -54,25 +54,27 @@ public class RendererImpl implements Renderer {
             window.setResized(false);
         }
 
-        shaderProgram.bind();
+        if(scene != null && scene.getMeshMap() != null){
+            shaderProgram.bind();
 
-        // Update projection Matrix
-        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
-        shaderProgram.setUniform("projectionMatrix", projectionMatrix);
-        shaderProgram.setUniform("texture_sampler", 0);
+            // Update projection Matrix
+            Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+            shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+            shaderProgram.setUniform("texture_sampler", 0);
 
-        // Render each gameItem
-        for (Mesh mesh : scene.getMeshMap().keySet()) {
-            //TODO Mi serve la parte della per completare al 100%
-            mesh.renderList(scene.getMeshMap().get(mesh), (GameItem gameItem) -> {
-                Matrix4f worldMatrix = transformation.getWorldMatrix(
-                        gameItem.getPosition(),
-                        gameItem.getRotation(),
-                        gameItem.getScale());
-                shaderProgram.setUniform("worldMatrix",worldMatrix);
-            });
+            // Render each gameItem
+            for (Mesh mesh : scene.getMeshMap().keySet()) {
+                //TODO Mi serve la parte della per completare al 100%
+                mesh.renderList(scene.getMeshMap().get(mesh), (GameItem gameItem) -> {
+                    Matrix4f worldMatrix = transformation.getWorldMatrix(
+                            gameItem.getPosition(),
+                            gameItem.getRotation(),
+                            gameItem.getScale());
+                    shaderProgram.setUniform("worldMatrix",worldMatrix);
+                });
+            }
+            shaderProgram.unbind();
         }
-        shaderProgram.unbind();
     }
 
     public void cleanUp() {
