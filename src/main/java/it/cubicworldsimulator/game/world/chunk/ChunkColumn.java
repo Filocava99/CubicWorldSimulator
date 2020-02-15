@@ -14,4 +14,12 @@ public class ChunkColumn {
         this.chunks = chunks;
         this.position = position;
     }
+
+    public Chunk[] getChunks() {
+        return chunks;
+    }
+
+    public Vector2f getPosition() {
+        return position;
+    }
 }

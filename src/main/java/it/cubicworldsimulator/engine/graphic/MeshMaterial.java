@@ -1,10 +1,10 @@
 package it.cubicworldsimulator.engine.graphic;
 
-public class Material {
+public class MeshMaterial {
 
     private final Texture texture;
 
-    public Material(Texture texture) {
+    public MeshMaterial(Texture texture) {
         this.texture = texture;
     }
 

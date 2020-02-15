@@ -21,13 +21,15 @@ public class Window {
     private boolean resized;
 
     private boolean vSync;
+    private final boolean debug;
 
-    public Window(String title, int width, int height, boolean vSync) {
+    public Window(String title, int width, int height, boolean vSync, boolean debug) {
         this.title = title;
         this.width = width;
         this.height = height;
         this.vSync = vSync;
         this.resized = false;
+        this.debug = debug;
     }
 
     public void init() {
@@ -97,6 +99,10 @@ public class Window {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
+
+        if(debug){
+            glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        }
     }
 
     public void setClearColor(float r, float g, float b, float alpha) {

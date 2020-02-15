@@ -12,8 +12,8 @@ public class GameEngine implements Runnable {
 
     private final GameLogic gameLogic;
 
-    public GameEngine(String windowTitle, int width, int height, boolean vSync, GameLogic gameLogic) throws Exception {
-        window = new Window(windowTitle, width, height, vSync);
+    public GameEngine(String windowTitle, int width, int height, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
+        window = new Window(windowTitle, width, height, vSync, debug);
         this.gameLogic = gameLogic;
         timer = new Timer();
     }

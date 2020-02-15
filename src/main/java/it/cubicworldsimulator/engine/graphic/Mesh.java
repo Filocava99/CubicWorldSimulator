@@ -34,18 +34,18 @@ public class Mesh {
     private final int idxVboId;
     private final int vertexCount;
     private final List<Integer> textureVboList = new ArrayList<>();
-    private final Material material;
+    private final MeshMaterial meshMaterial;
     private final float boundingRadius;
 
     public Mesh (float[] positions, float[] textCoords, int[] indices, String textureFileName) throws Exception {
-        this(positions, textCoords, indices, new Material(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
+        this(positions, textCoords, indices, new MeshMaterial(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
     }
 
-    public Mesh(float[] positions, float[] textCoords, int[] indices, Material texture, float boundingRadius) {
+    public Mesh(float[] positions, float[] textCoords, int[] indices, MeshMaterial texture, float boundingRadius) {
         FloatBuffer posBuffer = null;
         IntBuffer indicesBuffer = null;
         FloatBuffer textCoordsBuffer = null;
-        this.material = texture;
+        this.meshMaterial = texture;
         this.boundingRadius = boundingRadius;
 
         try {
@@ -106,7 +106,7 @@ public class Mesh {
         // Activate first texture unit
         glActiveTexture(GL_TEXTURE0);
         // Bind the texture
-        glBindTexture(GL_TEXTURE_2D, material.getTexture().getId());
+        glBindTexture(GL_TEXTURE_2D, meshMaterial.getTexture().getId());
         // Draw the mesh
         glBindVertexArray(getVaoId());
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
@@ -115,7 +115,7 @@ public class Mesh {
     }
 
     private void initRender() {
-        Texture texture = material.getTexture();
+        Texture texture = meshMaterial.getTexture();
         if (texture != null) {
             // Activate firs texture bank
             glActiveTexture(GL_TEXTURE0);
@@ -173,7 +173,7 @@ public class Mesh {
         return boundingRadius;
     }
 
-    public Material getMaterial() {
-        return material;
+    public MeshMaterial getMeshMaterial() {
+        return meshMaterial;
     }
 }
