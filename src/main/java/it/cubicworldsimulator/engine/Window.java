@@ -1,6 +1,8 @@
 package it.cubicworldsimulator.engine;
 
 import static org.lwjgl.glfw.GLFW.*;
+
+import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -22,14 +24,16 @@ public class Window {
 
     private boolean vSync;
     private final boolean debug;
+    private final Vector4f clearColor;
 
-    public Window(String title, int width, int height, boolean vSync, boolean debug) {
+    public Window(String title, int width, int height, Vector4f clearColor, boolean vSync, boolean debug) {
         this.title = title;
         this.width = width;
         this.height = height;
         this.vSync = vSync;
         this.resized = false;
         this.debug = debug;
+        this.clearColor = clearColor;
     }
 
     public void init() {
@@ -100,6 +104,8 @@ public class Window {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
+        setClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+
         if(debug){
             glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         }
@@ -148,5 +154,9 @@ public class Window {
     public void update() {
         glfwSwapBuffers(windowHandle);
         glfwPollEvents();
+        if(isResized()){
+            glViewport(0, 0, getWidth(), getHeight());
+            setResized(false);
+        }
     }
 }

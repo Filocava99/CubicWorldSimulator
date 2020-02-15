@@ -7,9 +7,21 @@ import java.util.*;
 public class Scene {
 
     private Map<Mesh, List<GameItem>> meshMap = new HashMap<>();
+    private final ShaderProgram shaderProgram;
 
-    public Scene(Map<Mesh, List<GameItem>> meshMap) {
+    public Scene(Map<Mesh, List<GameItem>> meshMap, ShaderProgram shaderProgram) {
         this.meshMap = meshMap;
+        this.shaderProgram = shaderProgram;
+    }
+
+    public Scene(ShaderProgram shaderProgram, GameItem... gameItems){
+        this.shaderProgram = shaderProgram;
+        setGameItems(gameItems);
+    }
+
+    public Scene(GameItem[] gameItems, ShaderProgram shaderProgram){
+        this.shaderProgram = shaderProgram;
+        setGameItems(gameItems);
     }
 
     public void setGameItems(GameItem[] gameItems) {
@@ -24,6 +36,10 @@ public class Scene {
             }
             list.add(gameItem);
         }
+    }
+
+    public ShaderProgram getShaderProgram() {
+        return shaderProgram;
     }
 
     //TODO Unmodifiable map? Not sure :(
