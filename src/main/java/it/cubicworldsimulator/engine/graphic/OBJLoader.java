@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class OBJLoader {
+public class OBJLoader {
     private final List<Vector3f> vertices;
     private final List<Vector2f> textures;
     private final List<Vector3f> normals;
