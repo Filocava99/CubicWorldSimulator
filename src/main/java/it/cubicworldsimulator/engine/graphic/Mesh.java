@@ -1,17 +1,13 @@
 package it.cubicworldsimulator.engine.graphic;
 
-import it.cubicworldsimulator.engine.GameItem;
-import it.cubicworldsimulator.engine.Loader;
-import it.cubicworldsimulator.engine.LoaderImpl;
+import it.cubicworldsimulator.engine.loader.Loader;
+import it.cubicworldsimulator.engine.loader.LoaderImpl;
+import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
 import org.lwjgl.opengl.GL15;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
-import static org.lwjgl.opengl.GL11C.*;
-import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13C.glActiveTexture;
 import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15C.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15C.glBindBuffer;

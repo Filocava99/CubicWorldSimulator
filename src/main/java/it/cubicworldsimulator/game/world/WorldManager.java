@@ -1,6 +1,8 @@
 package it.cubicworldsimulator.game.world;
 
 import it.cubicworldsimulator.engine.graphic.*;
+import it.cubicworldsimulator.engine.loader.TextureLoader;
+import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
 import it.cubicworldsimulator.game.world.chunk.Chunk;
