@@ -11,6 +11,4 @@ public interface Renderer {
 
     void clear();
 
-    void cleanUp();
-
 }
