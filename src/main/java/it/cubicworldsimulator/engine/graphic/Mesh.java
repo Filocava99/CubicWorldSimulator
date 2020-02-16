@@ -1,13 +1,22 @@
 package it.cubicworldsimulator.engine.graphic;
 
+<<<<<<< HEAD
 import it.cubicworldsimulator.engine.Loader;
 import it.cubicworldsimulator.engine.LoaderImpl;
+=======
+import it.cubicworldsimulator.engine.loader.Loader;
+import it.cubicworldsimulator.engine.loader.LoaderImpl;
+import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
+>>>>>>> cava
 import org.lwjgl.opengl.GL15;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL15C.*;
+import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15C.GL_ELEMENT_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15C.glBindBuffer;
+import static org.lwjgl.opengl.GL15C.glDeleteBuffers;
 import static org.lwjgl.opengl.GL20C.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;

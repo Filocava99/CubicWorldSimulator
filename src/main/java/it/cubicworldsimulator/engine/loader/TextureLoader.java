@@ -1,4 +1,6 @@
-package it.cubicworldsimulator.engine.graphic;
+package it.cubicworldsimulator.engine.loader;
+
+import it.cubicworldsimulator.engine.graphic.Texture;
 
 public interface TextureLoader {
     /**
