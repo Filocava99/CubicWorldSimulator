@@ -60,7 +60,7 @@ public class LoaderImpl implements Loader {
     }
 
     public void cleanUp() {
-        this.floatBuffersList.forEach(this.floatBuffersList::remove);
-        this.intBuffersList.forEach(this.intBuffersList::remove);
+        this.floatBuffersList.removeIf(value -> true);
+        this.intBuffersList.removeIf(value -> true);
     }
 }
