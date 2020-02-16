@@ -1,5 +1,6 @@
-package it.cubicworldsimulator.engine.graphic;
+package it.cubicworldsimulator.engine.loader;
 
+import it.cubicworldsimulator.engine.graphic.Texture;
 import org.lwjgl.system.MemoryStack;
 import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
