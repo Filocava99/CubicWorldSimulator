@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,6 @@ public class Game implements GameLogic {
 
     private static final float Z_FAR = 1000.f;
 
-    private Matrix4f projectionMatrix;
 
     private Scene scene;
 
@@ -44,17 +44,12 @@ public class Game implements GameLogic {
     }
 
     @Override
-    public void init(Window window) throws Exception {
-        float aspectRatio = (float) window.getWidth() / window.getHeight();
-        projectionMatrix = new Matrix4f().setPerspective(FOV, aspectRatio,
-                Z_NEAR, Z_FAR);
-        WorldManager worldManager = new WorldManager(new World("test", 4242L));
-        GameItem gameItem = new GameItem(worldManager.mesh);
-        gameItem.setPosition(0, 0, -10);
-        Map<Mesh, List<GameItem>> meshMap = new HashMap<>();
-        meshMap.put(worldManager.mesh, List.of(gameItem));
+    public void init(Window window){
+        World world = new World("test", 4242L);
+        WorldManager worldManager = new WorldManager(world);
+
         initShaderPrograms();
-        scene = new Scene(meshMap, shaderProgram);
+        scene = new Scene((GameItem[])null, shaderProgram);
     }
 
     @Override
