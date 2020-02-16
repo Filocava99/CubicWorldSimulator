@@ -1,14 +1,11 @@
 package it.cubicworldsimulator.game.world;
 
-import it.cubicworldsimulator.engine.graphic.*;
+import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.Texture;
 import it.cubicworldsimulator.engine.loader.TextureLoader;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
-import it.cubicworldsimulator.game.world.chunk.Chunk;
-import it.cubicworldsimulator.game.world.chunk.ChunkColumn;
-import it.cubicworldsimulator.game.world.chunk.ChunkGenerator;
-import it.cubicworldsimulator.game.world.chunk.ChunkMesh;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
@@ -30,23 +27,15 @@ public class WorldManager {
     private final Map<Object,Material> blockTypes = new HashMap<>();
     private String textureFile;
     public Mesh mesh;
+    public Texture worldTexture;
 
     public WorldManager(World world) {
         loadBlockTypes();
         this.world = world;
         TextureLoader loader = new TextureLoaderImpl();
         try{
-            Texture texture = loader.loadTexture(textureFile);
-            MeshMaterial meshMaterial = new MeshMaterial(texture);
-            ChunkGenerator chunkGenerator = new ChunkGenerator(world.getSeed(), this);
-            ChunkColumn chunkColumn = chunkGenerator.generateChunkColumn(0,0);
-            Chunk chunk = chunkColumn.getChunks()[0];
-            ChunkMesh chunkMesh = new ChunkMesh(chunk, getBlockTypes(), meshMaterial);
-            chunkMesh.prepareVAOContent();
-            chunkMesh.buildMesh();
-            mesh = chunkMesh.getMesh();
+            worldTexture = loader.loadTexture(textureFile);
         }catch (Exception e){
-            e.printStackTrace();
             logger.error(e.getMessage());
         }
     }

@@ -17,23 +17,22 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 public class ChunkMesh implements Serializable {
-    private final Logger logger = LogManager.getLogger(ChunkMesh.class);
+    private static final Logger logger = LogManager.getLogger(ChunkMesh.class);
 
     private transient List<Vector3f> verticesList;
     private transient List<Integer> indicesList;
     private transient List<Float> uvsList;
     private transient List<Vector3f> normalsList;
 
+    private final transient Chunk chunk;
+    private final transient Map<Object, Material> blocksTypes;
+    private final transient MeshMaterial meshMaterial;
+    private transient Mesh mesh;
+
     private float[] verticesArray;
     private int[] indicesArray;
     private float[] uvsArray;
     private float[] normalsArray;
-
-
-    private final transient Chunk chunk;
-    private transient Mesh mesh;
-    private final transient Map<Object, Material> blocksTypes;
-    private final transient MeshMaterial meshMaterial;
 
     public ChunkMesh(final Chunk chunk, Map<Object, Material> blocksTypes, MeshMaterial meshMaterial) {
         this.chunk = chunk;
