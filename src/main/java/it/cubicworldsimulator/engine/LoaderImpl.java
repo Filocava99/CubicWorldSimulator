@@ -1,72 +1,66 @@
 package it.cubicworldsimulator.engine;
 
+import org.lwjgl.opengl.GL20C;
+import org.lwjgl.opengl.GL30C;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11C.GL_FLOAT;
+import static org.lwjgl.opengl.GL15C.*;
+import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15C.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class LoaderImpl implements Loader {
 
-    private int vaoId;
-    private int vboId;
-    private FloatBuffer verticesBuffer;
-    private ShaderProgram shaderProgram;
+    private final List<FloatBuffer> floatBuffersList;
+    private final List<IntBuffer> intBuffersList;
 
-    //TODO make this a generic loader
-    private final float[] triangleDemo = new float[]{
-            0.0f, 0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f
-    };
-
-    public final void init(ShaderProgram shaderProgram) {
-        this.shaderProgram = shaderProgram;
-        this.verticesBuffer = MemoryUtil.memAllocFloat(triangleDemo.length);
-        this.verticesBuffer.put(triangleDemo).flip();
-        this.vaoId = createVAO();
-        this.vboId = createVBO();
-        insertIntoVBO();
+    public LoaderImpl() {
+        this.floatBuffersList = new ArrayList<>();
+        this.intBuffersList = new ArrayList<>();
     }
 
-    private int createVAO() {
-        /* VAO created and vaoID stored */
-        int vaoId = glGenVertexArrays();
-        glBindVertexArray(vaoId);
+    @Override
+    public int createVao() {
+        int vaoId = GL30C.glGenVertexArrays();
+        GL30C.glBindVertexArray(vaoId);
         return vaoId;
     }
 
-    private int createVBO() {
-        /* VBO created and vboID stored */
-        int vboId = glGenBuffers();
-        /* Bind VBO with VAO */
-        glBindBuffer(GL_ARRAY_BUFFER, vboId);
-        return vboId;
+    @Override
+    public int createVbo() {
+        return glGenBuffers();
     }
 
-    private void insertIntoVBO() {
-        /* Insert vertices in VBO */
-        glBufferData(GL_ARRAY_BUFFER,
-                verticesBuffer,
-                GL_STATIC_DRAW);
-        /* Mark attribute index 0 with vertex */
-        glEnableVertexAttribArray(0);
-        /* Mark data */
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+    @Override
+    public void insertDataIntoVbo(int vboId, float[] data, int index, int target, int elementDimension) {
+        FloatBuffer buffer = MemoryUtil.memAllocFloat(data.length);
+        this.floatBuffersList.add(buffer);
+        buffer.put(data).flip();
+        glBindBuffer(target, vboId);
+        glBufferData(target, buffer, GL_STATIC_DRAW);
+        GL20C.glEnableVertexAttribArray(index);
+        GL20C.glVertexAttribPointer(index, elementDimension, GL_FLOAT, false, 0, 0);
     }
 
-    private void clean() {
-        if (this.shaderProgram != null) {
-            this.shaderProgram.cleanup();
-        }
-        glDisableVertexAttribArray(0);
-        /* Unbind the VBO */
+    @Override
+    public void insertIndices(int vboId, int[] indices, int indexToBind, int target) {
+        IntBuffer buffer = MemoryUtil.memAllocInt(indices.length);
+        this.intBuffersList.add(buffer);
+        buffer.put(indices).flip();
+        glBindBuffer(target, vboId);
+        glBufferData(target, buffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(this.vboId);
-        /* Unbind the VAO */
-        glBindVertexArray(0);
-        glDeleteVertexArrays(this.vaoId);
-        /* Free verticesBuffer */
-        MemoryUtil.memFree(this.verticesBuffer);
+        glBindVertexArray(indexToBind);
+    }
+
+    public void cleanUp() {
+        this.floatBuffersList.forEach(this.floatBuffersList::remove);
+        this.intBuffersList.forEach(this.intBuffersList::remove);
     }
 }

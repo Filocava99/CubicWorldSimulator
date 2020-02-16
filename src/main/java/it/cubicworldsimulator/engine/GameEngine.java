@@ -2,6 +2,13 @@ package it.cubicworldsimulator.engine;
 
 import org.joml.Vector4f;
 
+import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.OBJLoader;
+import org.lwjgl.opengl.GL;
+
+import static org.lwjgl.opengl.GL11C.GL_VERSION;
+import static org.lwjgl.opengl.GL11C.nglGetString;
+
 public class GameEngine implements Runnable {
 
     public static final int TARGET_FPS = 75; //frames per second
@@ -14,9 +21,8 @@ public class GameEngine implements Runnable {
 
     private final GameLogic gameLogic;
 
-    public GameEngine(String windowTitle, int width, int height, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
-        Vector4f clearColor = new Vector4f(0f,0f,0f,0f); //TODO Creare diversi costruttori in modo da passare il clearColor facoltativamente
-        window = new Window(windowTitle, width, height, clearColor, vSync, debug);
+    public GameEngine(String windowTitle, int width, int height, boolean vSync, GameLogic gameLogic) throws Exception {
+        window = new Window(windowTitle, width, height, vSync);
         this.gameLogic = gameLogic;
         timer = new Timer();
     }
@@ -33,6 +39,7 @@ public class GameEngine implements Runnable {
 
     protected void init() throws Exception {
         window.init();
+        GL.createCapabilities();
         timer.init();
         gameLogic.init(window);
     }

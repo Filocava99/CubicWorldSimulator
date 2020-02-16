@@ -1,5 +1,9 @@
 package it.cubicworldsimulator.engine;
 
 public interface Loader {
-    void init(ShaderProgram shaderProgram);
+    int createVao();
+    int createVbo();
+    void insertDataIntoVbo(int vboId, float[] data, int index, int target, int elementDimension);
+    void insertIndices(int vboId, int[] data, int indexToBind, int target);
+    void cleanUp();
 }
