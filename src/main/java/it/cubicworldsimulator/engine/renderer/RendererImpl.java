@@ -56,6 +56,14 @@ public class RendererImpl implements Renderer {
         }
     }
 
+    private void render(ShaderProgram shaderProgram, GameItem gameItem){
+        initRender(gameItem.getMesh());
+        Matrix4f worldMatrix = transformation.getWorldMatrix(gameItem.getPosition(),gameItem.getRotation(),gameItem.getScale());
+        shaderProgram.setUniform("worldMatrix", worldMatrix);
+        glDrawElements(GL_TRIANGLES, gameItem.getMesh().getVertexCount(), GL_UNSIGNED_INT, 0);
+        endRender();
+    }
+
     private void renderList(ShaderProgram shaderProgram, Mesh mesh, List<GameItem> gameItems){
         initRender(mesh);
         gameItems.forEach(gameItem -> {
