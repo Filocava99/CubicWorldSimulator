@@ -1,90 +1,88 @@
 package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.GameItem;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import it.cubicworldsimulator.engine.Loader;
+import it.cubicworldsimulator.engine.LoaderImpl;
 import org.lwjgl.opengl.GL15;
-import org.lwjgl.system.MemoryUtil;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11C.*;
+import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13C.glActiveTexture;
+import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15C.GL_ELEMENT_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15C.glBindBuffer;
+import static org.lwjgl.opengl.GL15C.glDeleteBuffers;
+import static org.lwjgl.opengl.GL20C.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL30C.glBindVertexArray;
+import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
+
 
 public class Mesh {
-
-    private static final Logger logger = LogManager.getLogger(Mesh.class);
-
+    private final Loader loader;
     private final int vaoId;
     private final int posVboId;
     private final int idxVboId;
     private final int vertexCount;
     private final List<Integer> textureVboList = new ArrayList<>();
-    private final MeshMaterial meshMaterial;
+    private final Material material;
     private final float boundingRadius;
 
     public Mesh (float[] positions, float[] textCoords, int[] indices, String textureFileName) throws Exception {
-        this(positions, textCoords, indices, new MeshMaterial(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
+        this(positions, textCoords, indices, new Material(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
     }
 
-    public Mesh(float[] positions, float[] textCoords, int[] indices, MeshMaterial texture, float boundingRadius) {
-        FloatBuffer posBuffer = null;
-        IntBuffer indicesBuffer = null;
-        FloatBuffer textCoordsBuffer = null;
-        this.meshMaterial = texture;
+    public Mesh(float[] positions, float[] textCoords, int[] indices, Material texture, float boundingRadius) {
+        this.loader = new LoaderImpl();
+        this.material = texture;
         this.boundingRadius = boundingRadius;
 
-        try {
-            vertexCount = indices.length;
-            vaoId = glGenVertexArrays();
-            glBindVertexArray(vaoId);
+        this.vaoId = this.loader.createVao();
+        vertexCount = indices.length;
 
-            // Position VBO
-            posVboId = glGenBuffers();
-            posBuffer = MemoryUtil.memAllocFloat(positions.length);
-            posBuffer.put(positions).flip();
-            glBindBuffer(GL_ARRAY_BUFFER, posVboId);
-            glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        // Position VBO
+        this.posVboId = this.loader.createVbo();
+        this.loader.insertDataIntoVbo(posVboId, positions, 0, GL_ARRAY_BUFFER, 3);
 
-            // Index VBO
-            idxVboId = glGenBuffers();
-            indicesBuffer = MemoryUtil.memAllocInt(indices.length);
-            indicesBuffer.put(indices).flip();
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
+        // Index VBO
+        this.idxVboId = this.loader.createVbo();
+        this.loader.insertIndices(idxVboId, indices, 0, GL_ELEMENT_ARRAY_BUFFER);
 
-            //Texture VBO
-            int vboId = glGenBuffers();
-            textureVboList.add(vboId);
-            textCoordsBuffer = MemoryUtil.memAllocFloat(textCoords.length);
-            textCoordsBuffer.put(textCoords).flip();
-            glBindBuffer(GL_ARRAY_BUFFER, vboId);
-            glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
-        } finally {
-            if (posBuffer != null) {
-                MemoryUtil.memFree(posBuffer);
-            }
-            if (indicesBuffer != null) {
-                MemoryUtil.memFree(indicesBuffer);
-            }
-            if (textCoordsBuffer != null) {
-                MemoryUtil.memFree(textCoordsBuffer);
-            }
+        //Texture VBO
+        int textureVboId = this.loader.createVbo();
+        this.textureVboList.add(textureVboId);
+        this.loader.insertDataIntoVbo(textureVboId, textCoords, 1, GL_ARRAY_BUFFER, 2);
+
+        //Cleanup
+        this.loader.cleanUp();
+    }
+
+    public void render() {
+        // Activate first texture unit
+        glActiveTexture(GL_TEXTURE0);
+        // Bind the texture
+        glBindTexture(GL_TEXTURE_2D, material.getTexture().getId());
+        // Draw the mesh
+        glBindVertexArray(getVaoId());
+        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+        // Restore state
+        glBindVertexArray(0);
+    }
+
+    private void initRender() {
+        Texture texture = material.getTexture();
+        if (texture != null) {
+            // Activate firs texture bank
+            glActiveTexture(GL_TEXTURE0);
+            // Bind the texture
+            glBindTexture(GL_TEXTURE_2D, texture.getId());
         }
+
+        // Draw the mesh
+        glBindVertexArray(getVaoId());
     }
 
     private void endRender() {
@@ -92,6 +90,19 @@ public class Mesh {
         glBindVertexArray(0);
 
         glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer) {
+        initRender();
+
+        for (GameItem gameItem : gameItems) {
+            // Set up data required by gameItem
+            consumer.accept(gameItem);
+            // Render this game item
+            glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+        }
+
+        endRender();
     }
 
     public int getVaoId() {
@@ -120,7 +131,7 @@ public class Mesh {
         return boundingRadius;
     }
 
-    public MeshMaterial getMeshMaterial() {
-        return meshMaterial;
+    public Material getMaterial() {
+        return material;
     }
 }

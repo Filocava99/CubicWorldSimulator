@@ -8,6 +8,7 @@ import it.cubicworldsimulator.game.world.WorldManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL;
 
 import java.util.HashMap;
 import java.util.List;

@@ -12,7 +12,7 @@ public class Main {
         try {
             GameLogic gameLogic = new Game();
             GameEngine gameEngine = new GameEngine("CubicWorldSimulator", 600, 480,
-                    true, gameLogic, debug);
+                    true, gameLogic);
                     gameEngine.run();
         } catch (Exception e) {
             e.printStackTrace();

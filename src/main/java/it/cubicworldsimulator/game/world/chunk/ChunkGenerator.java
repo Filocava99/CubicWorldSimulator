@@ -1,7 +1,9 @@
 package it.cubicworldsimulator.game.world.chunk;
 
 import it.cubicworldsimulator.game.utility.math.OpenSimplexNoise;
+
 import it.cubicworldsimulator.game.utility.math.SerializableVector3f;
+
 import it.cubicworldsimulator.game.world.WorldManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
