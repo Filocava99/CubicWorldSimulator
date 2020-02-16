@@ -52,7 +52,7 @@ public class RendererImpl implements Renderer {
             shaderProgram.setUniform("texture_sampler", 0);
 
             // Render each gameItem
-            scene.getMeshMap().entrySet().stream().forEach(entry -> renderList(entry.getKey(), entry.getValue()));
+            scene.getMeshMap().forEach(this::renderList);
             shaderProgram.unbind();
         }
     }
