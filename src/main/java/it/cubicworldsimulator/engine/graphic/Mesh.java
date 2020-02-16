@@ -28,14 +28,14 @@ public class Mesh {
     private final int idxVboId;
     private final int vertexCount;
     private final List<Integer> textureVboList = new ArrayList<>();
-    private final Material material;
+    private final MeshMaterial material;
     private final float boundingRadius;
 
     public Mesh (float[] positions, float[] textCoords, int[] indices, String textureFileName) throws Exception {
-        this(positions, textCoords, indices, new Material(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
+        this(positions, textCoords, indices, new MeshMaterial(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
     }
 
-    public Mesh(float[] positions, float[] textCoords, int[] indices, Material texture, float boundingRadius) {
+    public Mesh(float[] positions, float[] textCoords, int[] indices, MeshMaterial texture, float boundingRadius) {
         this.loader = new LoaderImpl();
         this.material = texture;
         this.boundingRadius = boundingRadius;
@@ -58,51 +58,6 @@ public class Mesh {
 
         //Cleanup
         this.loader.cleanUp();
-    }
-
-    public void render() {
-        // Activate first texture unit
-        glActiveTexture(GL_TEXTURE0);
-        // Bind the texture
-        glBindTexture(GL_TEXTURE_2D, material.getTexture().getId());
-        // Draw the mesh
-        glBindVertexArray(getVaoId());
-        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-        // Restore state
-        glBindVertexArray(0);
-    }
-
-    private void initRender() {
-        Texture texture = material.getTexture();
-        if (texture != null) {
-            // Activate firs texture bank
-            glActiveTexture(GL_TEXTURE0);
-            // Bind the texture
-            glBindTexture(GL_TEXTURE_2D, texture.getId());
-        }
-
-        // Draw the mesh
-        glBindVertexArray(getVaoId());
-    }
-
-    private void endRender() {
-        // Restore state
-        glBindVertexArray(0);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer) {
-        initRender();
-
-        for (GameItem gameItem : gameItems) {
-            // Set up data required by gameItem
-            consumer.accept(gameItem);
-            // Render this game item
-            glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
-        }
-
-        endRender();
     }
 
     public int getVaoId() {
@@ -131,7 +86,7 @@ public class Mesh {
         return boundingRadius;
     }
 
-    public Material getMaterial() {
+    public MeshMaterial getMeshMaterial() {
         return material;
     }
 }
