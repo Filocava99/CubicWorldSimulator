@@ -11,8 +11,6 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL15C.*;
-import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15C.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class LoaderImpl implements Loader {
