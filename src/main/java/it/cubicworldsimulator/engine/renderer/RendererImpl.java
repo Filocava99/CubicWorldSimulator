@@ -1,11 +1,13 @@
 package it.cubicworldsimulator.engine.renderer;
 
-import it.cubicworldsimulator.engine.*;
+import it.cubicworldsimulator.engine.GameItem;
+import it.cubicworldsimulator.engine.Scene;
+import it.cubicworldsimulator.engine.ShaderProgram;
+import it.cubicworldsimulator.engine.Transformation;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.Texture;
 import org.joml.Matrix4f;
 
-import java.nio.file.Paths;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;

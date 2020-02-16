@@ -1,13 +1,7 @@
 package it.cubicworldsimulator.engine;
 
 import org.joml.Vector4f;
-
-import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.OBJLoader;
 import org.lwjgl.opengl.GL;
-
-import static org.lwjgl.opengl.GL11C.GL_VERSION;
-import static org.lwjgl.opengl.GL11C.nglGetString;
 
 public class GameEngine implements Runnable {
 
