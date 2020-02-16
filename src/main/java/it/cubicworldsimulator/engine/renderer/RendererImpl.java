@@ -26,7 +26,6 @@ public class RendererImpl implements Renderer {
 
     private final Transformation transformation;
 
-    /* TODO Passare i nomi delle shader come argomenti del costruttore? Credo sia effettivamente meglio. Fare una interfaccia per il renderer? In questo modo non occorre passare le shader per argomento */
     public RendererImpl() {
         transformation = new Transformation();
     }
