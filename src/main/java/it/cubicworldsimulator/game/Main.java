@@ -10,7 +10,6 @@ public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
-        logger.debug(System.getProperty("os.name"));
         boolean debug = false;
         boolean vsync = true;
         //TODO Aggiungere vSync come parametro di avvio
@@ -20,13 +19,14 @@ public class Main {
             }
         }
         try {
+            logger.debug("Platform: " + System.getProperty("os.name"));
+            logger.info("VSync: " + vsync);
+            logger.debug("Debug mode: " + debug);
+            logger.trace("Game running...");
             GameLogic gameLogic = new Game();
             GameEngine gameEngine = new GameEngine("CubicWorldSimulator", 600, 480,
                     vsync, gameLogic, debug);
             gameEngine.run();
-            logger.trace("Game running...");
-            logger.info("VSync: " + vsync);
-            logger.debug("Debug mode: " + debug);
         } catch (Exception e) {
             logger.error(e.getMessage());
             e.printStackTrace();

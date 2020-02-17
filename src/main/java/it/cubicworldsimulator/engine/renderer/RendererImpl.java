@@ -5,6 +5,7 @@ import it.cubicworldsimulator.engine.Scene;
 import it.cubicworldsimulator.engine.ShaderProgram;
 import it.cubicworldsimulator.engine.Transformation;
 import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.SkyBox;
 import it.cubicworldsimulator.engine.graphic.Texture;
 import org.joml.Matrix4f;
 
@@ -42,19 +43,26 @@ public class RendererImpl implements Renderer {
     public void render(Scene scene, float width, float height) {
         clear();
 
-        if (scene != null && scene.getMeshMap() != null) {
-            scene.getShaderProgram().bind();
-
+        if (scene != null ) {
             // Update projection Matrix
             Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, width, height, Z_NEAR, Z_FAR);
-            scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
-            scene.getShaderProgram().setUniform("texture_sampler", 0);
 
-            // Render each gameItem
-            scene.getMeshMap().forEach((k,v) -> {
-                renderList(scene.getShaderProgram(),k,v);
-            });
-            scene.getShaderProgram().unbind();
+            if(scene.getSkyBox() != null){
+                renderSkyBox(scene.getSkyBox(), projectionMatrix);
+            }
+
+            if(scene.getMeshMap() != null){
+                scene.getShaderProgram().bind();
+
+                scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
+                scene.getShaderProgram().setUniform("texture_sampler", 0);
+
+                // Render each gameItem
+                scene.getMeshMap().forEach((k,v) -> {
+                    renderList(scene.getShaderProgram(),k,v);
+                });
+                scene.getShaderProgram().unbind();
+            }
         }
     }
 
@@ -64,6 +72,24 @@ public class RendererImpl implements Renderer {
         shaderProgram.setUniform("worldMatrix", worldMatrix);
         glDrawElements(GL_TRIANGLES, gameItem.getMesh().getVertexCount(), GL_UNSIGNED_INT, 0);
         endRender();
+    }
+
+    private void renderSkyBox(SkyBox skyBox, Matrix4f projectionMatrix) {
+        skyBox.getShaderProgram().bind();
+
+        skyBox.getShaderProgram().setUniform("texture_sampler", 0);
+
+        // Update projection Matrix
+        skyBox.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
+        Matrix4f worldMatrix = transformation.getWorldMatrix(skyBox.getPosition(),skyBox.getRotation(),skyBox.getScale());
+        worldMatrix.m30(0);
+        worldMatrix.m31(0);
+        worldMatrix.m32(0);
+        skyBox.getShaderProgram().setUniform("worldMatrix", worldMatrix);
+
+        render(skyBox.getShaderProgram(), skyBox);
+
+        skyBox.getShaderProgram().unbind();
     }
 
     private void renderList(ShaderProgram shaderProgram, Mesh mesh, List<GameItem> gameItems){

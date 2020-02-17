@@ -1,6 +1,7 @@
 package it.cubicworldsimulator.engine;
 
 import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.SkyBox;
 
 import java.util.*;
 
@@ -8,20 +9,24 @@ public class Scene {
 
     private Map<Mesh, List<GameItem>> meshMap = new HashMap<>();
     private final ShaderProgram shaderProgram;
+    private final SkyBox skyBox;
 
-    public Scene(Map<Mesh, List<GameItem>> meshMap, ShaderProgram shaderProgram) {
+    public Scene(Map<Mesh, List<GameItem>> meshMap, ShaderProgram shaderProgram, SkyBox skyBox) {
         this.meshMap = meshMap;
         this.shaderProgram = shaderProgram;
+        this.skyBox = skyBox;
     }
 
-    public Scene(ShaderProgram shaderProgram, GameItem... gameItems){
+    public Scene(ShaderProgram shaderProgram, SkyBox skyBox, GameItem... gameItems){
         this.shaderProgram = shaderProgram;
         setGameItems(gameItems);
+        this.skyBox = skyBox;
     }
 
-    public Scene(GameItem[] gameItems, ShaderProgram shaderProgram){
+    public Scene(GameItem[] gameItems, ShaderProgram shaderProgram, SkyBox skyBox){
         this.shaderProgram = shaderProgram;
         setGameItems(gameItems);
+        this.skyBox = skyBox;
     }
 
     public void setGameItems(GameItem[] gameItems) {
@@ -36,6 +41,10 @@ public class Scene {
             }
             list.add(gameItem);
         }
+    }
+
+    public SkyBox getSkyBox() {
+        return skyBox;
     }
 
     public ShaderProgram getShaderProgram() {
