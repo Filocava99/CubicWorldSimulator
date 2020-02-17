@@ -1,13 +1,8 @@
 package it.cubicworldsimulator.engine.graphic;
 
-<<<<<<< HEAD
-import it.cubicworldsimulator.engine.Loader;
-import it.cubicworldsimulator.engine.LoaderImpl;
-=======
 import it.cubicworldsimulator.engine.loader.Loader;
 import it.cubicworldsimulator.engine.loader.LoaderImpl;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
->>>>>>> cava
 import org.lwjgl.opengl.GL15;
 
 import java.util.ArrayList;
