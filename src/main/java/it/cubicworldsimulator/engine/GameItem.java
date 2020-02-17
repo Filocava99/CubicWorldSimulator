@@ -5,13 +5,13 @@ import org.joml.Vector3f;
 
 public class GameItem {
 
-    private final Mesh mesh;
+    private Mesh mesh;
 
-    private final Vector3f position;
+    private Vector3f position;
 
     private float scale;
 
-    private final Vector3f rotation;
+    private Vector3f rotation;
 
     private boolean insideFrustum;
 
@@ -22,6 +22,9 @@ public class GameItem {
         rotation = new Vector3f();
     }
 
+    public GameItem(){
+    }
+
     public Vector3f getPosition() {
         return position;
     }
@@ -30,6 +33,10 @@ public class GameItem {
         this.position.x = x;
         this.position.y = y;
         this.position.z = z;
+    }
+
+    public void setPosition(Vector3f position) {
+        this.position = position;
     }
 
     public float getScale() {
@@ -50,8 +57,16 @@ public class GameItem {
         this.rotation.z = z;
     }
 
+    public void setRotation(Vector3f rotation) {
+        this.rotation = rotation;
+    }
+
     public Mesh getMesh() {
         return mesh;
+    }
+
+    public void setMesh(Mesh mesh) {
+        this.mesh = mesh;
     }
 
     public boolean isInsideFrustum() {
