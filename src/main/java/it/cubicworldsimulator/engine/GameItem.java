@@ -7,19 +7,17 @@ public class GameItem {
 
     private Mesh mesh;
 
-    private Vector3f position;
+    private Vector3f position = new Vector3f();
 
     private float scale;
 
-    private Vector3f rotation;
+    private Vector3f rotation = new Vector3f();
 
     private boolean insideFrustum;
 
     public GameItem(Mesh mesh) {
         this.mesh = mesh;
-        position = new Vector3f();
         scale = 1;
-        rotation = new Vector3f();
     }
 
     public GameItem(){

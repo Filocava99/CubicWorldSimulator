@@ -2,6 +2,7 @@ package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.SkyBox;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
@@ -38,6 +39,7 @@ public class Game implements GameLogic {
 
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
+    private ShaderProgram skyBoxShaderProgram;
 
     public Game() {
         renderer = new RendererImpl();
@@ -49,7 +51,14 @@ public class Game implements GameLogic {
         WorldManager worldManager = new WorldManager(world);
 
         initShaderPrograms();
-        scene = new Scene((GameItem[])null, shaderProgram);
+
+        try {
+            SkyBox skyBox = new SkyBox("/models/skybox.obj", "/textures/skybox.png", skyBoxShaderProgram);
+            scene = new Scene(shaderProgram, skyBox);
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
     }
 
     @Override
@@ -79,6 +88,11 @@ public class Game implements GameLogic {
     }
 
     private void initShaderPrograms() {
+        initSceneShaderProgram();
+        initSkyBoxShaderProgram();
+    }
+
+    private void initSceneShaderProgram(){
         try {
             shaderProgram = new ShaderProgram();
             shaderProgram.createVertexShader(Utils.loadResource("/shaders/vertex.vert"));
@@ -90,6 +104,22 @@ public class Game implements GameLogic {
             shaderProgram.createUniform("worldMatrix");
             shaderProgram.createUniform("texture_sampler");
         } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void initSkyBoxShaderProgram(){
+        try {
+            skyBoxShaderProgram = new ShaderProgram();
+            skyBoxShaderProgram.createVertexShader(Utils.loadResource("/shaders/skyBox.vert"));
+            skyBoxShaderProgram.createFragmentShader(Utils.loadResource("/shaders/skyBox.frag"));
+            skyBoxShaderProgram.link();
+
+            skyBoxShaderProgram.createUniform("projectionMatrix");
+            skyBoxShaderProgram.createUniform("worldMatrix");
+            skyBoxShaderProgram.createUniform("texture_sampler");
+        }catch (Exception e){
+            e.printStackTrace();
             logger.error(e.getMessage());
         }
     }
