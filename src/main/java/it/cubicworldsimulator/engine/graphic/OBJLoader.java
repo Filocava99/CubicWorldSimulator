@@ -1,6 +1,8 @@
 package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.Utils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class OBJLoader {
+    private final static Logger logger = LogManager.getLogger(OBJLoader.class);
     private final List<Vector3f> vertices;
     private final List<Vector2f> textures;
     private final List<Vector3f> normals;
@@ -31,8 +34,8 @@ public class OBJLoader {
                 case "v":
                     // Geometric vertex
                     Vector3f vec3f = new Vector3f(
-                            Float.parseFloat(tokens.get(0)),
                             Float.parseFloat(tokens.get(1)),
+                            Float.parseFloat(tokens.get(2)),
                             Float.parseFloat(tokens.get(3)));
                     vertices.add(vec3f);
                     break;
@@ -87,6 +90,9 @@ public class OBJLoader {
         int[] indicesArr = indices.stream()
                             .mapToInt((Integer v) -> v)
                             .toArray();
+        logger.debug("Vertices: " + posArr.length);
+        logger.debug("UVs: " + textCoordArr.length);
+        logger.debug("Indices: " + indicesArr.length);
         return new Mesh(posArr, textCoordArr, indicesArr, "/" + this.textureFileName);
     }
 
