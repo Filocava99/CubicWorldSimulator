@@ -24,8 +24,7 @@ public class Main {
             logger.debug("Debug mode: " + debug);
             logger.trace("Game running...");
             GameLogic gameLogic = new Game();
-            GameEngine gameEngine = new GameEngine("CubicWorldSimulator", 600, 480,
-                    vsync, gameLogic, debug);
+            GameEngine gameEngine = new GameEngine("CubicWorldSimulator", vsync, gameLogic, debug);
             gameEngine.run();
         } catch (Exception e) {
             logger.error(e.getMessage());
