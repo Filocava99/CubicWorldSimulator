@@ -54,15 +54,16 @@ public class ShaderProgram {
         if (glGetProgrami(programId, GL_LINK_STATUS) == 0) {
             throw new Exception("Error linking Shader code: " + glGetProgramInfoLog(programId, 1024));
         }
-
         if (vertexShaderId != 0) {
             glDetachShader(programId, vertexShaderId);
         }
         if (fragmentShaderId != 0) {
             glDetachShader(programId, fragmentShaderId);
         }
+    }
 
-       glValidateProgram(programId);
+    public void validateProgram() {
+        glValidateProgram(programId);
         if (glGetProgrami(programId, GL_VALIDATE_STATUS) == 0) {
             System.err.println("Warning validating Shader code: " + glGetProgramInfoLog(programId, 1024));
         }

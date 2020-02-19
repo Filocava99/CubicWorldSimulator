@@ -74,6 +74,7 @@ public class RendererImpl implements Renderer {
         initRender(gameItem.getMesh());
         Matrix4f worldMatrix = transformation.getWorldMatrix(gameItem.getPosition(),gameItem.getRotation(),gameItem.getScale());
         shaderProgram.setUniform("worldMatrix", worldMatrix);
+        logger.trace("Name " + gameItem.toString());
         logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
         glDrawElements(GL_TRIANGLES, gameItem.getMesh().getVertexCount(), GL_UNSIGNED_INT, 0);
         endRender();
