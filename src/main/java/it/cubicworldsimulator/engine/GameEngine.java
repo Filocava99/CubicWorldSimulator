@@ -15,6 +15,10 @@ public class GameEngine implements Runnable {
 
     private final GameLogic gameLogic;
 
+    public GameEngine(String windowTitle, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
+        this(windowTitle, 0, 0, vSync, gameLogic, debug);
+    }
+
     public GameEngine(String windowTitle, int width, int height, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
         Vector4f clearColor = new Vector4f(0f,0f,0f,0f); //TODO Creare diversi costruttori in modo da passare il clearColor facoltativamente
         window = new Window(windowTitle, width, height, clearColor, vSync, debug);
