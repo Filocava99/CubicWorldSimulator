@@ -119,13 +119,13 @@ public class Game implements GameLogic {
         try {
             logger.debug("Creating skybox shader program");
             skyBoxShaderProgram = new ShaderProgram();
-            logger.debug("Loading vertex shader");
+            logger.debug("Loading skybox vertex shader");
             skyBoxShaderProgram.createVertexShader(Utils.loadResource("/shaders/skyBox.vert"));
-            logger.debug("Loading fragment shader");
+            logger.debug("Loading skybox fragment shader");
             skyBoxShaderProgram.createFragmentShader(Utils.loadResource("/shaders/skyBox.frag"));
-            logger.debug("Linking shaders");
+            logger.debug("Linking skybox shaders");
             skyBoxShaderProgram.link();
-            logger.debug("Creating uniforms");
+            logger.debug("Creating skybox uniforms");
             skyBoxShaderProgram.createUniform("projectionMatrix");
             skyBoxShaderProgram.createUniform("worldMatrix");
             skyBoxShaderProgram.createUniform("texture_sampler");
