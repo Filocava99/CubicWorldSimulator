@@ -92,25 +92,6 @@ public class Mesh {
         }
     }
 
-    private void initRender() {
-        Texture texture = material.getTexture();
-        if (texture != null) {
-            // Activate firs texture bank
-            glActiveTexture(GL_TEXTURE0);
-            // Bind the texture
-            glBindTexture(GL_TEXTURE_2D, texture.getId());
-        }
-
-        // Draw the mesh
-        glBindVertexArray(getVaoId());
-    }
-
-    private void endRender() {
-        // Restore state
-        glBindVertexArray(0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
     public int getVaoId() {
         return vaoId;
     }

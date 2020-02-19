@@ -119,7 +119,6 @@ public class RendererImpl implements Renderer {
             // Bind the texture
             glBindTexture(GL_TEXTURE_2D, texture.getId());
         }
-
         //Bind the VAO
         glBindVertexArray(mesh.getVaoId());
     }
@@ -127,7 +126,6 @@ public class RendererImpl implements Renderer {
     private void endRender() {
         // Restore state
         glBindVertexArray(0);
-
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
