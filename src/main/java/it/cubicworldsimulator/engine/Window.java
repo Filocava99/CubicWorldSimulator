@@ -1,5 +1,7 @@
 package it.cubicworldsimulator.engine;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -10,6 +12,8 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
+
+    private static final Logger logger = LogManager.getLogger(Window.class);
 
     private final String title;
 
@@ -151,6 +155,7 @@ public class Window {
     }
 
     public void update() {
+        logger.trace("Updating");
         glfwSwapBuffers(windowHandle);
         glfwPollEvents();
         if(isResized()){

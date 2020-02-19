@@ -24,12 +24,12 @@
     </Appenders>
     <Loggers>
         <!-- avoid duplicated logs with additivity=false -->
-        <Logger name="it.cubicworldsimulator.*" level="debug" additivity="false">
-            <AppenderRef ref="Async"/>
+        <Logger name="it.cubicworldsimulator.engine.renderer.RendererImpl" level="trace" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="debug">
             <AppenderRef ref="LogToConsole"/>
+            <AppenderRef ref="Async"/>
         </Root>
     </Loggers>
 </Configuration>

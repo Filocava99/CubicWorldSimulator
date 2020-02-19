@@ -3,6 +3,8 @@ package it.cubicworldsimulator.engine.graphic;
 import it.cubicworldsimulator.engine.loader.Loader;
 import it.cubicworldsimulator.engine.loader.LoaderImpl;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL15;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
 
 
 public class Mesh {
+    private final static Logger logger = LogManager.getLogger(Mesh.class);
     private final Loader loader;
     private final int vaoId;
     private final int posVboId;
@@ -65,6 +68,7 @@ public class Mesh {
     }
 
     public void cleanUp() {
+        logger.debug("Mesh clean up");
         glDisableVertexAttribArray(0);
 
         // Delete the VBOs

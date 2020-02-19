@@ -23,6 +23,7 @@ public class LoaderImpl implements Loader {
         this.intBuffersList = new ArrayList<>();
     }
 
+    //TODO Oltre a creare il VAO fa anche il bind. Bisogna modificare o il nome del metodo o il copro del metodo. -Cava
     @Override
     public int createVao() {
         int vaoId = GL30C.glGenVertexArrays();
@@ -44,6 +45,7 @@ public class LoaderImpl implements Loader {
         glBufferData(target, buffer, GL_STATIC_DRAW);
         GL20C.glEnableVertexAttribArray(index);
         GL20C.glVertexAttribPointer(index, elementDimension, GL_FLOAT, false, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     @Override
@@ -57,6 +59,7 @@ public class LoaderImpl implements Loader {
         glBindVertexArray(indexToBind);
     }
 
+    //TODO Usare MemoryUtil.memFree(buffer) per liberare correttamente la memoria
     public void cleanUp() {
         this.floatBuffersList.removeIf(value -> true);
         this.intBuffersList.removeIf(value -> true);

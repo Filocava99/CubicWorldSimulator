@@ -7,6 +7,8 @@ import it.cubicworldsimulator.engine.Transformation;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
 import it.cubicworldsimulator.engine.graphic.Texture;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
 
 import java.util.List;
@@ -17,6 +19,8 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class RendererImpl implements Renderer {
+
+    private static final Logger logger = LogManager.getLogger(RendererImpl.class);
 
     /**
      * Field of View in Radians
@@ -70,6 +74,7 @@ public class RendererImpl implements Renderer {
         initRender(gameItem.getMesh());
         Matrix4f worldMatrix = transformation.getWorldMatrix(gameItem.getPosition(),gameItem.getRotation(),gameItem.getScale());
         shaderProgram.setUniform("worldMatrix", worldMatrix);
+        logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
         glDrawElements(GL_TRIANGLES, gameItem.getMesh().getVertexCount(), GL_UNSIGNED_INT, 0);
         endRender();
     }

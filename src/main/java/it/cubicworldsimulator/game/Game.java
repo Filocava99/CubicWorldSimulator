@@ -74,10 +74,12 @@ public class Game implements GameLogic {
 
     @Override
     public void update(float interval) {
+        logger.trace("Updating");
     }
 
     @Override
     public void render(Window window) {
+        logger.trace("Rendering");
         window.setClearColor(color, color, color, 0.0f);
         renderer.render(scene, window.getWidth(), window.getHeight());
     }
@@ -88,18 +90,23 @@ public class Game implements GameLogic {
     }
 
     private void initShaderPrograms() {
+        logger.debug("Initializing shader programs");
         initSceneShaderProgram();
         initSkyBoxShaderProgram();
     }
 
     private void initSceneShaderProgram(){
         try {
+            logger.debug("Creating scene shader program");
             shaderProgram = new ShaderProgram();
+            logger.debug("Loading vertex shader");
             shaderProgram.createVertexShader(Utils.loadResource("/shaders/vertex.vert"));
+            logger.debug("Loading fragment shader");
             shaderProgram.createFragmentShader(Utils.loadResource("/shaders/fragment.frag"));
+            logger.debug("Linking shaders");
             shaderProgram.link();
-
             // Create uniforms for world and projection matrices
+            logger.debug("Creating uniforms");
             shaderProgram.createUniform("projectionMatrix");
             shaderProgram.createUniform("worldMatrix");
             shaderProgram.createUniform("texture_sampler");
@@ -110,11 +117,15 @@ public class Game implements GameLogic {
 
     private void initSkyBoxShaderProgram(){
         try {
+            logger.debug("Creating skybox shader program");
             skyBoxShaderProgram = new ShaderProgram();
+            logger.debug("Loading vertex shader");
             skyBoxShaderProgram.createVertexShader(Utils.loadResource("/shaders/skyBox.vert"));
+            logger.debug("Loading fragment shader");
             skyBoxShaderProgram.createFragmentShader(Utils.loadResource("/shaders/skyBox.frag"));
+            logger.debug("Linking shaders");
             skyBoxShaderProgram.link();
-
+            logger.debug("Creating uniforms");
             skyBoxShaderProgram.createUniform("projectionMatrix");
             skyBoxShaderProgram.createUniform("worldMatrix");
             skyBoxShaderProgram.createUniform("texture_sampler");

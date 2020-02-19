@@ -139,3 +139,4 @@ gradle-app.setting
 
 # End of https://www.gitignore.io/api/java,gradle,intellij
 >>>>>>> origin/balzani
+/logs/
