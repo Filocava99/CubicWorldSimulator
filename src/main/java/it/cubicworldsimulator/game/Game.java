@@ -23,8 +23,6 @@ public class Game implements GameLogic {
 
     private int direction = 0;
 
-    private float color = 0.0f;
-
     /**
      * Field of View in Radians
      */
@@ -80,13 +78,13 @@ public class Game implements GameLogic {
     @Override
     public void render(Window window) {
         logger.trace("Rendering");
-        window.setClearColor(color, color, color, 0.0f);
         renderer.render(scene, window.getWidth(), window.getHeight());
     }
 
     @Override
     public void cleanUp() {
-
+        //TODO Scene cleanUp
+        //TODO Shaders cleanUp
     }
 
     private void initShaderPrograms() {
