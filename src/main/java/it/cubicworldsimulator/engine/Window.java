@@ -115,13 +115,16 @@ public class Window {
         GL.createCapabilities();
 
         // Set the clear color
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        setClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
 
         glEnable(GL_DEPTH_TEST);
+
+        // Support for transparencies
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-
-        setClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
 
         if(debug){
             glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -170,11 +173,11 @@ public class Window {
 
     public void update() {
         logger.trace("Updating");
-        glfwSwapBuffers(windowHandle);
-        glfwPollEvents();
         if(isResized()){
             glViewport(0, 0, getWidth(), getHeight());
             setResized(false);
         }
+        glfwSwapBuffers(windowHandle);
+        glfwPollEvents();
     }
 }
