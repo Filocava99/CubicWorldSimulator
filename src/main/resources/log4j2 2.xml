@@ -1,0 +1,35 @@
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="LogToConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+        <RollingRandomAccessFile name="LogToRollingRandomAccessFile" fileName="logs/app.log"
+                                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingRandomAccessFile>
+
+        <Async name="Async">
+            <!-- reference to other appenders -->
+            <AppenderRef ref="LogToRollingRandomAccessFile"/>
+        </Async>
+
+    </Appenders>
+    <Loggers>
+        <!-- avoid duplicated logs with additivity=false -->
+        <Logger name="it.cubicworldsimulator.engine.renderer.RendererImpl" level="trace" additivity="false">
+            <AppenderRef ref="LogToConsole"/>
+        </Logger>
+        <Root level="debug">
+            <AppenderRef ref="LogToConsole"/>
+            <AppenderRef ref="Async"/>
+        </Root>
+    </Loggers>
+</Configuration>
