@@ -3,6 +3,7 @@ package it.cubicworldsimulator.engine.graphic;
 import it.cubicworldsimulator.engine.GameItem;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
 import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -68,7 +69,6 @@ public class Mesh {
             indicesBuffer.put(indices).flip();
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
 
             //Texture VBO
             int vboId = glGenBuffers();
@@ -79,6 +79,9 @@ public class Mesh {
             glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
+
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+            GL30.glBindVertexArray(0);
         } finally {
             if (posBuffer != null) {
                 MemoryUtil.memFree(posBuffer);
