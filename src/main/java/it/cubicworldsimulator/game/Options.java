@@ -10,15 +10,12 @@ import lwjgui.scene.layout.HBox;
 import lwjgui.scene.layout.StackPane;
 import lwjgui.scene.layout.VBox;
 
-public class Launcher extends LWJGUIApplication {
-
-    public Launcher(final String[] args) {
+public class Options extends LWJGUIApplication {
+    public Options(final String[] args) {
         launch(args);
     }
 
-    public Launcher() {
-
-    }
+    public Options() {}
 
     @Override
     public void start(String[] args, Window window) {
@@ -30,23 +27,14 @@ public class Launcher extends LWJGUIApplication {
         hbox.setSpacing(8);
         pane.getChildren().add(hbox);
 
-            VBox vbox = new VBox();
-            vbox.setSpacing(8);
-            vbox.setAlignment(Pos.CENTER);
-            hbox.getChildren().add(vbox);
+        VBox vbox = new VBox();
+        vbox.setSpacing(8);
+        vbox.setAlignment(Pos.CENTER);
+        hbox.getChildren().add(vbox);
 
-            Button startGame = new Button("Start game");
-            startGame.setOnAction( (event)-> {
-                window.close();
-            });
+        Label title = new Label("Options");
 
-            Button showOptions = new Button("Show options");
-            showOptions.setOnAction( (event)-> {
-                new Options(args);
-            });
-
-            vbox.getChildren().add(startGame);
-            vbox.getChildren().add(showOptions);
+        vbox.getChildren().add(title);
 
 
         // Set the scene
