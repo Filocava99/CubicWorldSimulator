@@ -40,15 +40,10 @@ public class Launcher extends LWJGUIApplication {
                 window.close();
             });
 
-            Button showOptions = new Button("Show options");
-            showOptions.setOnAction( (event)-> {
-                new Options(args);
-            });
-
+            Label optionsLabel = new Label("Settings");
+            optionsLabel.setFontSize(30);
             vbox.getChildren().add(startGame);
-            vbox.getChildren().add(showOptions);
-
-
+            vbox.getChildren().add(optionsLabel);
         // Set the scene
         window.setScene(new Scene(pane, 500, 500));
         window.show();
