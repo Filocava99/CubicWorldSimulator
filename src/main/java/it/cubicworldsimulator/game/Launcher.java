@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.game;
 
+import it.cubicworldsimulator.engine.GameEngine;
 import lwjgui.LWJGUIApplication;
 import lwjgui.geometry.Pos;
 import lwjgui.scene.Scene;
@@ -9,43 +10,63 @@ import lwjgui.scene.control.Label;
 import lwjgui.scene.layout.HBox;
 import lwjgui.scene.layout.StackPane;
 import lwjgui.scene.layout.VBox;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.system.MemoryUtil;
+
+import javax.swing.*;
+import java.util.Objects;
 
 public class Launcher extends LWJGUIApplication {
 
-    public Launcher(final String[] args) {
+    private Button startGame;
+    private Button settings;
+    private VBox box;
+    private GameEngine gameEngine;
+
+    public Launcher(final String[] args, GameEngine gameEngine) {
+        this.gameEngine=gameEngine;
         launch(args);
     }
 
-    public Launcher() {
-
-    }
+    public Launcher() {}
 
     @Override
     public void start(String[] args, Window window) {
         // Create background pane
         StackPane pane = new StackPane();
 
-        // Create a horizontal layout
-        HBox hbox = new HBox();
-        hbox.setSpacing(8);
-        pane.getChildren().add(hbox);
+        VBox box = new VBox();
+        box.setSpacing(8);
+        box.setAlignment(Pos.CENTER);
+        pane.getChildren().add(box);
 
-            VBox vbox = new VBox();
-            vbox.setSpacing(8);
-            vbox.setAlignment(Pos.CENTER);
-            hbox.getChildren().add(vbox);
+        this.startGame = new Button("Start game");
+        startGame.setFontSize(40);
+        //TODO PERCHÉ CAZZO GAMEENGINE É NULL
+        System.out.println(this.gameEngine);
+        startGame.setOnMouseClicked(event -> {
+            gameEngine.run();
+           //TODO Close launcher window
+            //window.closeDisplay();
+        });
 
-            Button startGame = new Button("Start game");
-            startGame.setOnAction( (event)-> {
-                window.close();
-            });
-
+        this.settings = new Button("Settings");
+        settings.setFontSize(40);
+        settings.setOnAction(event -> {
+            box.getChildren().remove(startGame);
+            box.getChildren().remove(settings);
             Label optionsLabel = new Label("Settings");
             optionsLabel.setFontSize(30);
-            vbox.getChildren().add(startGame);
-            vbox.getChildren().add(optionsLabel);
+            box.getChildren().add(optionsLabel);
+        });
+
+        box.getChildren().add(startGame);
+        box.getChildren().add(settings);
+
         // Set the scene
         window.setScene(new Scene(pane, 500, 500));
         window.show();
+
     }
 }
