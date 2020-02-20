@@ -57,7 +57,10 @@ public class Mesh {
             // Position VBO
             posVboId = glGenBuffers();
             posBuffer = MemoryUtil.memAllocFloat(positions.length);
-            posBuffer.put(positions).flip();
+            for (Float position : positions) {
+                posBuffer.put(position);
+            }
+            posBuffer.flip();
             glBindBuffer(GL_ARRAY_BUFFER, posVboId);
             glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
             glEnableVertexAttribArray(0);
@@ -66,7 +69,10 @@ public class Mesh {
             // Index VBO
             idxVboId = glGenBuffers();
             indicesBuffer = MemoryUtil.memAllocInt(indices.length);
-            indicesBuffer.put(indices).flip();
+            for (Integer index : indices) {
+                indicesBuffer.put(index);
+            }
+            indicesBuffer.flip();
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
 
@@ -74,7 +80,10 @@ public class Mesh {
             int vboId = glGenBuffers();
             textureVboList.add(vboId);
             textCoordsBuffer = MemoryUtil.memAllocFloat(textCoords.length);
-            textCoordsBuffer.put(textCoords).flip();
+            for (Float textCoord : textCoords) {
+                textCoordsBuffer.put(textCoord);
+            }
+            textCoordsBuffer.flip();
             glBindBuffer(GL_ARRAY_BUFFER, vboId);
             glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
             glEnableVertexAttribArray(1);

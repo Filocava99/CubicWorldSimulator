@@ -2,6 +2,7 @@ package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.GameEngine;
 import it.cubicworldsimulator.engine.GameLogic;
+import lwjgui.LWJGUIApplication;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,6 +26,7 @@ public class Main {
             logger.trace("Game running...");
             GameLogic gameLogic = new Game();
             GameEngine gameEngine = new GameEngine("CubicWorldSimulator", vsync, gameLogic, debug);
+            new Launcher(args);
             gameEngine.run();
         } catch (Exception e) {
             logger.error(e.getMessage());
