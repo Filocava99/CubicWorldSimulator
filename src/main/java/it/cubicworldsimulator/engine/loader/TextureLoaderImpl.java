@@ -1,6 +1,8 @@
 package it.cubicworldsimulator.engine.loader;
 
 import it.cubicworldsimulator.engine.graphic.Texture;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.system.MemoryStack;
 
 import java.io.FileNotFoundException;
@@ -13,30 +15,37 @@ import static org.lwjgl.stb.STBImage.*;
 
 public class TextureLoaderImpl implements TextureLoader {
 
+    private final static Logger logger = LogManager.getLogger(TextureLoaderImpl.class);
+
     private int height;
     private int width;
     private ByteBuffer byteBuffer;
 
     @Override
-    public Texture loadTexture(String filename) throws Exception {
+    public Texture loadTexture(String filename) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             //Height, width and colour channels are 1 byte each
             IntBuffer w = stack.mallocInt(1);
             IntBuffer h = stack.mallocInt(1);
             IntBuffer channels = stack.mallocInt(1);
-            //Get width and height of image
-            this.width = w.get();
-            this.height = h.get();
+
             //Load image into the ByteBuffer
             this.byteBuffer = stbi_load(filename, w, h, channels, 4);
             if (this.byteBuffer == null) {
                 throw new FileNotFoundException("Texture file [" + filename + "] not loaded. Reason: " + stbi_failure_reason());
             }
+
+            //Get width and height of image
+            this.width = w.get();
+            this.height = h.get();
+
             int textureID = this.generateTexture();
             this.generateMipMap();
             this.clean();
             return new Texture(textureID);
         } catch (Exception e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
