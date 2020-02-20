@@ -12,6 +12,7 @@ import org.joml.Vector3f;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -20,6 +21,7 @@ public class ChunkMesh implements Serializable {
     private static final Logger logger = LogManager.getLogger(ChunkMesh.class);
 
     private transient List<Vector3f> verticesList;
+    private transient List<Float> verticesFloatList;
     private transient List<Integer> indicesList;
     private transient List<Float> uvsList;
     private transient List<Vector3f> normalsList;

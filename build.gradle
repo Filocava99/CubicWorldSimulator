@@ -30,6 +30,7 @@ sourceCompatibility = 1.11
 repositories {
     maven{
         url "http://oss.sonatype.org/content/groups/public/"
+        maven { url 'https://jitpack.io' }
     }
     mavenCentral()
 }
@@ -55,4 +56,9 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
     implementation "org.joml:joml:${jomlVersion}"
+    implementation 'com.github.orange451:LWJGUI:pre-mt'
+    implementation "org.lwjgl:lwjgl-nanovg"
+    implementation "org.lwjgl:lwjgl-nfd"
+    runtimeOnly "org.lwjgl:lwjgl-nanovg::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-nfd::$lwjglNatives"
 }
