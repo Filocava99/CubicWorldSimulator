@@ -1,11 +1,15 @@
 package it.cubicworldsimulator.game.world;
 
 import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.MeshMaterial;
 import it.cubicworldsimulator.engine.graphic.Texture;
 import it.cubicworldsimulator.engine.loader.TextureLoader;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
+import it.cubicworldsimulator.game.world.chunk.Chunk;
+import it.cubicworldsimulator.game.world.chunk.ChunkGenerator;
+import it.cubicworldsimulator.game.world.chunk.ChunkMesh;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
@@ -26,13 +30,15 @@ public class WorldManager {
     private final World world;
     private final Map<Object,Material> blockTypes = new HashMap<>();
     private String textureFile;
-    public Mesh mesh;
     public Texture worldTexture;
 
     public WorldManager(World world) {
         loadBlockTypes();
         this.world = world;
         TextureLoader loader = new TextureLoaderImpl();
+        ChunkGenerator chunkGenerator = new ChunkGenerator(world.getSeed(), this);
+        Chunk chunk = chunkGenerator.generateChunkColumn(0,0).getChunks()[0];
+
         try{
             worldTexture = loader.loadTexture(textureFile);
         }catch (Exception e){
