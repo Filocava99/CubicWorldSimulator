@@ -18,7 +18,6 @@ import javax.swing.*;
 import java.util.Objects;
 
 public class Launcher extends LWJGUIApplication {
-
     private Button startGame;
     private Button settings;
     private VBox box;
@@ -26,16 +25,19 @@ public class Launcher extends LWJGUIApplication {
 
     public Launcher(final String[] args, GameEngine gameEngine) {
         this.gameEngine=gameEngine;
+        //TODO QUI NON E' NULL
+        System.out.println("Qui non è null: " + gameEngine);
         launch(args);
     }
 
+    //Don't remove this!
     public Launcher() {}
 
     @Override
     public void start(String[] args, Window window) {
         // Create background pane
         StackPane pane = new StackPane();
-
+        window.setTitle("CubicWorldSimulator Launcher");
         VBox box = new VBox();
         box.setSpacing(8);
         box.setAlignment(Pos.CENTER);
@@ -43,8 +45,8 @@ public class Launcher extends LWJGUIApplication {
 
         this.startGame = new Button("Start game");
         startGame.setFontSize(40);
-        //TODO PERCHÉ CAZZO GAMEENGINE É NULL
-        System.out.println(this.gameEngine);
+        //TODO PERCHÉ CAZZO QUI GAMEENGINE É NULL
+        System.out.println("Qui è null: " + gameEngine);
         startGame.setOnMouseClicked(event -> {
             gameEngine.run();
            //TODO Close launcher window
