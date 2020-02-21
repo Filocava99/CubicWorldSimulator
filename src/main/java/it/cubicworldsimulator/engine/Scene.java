@@ -43,6 +43,13 @@ public class Scene {
         }
     }
 
+    public void cleanUp(){
+        meshMap.keySet().forEach(Mesh::cleanUp);
+        shaderProgram.cleanup();
+        skyBox.getMesh().cleanUp();
+        skyBox.getShaderProgram().cleanup();
+    }
+
     public SkyBox getSkyBox() {
         return skyBox;
     }
