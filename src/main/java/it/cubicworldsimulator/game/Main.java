@@ -27,7 +27,7 @@ public class Main {
             logger.trace("Game running...");
             GameEngine gameEngine = new GameEngine("CubicWorldSimulator",
                     true, new Game(), false);
-            GuiFactory.createGui(new LauncherGui(), 400, 400, "CubicWorldSimulator Launcher");
+            GuiFactory.createGui(new LauncherGui(), 700, 700, "CubicWorldSimulator Launcher");
         } catch (Exception e) {
             logger.error(e.getMessage());
             e.printStackTrace();
