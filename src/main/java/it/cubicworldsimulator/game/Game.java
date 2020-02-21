@@ -45,11 +45,10 @@ public class Game implements GameLogic {
 
     @Override
     public void init(Window window){
-        World world = new World("test", 4242L);
-        //WorldManager worldManager = new WorldManager(world);
+        World world = new World("test", 424243563456L);
+        WorldManager worldManager = new WorldManager(world);
 
         initShaderPrograms();
-
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
             scene = new Scene(shaderProgram, skyBox);
