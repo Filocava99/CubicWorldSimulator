@@ -106,6 +106,8 @@ public class RendererImpl implements Renderer {
                     gameItem.getRotation(),
                     gameItem.getScale());
             shaderProgram.setUniform("worldMatrix", worldMatrix);
+            logger.trace("GameItem name: " + gameItem.toString());
+            logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
             glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
         });
         endRender();

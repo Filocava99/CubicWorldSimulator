@@ -1,4 +1,4 @@
-file: "textures/default.jpg"
+file: "src/main/resources/textures/default.jpg"
 step: 0.0625
 blocks:
   air:
