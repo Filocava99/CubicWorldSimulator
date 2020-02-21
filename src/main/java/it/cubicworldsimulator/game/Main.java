@@ -5,6 +5,8 @@ import it.cubicworldsimulator.engine.GameLogic;
 import lwjgui.LWJGUIApplication;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joml.Vector2f;
+import org.joml.Vector2i;
 
 public class Main {
 
@@ -27,7 +29,8 @@ public class Main {
             logger.trace("Game running...");
             GameEngine gameEngine = new GameEngine("CubicWorldSimulator",
                     true, new Game(), false);
-            GuiFactory.createGui(new LauncherGui(), 700, 700, "CubicWorldSimulator Launcher");
+            final Vector2i size = new Vector2i(700, 600);
+            GuiFactory.createGui(new LauncherGui(size), size, "CubicWorldSimulator Launcher");
         } catch (Exception e) {
             logger.error(e.getMessage());
             e.printStackTrace();
