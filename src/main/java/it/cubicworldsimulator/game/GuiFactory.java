@@ -29,13 +29,15 @@ public class GuiFactory {
     private static GuiType guiType;
     private static Context context;
 
-    public static void createGui(GuiType gui, int width, int height, String title) {
+    public static void createGui(GuiType gui, Vector2i size, String title) {
         guiType=gui;
         System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
         System.setProperty("java.awt.headless", Boolean.TRUE.toString());
         if (!glfwInit()) {
             throw new RuntimeException("Can't initialize GLFW");
         }
+        int width=size.x;
+        int height=size.y;
         long window = glfwCreateWindow(width, height, "CubicWorldSimulator", NULL, NULL);
         gui.setWindow(window);
         glfwShowWindow(window);
