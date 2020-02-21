@@ -3,7 +3,9 @@ package it.cubicworldsimulator.game.world.chunk;
 import it.cubicworldsimulator.game.utility.Constants;
 import org.joml.Vector2f;
 
-public class ChunkColumn {
+import java.io.Serializable;
+
+public class ChunkColumn implements Serializable {
     private final Chunk[] chunks;
     private final Vector2f position;
 
