@@ -27,15 +27,22 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.11
 
+def le_cbchain           = '2.2.2'
+def le_util              = '2.2.2'
+
 repositories {
     maven{
         url "http://oss.sonatype.org/content/groups/public/"
         maven { url 'https://jitpack.io' }
+        maven { url "https://raw.githubusercontent.com/SpinyOwl/repo/snapshots" }
+        maven { url "https://raw.githubusercontent.com/SpinyOwl/repo/releases" }
     }
     mavenCentral()
 }
 
 dependencies {
+    // LEGUI - SNAPSHOT - https://github.com/SpinyOwl/legui
+    compile group: 'org.liquidengine', name: 'legui', version: '2.2.2' + '-SNAPSHOT', changing: true;
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.0'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.0'
@@ -61,4 +68,5 @@ dependencies {
     implementation "org.lwjgl:lwjgl-nfd"
     runtimeOnly "org.lwjgl:lwjgl-nanovg::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-nfd::$lwjglNatives"
+
 }
