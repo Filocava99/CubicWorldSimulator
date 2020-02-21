@@ -82,8 +82,7 @@ public class Game implements GameLogic {
 
     @Override
     public void cleanUp() {
-        //TODO Scene cleanUp
-        //TODO Shaders cleanUp
+        scene.cleanUp();
     }
 
     private void initShaderPrograms() {
