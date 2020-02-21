@@ -296,6 +296,10 @@ public class ChunkMesh implements Serializable {
         }
     }
 
+    public Chunk getChunk() {
+        return chunk;
+    }
+
     private void cleanLists() {
         logger.debug("Cleaning lists");
         this.verticesList = null;
