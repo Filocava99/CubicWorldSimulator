@@ -1,15 +1,12 @@
 package it.cubicworldsimulator.game.world;
 
-import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.MeshMaterial;
 import it.cubicworldsimulator.engine.graphic.Texture;
 import it.cubicworldsimulator.engine.loader.TextureLoader;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
-import it.cubicworldsimulator.game.world.chunk.Chunk;
 import it.cubicworldsimulator.game.world.chunk.ChunkGenerator;
-import it.cubicworldsimulator.game.world.chunk.ChunkMesh;
+import it.cubicworldsimulator.game.world.chunk.ChunkLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
@@ -22,13 +19,18 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class WorldManager {
 
     private static final Logger logger = LogManager.getLogger(WorldManager.class);
 
     private final World world;
+    private final ChunkGenerator chunkGenerator;
+    private final ChunkLoader chunkLoader = new ChunkLoader();
     private final Map<Object,Material> blockTypes = new HashMap<>();
+    private final Set<Vector2f> alreadyGeneratedChunksColumns;
+
     private String textureFile;
     public Texture worldTexture;
 
@@ -36,15 +38,17 @@ public class WorldManager {
         loadBlockTypes();
         this.world = world;
         TextureLoader loader = new TextureLoaderImpl();
-        ChunkGenerator chunkGenerator = new ChunkGenerator(world.getSeed(), this);
-        Chunk chunk = chunkGenerator.generateChunkColumn(0,0).getChunks()[0];
-
+        chunkGenerator = new ChunkGenerator(world.getSeed(), this);
+        alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
         try{
             worldTexture = loader.loadTexture(textureFile);
         }catch (Exception e){
             logger.error(e.getMessage());
+            System.exit(1);
         }
     }
+
+
 
     private void loadBlockTypes() {
         InputStream inputStream = null;
