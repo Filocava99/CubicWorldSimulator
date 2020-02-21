@@ -5,6 +5,7 @@ import it.cubicworldsimulator.engine.loader.TextureLoader;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
+import it.cubicworldsimulator.game.world.chunk.ChunkColumn;
 import it.cubicworldsimulator.game.world.chunk.ChunkGenerator;
 import it.cubicworldsimulator.game.world.chunk.ChunkLoader;
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class WorldManager {
+public class WorldManager extends Thread{
 
     private static final Logger logger = LogManager.getLogger(WorldManager.class);
 
@@ -48,7 +49,19 @@ public class WorldManager {
         }
     }
 
+    public ChunkColumn loadChunkColumn(Vector2f position){
+        ChunkColumn chunkColumn;
+        if(alreadyGeneratedChunksColumns.contains(position)){
+            chunkColumn = chunkLoader.loadChunkColumn(position).orElse(chunkGenerator.generateChunkColumn((int)position.x,(int)position.y));
+        }else{
+            chunkColumn = chunkGenerator.generateChunkColumn((int)position.x,(int)position.y);
+        }
+        return chunkColumn;
+    }
 
+    public void renderChunkColumn(Vector2f position){
+
+    }
 
     private void loadBlockTypes() {
         InputStream inputStream = null;
