@@ -47,14 +47,14 @@ public class Game implements GameLogic {
     public void init(Window window){
         World world = new World("test", 424243563456L);
         WorldManager worldManager = new WorldManager(world);
-
         initShaderPrograms();
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
             scene = new Scene(shaderProgram, skyBox);
         }catch (Exception e){
-            e.printStackTrace();
             logger.error(e.getMessage());
+            logger.error(e.getStackTrace().toString());
+            System.exit(2);
         }
     }
 
@@ -72,6 +72,7 @@ public class Game implements GameLogic {
     @Override
     public void update(float interval) {
         logger.trace("Updating");
+
     }
 
     @Override
@@ -108,6 +109,8 @@ public class Game implements GameLogic {
             shaderProgram.createUniform("texture_sampler");
         } catch (Exception e) {
             logger.error(e.getMessage());
+            logger.error(e.getStackTrace().toString());
+            System.exit(3);
         }
     }
 
@@ -126,8 +129,9 @@ public class Game implements GameLogic {
             skyBoxShaderProgram.createUniform("worldMatrix");
             skyBoxShaderProgram.createUniform("texture_sampler");
         }catch (Exception e){
-            e.printStackTrace();
             logger.error(e.getMessage());
+            logger.error(e.getStackTrace().toString());
+            System.exit(4);
         }
     }
 }
