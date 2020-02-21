@@ -3,50 +3,114 @@ package it.cubicworldsimulator.game;
 import it.cubicworldsimulator.engine.GameEngine;
 import org.joml.Vector2f;
 import org.liquidengine.legui.component.Button;
+import org.liquidengine.legui.component.Label;
 import org.liquidengine.legui.component.Panel;
+import org.liquidengine.legui.component.TextInput;
 import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.listener.MouseClickEventListener;
-import org.liquidengine.legui.style.Style;
-import org.liquidengine.legui.style.flex.FlexStyle;
+import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
 import org.liquidengine.legui.theme.Themes;
 
 import static org.liquidengine.legui.component.optional.align.HorizontalAlign.CENTER;
 import static org.liquidengine.legui.component.optional.align.VerticalAlign.MIDDLE;
 import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLICK;
+import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 
 public class LauncherGui extends GuiType {
+
+    private long window;
+
+    private boolean fullscreen=true;
+    private boolean vSync=true;
+    private boolean debug=false;
 
     public LauncherGui() {
         this(800, 600);
     }
 
     public LauncherGui(int width, int height) {
-        super(0, 0, width, height);
-        Panel panel = new Panel(0, 0, width, height);
+        super(0,0,width,height);
+
+        Panel settings = new Panel(150, 200, 400, 300);
+        Label settingsLabel = new Label("Settings");
+        settingsLabel.getStyle().setFontSize(50f);
+        settingsLabel.setPosition(settingsLabel.getPosition().x+5, settingsLabel.getPosition().y+30);
+        settings.add(settingsLabel);
+
+        Label fullScreenLabel = new Label("Fullscreen");
+        fullScreenLabel.getStyle().setFontSize(30f);
+        settings.add(fullScreenLabel);
+        fullScreenLabel.setPosition(fullScreenLabel.getPosition().x+5, fullScreenLabel.getPosition().y+80);
+
+
+        TextInput fullScreenInput = new TextInput(fullScreenLabel.getPosition().x+150, fullScreenLabel.getPosition().y, 70, 35);
+        fullScreenInput.getTextState().setText("true");
+        fullScreenInput.getStyle().setFontSize(20f);
+        fullScreenInput.getStyle().setHorizontalAlign(CENTER);
+        fullScreenInput.getStyle().setVerticalAlign(MIDDLE);
+        fullScreenInput.getStyle().getBackground().setColor(ColorConstants.white());
+        settings.add(fullScreenInput);
+        fullScreenInput.getStyle().setFontSize(30f);
+
+        Label vSyncLabel = new Label("vSync");
+        vSyncLabel.getStyle().setFontSize(30f);
+        vSyncLabel.setPosition(vSyncLabel.getPosition().x+5, vSyncLabel.getPosition().y+130);
+        settings.add(vSyncLabel);
+
+        TextInput vSyncInput = new TextInput(vSyncLabel.getPosition().x+150, vSyncLabel.getPosition().y, 70, 35);
+        vSyncInput.getTextState().setText("true");
+        vSyncInput.getStyle().setFontSize(20f);
+        vSyncInput.getStyle().setHorizontalAlign(CENTER);
+        vSyncInput.getStyle().setVerticalAlign(MIDDLE);
+        vSyncInput.getStyle().getBackground().setColor(ColorConstants.white());
+        settings.add(vSyncInput);
+        vSyncInput.getStyle().setFontSize(30f);
+
+        Label debugLabel = new Label("Debug");
+        debugLabel.getStyle().setFontSize(30f);
+        debugLabel.setPosition(debugLabel.getPosition().x+5, debugLabel.getPosition().y+180);
+        settings.add(debugLabel);
+
+        TextInput debugInput = new TextInput(debugLabel.getPosition().x+150, debugLabel.getPosition().y, 70, 35);
+        debugInput.getTextState().setText("false");
+        debugInput.getStyle().setFontSize(20f);
+        debugInput.getStyle().setHorizontalAlign(CENTER);
+        debugInput.getStyle().setVerticalAlign(MIDDLE);
+        debugInput.getStyle().getBackground().setColor(ColorConstants.white());
+        settings.add(debugInput);
+        debugInput.getStyle().setFontSize(30f);
 
         Button launchGame = this.createButton("Start game", new Vector2f(100, 50), new Vector2f(120, 90));
         launchGame.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
             if (CLICK == event.getAction()) {
+                System.out.println(debugInput.getTextState().getText());
+                if(fullScreenInput.getTextState().getText().equalsIgnoreCase("false") || (fullScreenInput.getTextState().getText().equalsIgnoreCase("true"))) {
+                    this.fullscreen = Boolean.parseBoolean(fullScreenInput.getTextState().getText());
+                }
+                if(vSyncInput.getTextState().getText().equalsIgnoreCase("false") || (vSyncInput.getTextState().getText().equalsIgnoreCase("true"))) {
+                    this.vSync = Boolean.parseBoolean(vSyncInput.getTextState().getText());
+                }
+                if(debugInput.getTextState().getText().equalsIgnoreCase("false") || (debugInput.getTextState().getText().equalsIgnoreCase("true"))) {
+                    this.debug = Boolean.parseBoolean(debugInput.getTextState().getText());
+                }
                 try {
                     GameEngine gameEngine = new GameEngine("CubicWorldSimulator",
-                            true, new Game(), false);
+                            this.vSync, new Game(), this.debug);
+                    glfwDestroyWindow(window);
                     gameEngine.run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-        Button settings = this.createButton("Settings", new Vector2f(100, 200), new Vector2f(120, 90));
-        settings.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
-            if (CLICK == event.getAction()) {
-                GuiFactory.createGui(new SettingsGui(), 800, 600, "CubicWorldSimulator Settings");
-            }
-        });
-        this.add(panel);
-        panel.add(launchGame);
-        panel.add(settings);
+        launchGame.setPosition(290, 100);
 
+        this.add(launchGame);
+        this.add(settings);
+
+        Themes.setDefaultTheme(Themes.FLAT_PETERRIVER_DARK);
+        Themes.getDefaultTheme().applyAll(this);
     }
 
     private Button createButton(String text, Vector2f position, Vector2f size) {
@@ -56,5 +120,10 @@ public class LauncherGui extends GuiType {
         button.getStyle().setVerticalAlign(MIDDLE);
         button.getStyle().setFont(FontRegistry.ROBOTO_BOLD);
         return button;
+    }
+
+    @Override
+    public void setWindow (long window) {
+        this.window=window;
     }
 }

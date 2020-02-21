@@ -9,7 +9,6 @@ import org.liquidengine.legui.event.WindowSizeEvent;
 import org.liquidengine.legui.listener.WindowSizeEventListener;
 import org.liquidengine.legui.system.context.Context;
 import org.liquidengine.legui.system.renderer.Renderer;
-import org.liquidengine.legui.theme.Themes;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -38,12 +37,11 @@ public class GuiFactory {
             throw new RuntimeException("Can't initialize GLFW");
         }
         long window = glfwCreateWindow(width, height, "CubicWorldSimulator", NULL, NULL);
+        gui.setWindow(window);
         glfwShowWindow(window);
-
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
         glfwSwapInterval(0);
-
         PointerBuffer pointerBuffer = glfwGetMonitors();
         int remaining = pointerBuffer.remaining();
         monitors = new long[remaining];
@@ -51,11 +49,9 @@ public class GuiFactory {
             monitors[i] = pointerBuffer.get(i);
         }
 
-
         // Firstly we need to create frame component for window.
         Frame frame = new Frame(width, height);// new Frame(WIDTH, HEIGHT);
         createGuiElements(frame, width, height);
-
         // We need to create legui instance one for window
         // which hold all necessary library components
         // or if you want some customizations you can do it by yourself.
