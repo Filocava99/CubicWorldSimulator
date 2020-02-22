@@ -3,6 +3,7 @@ package it.cubicworldsimulator.game;
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.Camera;
 import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.Player;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.world.World;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.util.*;
 
@@ -36,16 +38,18 @@ public class Game implements GameLogic {
     private static final float Z_FAR = 1000.f;
 
     private final Camera camera; //TODO Va messa nella scene direttamente?
-
+    private final Player player;
     private Scene scene;
 
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
 
+    //TODO Ha senso il metodo init()? Se ha senso conviene chiamarlo a parte oppure direttamente dal costruttore?
     public Game() {
         renderer = new RendererImpl();
         camera = new Camera();
+        player = new Player(camera);
     }
 
     @Override
@@ -93,7 +97,9 @@ public class Game implements GameLogic {
     @Override
     public void update(float interval) {
         logger.trace("Updating");
-
+        if(player.didPlayerChangedChunk()){
+            //TODO Avvisare il worldmanager di aggiornare i chunks
+        }
     }
 
     @Override
