@@ -48,6 +48,22 @@ public class WorldManager extends Thread{
         }
     }
 
+    @Override
+    public void run(){
+        while(true){
+            try{
+                sleep(100);
+                updateActiveChunks();
+            }catch (InterruptedException e){
+                logger.error(e.getMessage());
+            }
+        }
+    }
+
+    private void updateActiveChunks(){
+
+    }
+
     public ChunkColumn loadChunkColumn(Vector2f position){
         ChunkColumn chunkColumn;
         if(alreadyGeneratedChunksColumns.contains(position)){
