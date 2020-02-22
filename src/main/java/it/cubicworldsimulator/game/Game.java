@@ -39,6 +39,8 @@ public class Game implements GameLogic {
 
     private final Camera camera; //TODO Va messa nella scene direttamente?
     private final Player player;
+    private WorldManager worldManager;
+    private World world;
     private Scene scene;
 
     private final RendererImpl renderer;
@@ -55,8 +57,8 @@ public class Game implements GameLogic {
     @Override
     public void init(Window window){
 
-        World world = new World("test", 424243563456L);
-        WorldManager worldManager = new WorldManager(world);
+        world = new World("test", 424243563456L);
+        worldManager = new WorldManager(world);
         worldManager.renderChunkColumn(new Vector2f(0,0));
         worldManager.renderChunkColumn(new Vector2f(0,1));
         worldManager.renderChunkColumn(new Vector2f(1,0));
@@ -98,7 +100,7 @@ public class Game implements GameLogic {
     public void update(float interval) {
         logger.trace("Updating");
         if(player.didPlayerChangedChunk()){
-            //TODO Avvisare il worldmanager di aggiornare i chunks
+            worldManager.updateActiveChunks(player.getChunkPosition());
         }
     }
 
