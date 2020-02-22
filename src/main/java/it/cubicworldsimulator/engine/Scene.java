@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.engine;
 
+import it.cubicworldsimulator.engine.graphic.Camera;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
 
@@ -10,23 +11,27 @@ public class Scene {
     private Map<Mesh, List<GameItem>> meshMap = new HashMap<>();
     private final ShaderProgram shaderProgram;
     private final SkyBox skyBox;
+    private final Camera camera;
 
-    public Scene(Map<Mesh, List<GameItem>> meshMap, ShaderProgram shaderProgram, SkyBox skyBox) {
+    public Scene(Map<Mesh, List<GameItem>> meshMap, ShaderProgram shaderProgram, SkyBox skyBox, Camera camera) {
         this.meshMap = meshMap;
         this.shaderProgram = shaderProgram;
         this.skyBox = skyBox;
+        this.camera = camera;
     }
 
-    public Scene(ShaderProgram shaderProgram, SkyBox skyBox, GameItem... gameItems){
+    public Scene(ShaderProgram shaderProgram, SkyBox skyBox, Camera camera, GameItem... gameItems){
         this.shaderProgram = shaderProgram;
         setGameItems(gameItems);
         this.skyBox = skyBox;
+        this.camera = camera;
     }
 
-    public Scene(GameItem[] gameItems, ShaderProgram shaderProgram, SkyBox skyBox){
+    public Scene(GameItem[] gameItems, ShaderProgram shaderProgram, SkyBox skyBox, Camera camera){
         this.shaderProgram = shaderProgram;
         setGameItems(gameItems);
         this.skyBox = skyBox;
+        this.camera = camera;
     }
 
     public void setGameItems(GameItem[] gameItems) {
@@ -63,4 +68,7 @@ public class Scene {
         return Collections.unmodifiableMap(meshMap);
     }
 
+    public Camera getCamera() {
+        return camera;
+    }
 }
