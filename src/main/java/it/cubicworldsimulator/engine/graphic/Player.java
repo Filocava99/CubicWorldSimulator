@@ -34,4 +34,7 @@ public class Player {
         return new Vector3i((int) Math.floor(position.x / 16), (int) Math.floor(position.y / 16), (int) Math.floor(position.z / 16)); //TODO Ottimizzare con gli shift <<
     }
 
+    public Vector3i getChunkPosition() {
+        return lastChunk;
+    }
 }
