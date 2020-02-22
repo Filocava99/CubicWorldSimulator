@@ -7,7 +7,10 @@ import org.liquidengine.legui.component.Button;
 import org.liquidengine.legui.component.Label;
 import org.liquidengine.legui.component.Panel;
 import org.liquidengine.legui.component.TextInput;
+import org.liquidengine.legui.component.event.textinput.TextInputContentChangeEvent;
+import org.liquidengine.legui.event.Event;
 import org.liquidengine.legui.event.MouseClickEvent;
+import org.liquidengine.legui.listener.EventListener;
 import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
@@ -22,76 +25,95 @@ import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 
 public class LauncherGui extends GuiType {
 
-    private long window;
 
+    private final static float X_LABEL = 5;
+    private final static float Y_START_VALUE = 15;
+    private final static float X_INPUT_OFFSET = 150;
+    private final static float Y_OFFSET = 50;
     private boolean fullscreen=true;
     private boolean vSync=true;
     private boolean debug=false;
+    private float newYLabel=Y_START_VALUE;
+    private long window;
+    private boolean widthOk=true;
+    private boolean heightOk=true;
 
     public LauncherGui(Vector2i size) {
         super(0,0,size.x,size.y);
-        Panel settings = new Panel(150, 200, 400, 300);
-        Label settingsLabel = new Label("Settings");
-        settingsLabel.getStyle().setFontSize(50f);
-        settingsLabel.setPosition(settingsLabel.getPosition().x+5, settingsLabel.getPosition().y+30);
-        settings.add(settingsLabel);
+        this.createGui(size);
+    }
 
-        Label fullScreenLabel = new Label("Fullscreen");
-        fullScreenLabel.getStyle().setFontSize(30f);
-        settings.add(fullScreenLabel);
-        fullScreenLabel.setPosition(fullScreenLabel.getPosition().x+5, fullScreenLabel.getPosition().y+80);
+    private void createGui(Vector2i size) {
+        Panel settings = new Panel(0, 200, size.x, 400);
+        Label settingsLabel = this.createOptionLabel("Settings", settings);
 
-        TextInput fullScreenInput = new TextInput(fullScreenLabel.getPosition().x+150, fullScreenLabel.getPosition().y, 70, 35);
-        fullScreenInput.getTextState().setText("true");
-        fullScreenInput.getStyle().setFontSize(20f);
-        fullScreenInput.getStyle().setTextColor(0,0,0,1);
-        fullScreenInput.getStyle().setHorizontalAlign(CENTER);
-        fullScreenInput.getStyle().setVerticalAlign(MIDDLE);
-        fullScreenInput.getStyle().getBackground().setColor(ColorConstants.white());
-        settings.add(fullScreenInput);
-        fullScreenInput.getStyle().setFontSize(30f);
+        Label vSync = this.createOptionLabel("vSync", settings);
+        TextInput vSyncInput = this.createOptionInput("true", settings);
+        Label debugLabel = this.createOptionLabel("Debug", settings);
+        TextInput debugInput = this.createOptionInput("false", settings);
+        Label fullscreenLabel = this.createOptionLabel("Fullscreen", settings);
+        TextInput fullScreenInput = this.createOptionInput("true", settings);
 
-        Label vSyncLabel = new Label("vSync");
-        vSyncLabel.getStyle().setFontSize(30f);
-        vSyncLabel.setPosition(vSyncLabel.getPosition().x+5, vSyncLabel.getPosition().y+130);
-        settings.add(vSyncLabel);
-
-        TextInput vSyncInput = new TextInput(vSyncLabel.getPosition().x+150, vSyncLabel.getPosition().y, 70, 35);
-        vSyncInput.getTextState().setText("true");
-        vSyncInput.getStyle().setFontSize(20f);
-        vSyncInput.getStyle().setTextColor(0,0,0,1);
-        vSyncInput.getStyle().setHorizontalAlign(CENTER);
-        vSyncInput.getStyle().setVerticalAlign(MIDDLE);
-        vSyncInput.getStyle().getBackground().setColor(ColorConstants.white());
-        settings.add(vSyncInput);
-        vSyncInput.getStyle().setFontSize(30f);
-
-        Label debugLabel = new Label("Debug");
-        debugLabel.getStyle().setFontSize(30f);
-        debugLabel.setPosition(debugLabel.getPosition().x+5, debugLabel.getPosition().y+180);
-        settings.add(debugLabel);
-
-        TextInput debugInput = new TextInput(debugLabel.getPosition().x+150, debugLabel.getPosition().y, 70, 35);
-        debugInput.getTextState().setText("false");
-        debugInput.getStyle().setFontSize(20f);
-        debugInput.getStyle().setTextColor(0,0,0,1);
-        debugInput.getStyle().setHorizontalAlign(CENTER);
-        debugInput.getStyle().setVerticalAlign(MIDDLE);
-        debugInput.getStyle().getBackground().setColor(ColorConstants.white());
-        settings.add(debugInput);
-        debugInput.getStyle().setFontSize(30f);
-
-        Button launchGame = this.createButton("Start game", new Vector2f(100, 50), new Vector2f(120, 90));
+        Label widthLabel = this.createOptionLabel("Width", settings);
+        TextInput widthInput = this.createOptionInput("1080", settings);
+        widthInput.setEditable(false);
+        Label heightLabel = this.createOptionLabel("Height", settings);
+        TextInput heightInput = this.createOptionInput("1920", settings);
+        heightInput.setEditable(false);
+        Label fullScreenMessage = this.createMessage("Please choose window size",
+                new Vector2f(fullScreenInput.getPosition().x + fullScreenInput.getSize().x + 20, fullscreenLabel.getPosition().y));
+        fullScreenInput.addTextInputContentChangeEventListener(event -> {
+            if (event.getNewValue().equalsIgnoreCase("false")) {
+                settings.add(fullScreenMessage);
+                Themes.getDefaultTheme().applyAll(fullScreenMessage);
+                widthInput.setEditable(true);
+                heightInput.setEditable(true);
+                widthInput.getTextState().setText("1920");
+                heightInput.getTextState().setText("1080");
+            } else {
+                widthOk=true;
+                heightOk=true;
+                settings.remove(fullScreenMessage);
+                widthInput.setEditable(false);
+                heightInput.setEditable(false);
+                widthInput.getTextState().setText("fs");
+                heightInput.getTextState().setText("fs");
+            }
+        });
+        Label widthMessage = this.createMessage("Value not correct!",
+                new Vector2f(widthInput.getPosition().x + widthInput.getSize().x + 20, widthLabel.getPosition().y));
+        widthInput.addTextInputContentChangeEventListener(event -> {
+            if (!isNumeric(event.getNewValue())) {
+                settings.add(widthMessage);
+                widthOk=false;
+                Themes.getDefaultTheme().applyAll(widthMessage);
+            } else {
+                widthOk=true;
+                settings.remove(widthMessage);
+            }
+        });
+        Label heightMessage = this.createMessage("Value not correct!",
+                new Vector2f(heightInput.getPosition().x + heightInput.getSize().x + 20, heightLabel.getPosition().y));
+        heightInput.addTextInputContentChangeEventListener(event -> {
+            if (!isNumeric(event.getNewValue())) {
+                settings.add(heightMessage);
+                heightOk=false;
+                Themes.getDefaultTheme().applyAll(heightMessage);
+            } else {
+                heightOk=true;
+                settings.remove(heightMessage);
+            }
+        });
+        Button launchGame = this.createButton("Start game", new Vector2f(290, 50), new Vector2f(120, 90));
         launchGame.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
-            if (CLICK == event.getAction()) {
-                System.out.println(debugInput.getTextState().getText());
-                if(fullScreenInput.getTextState().getText().equalsIgnoreCase("false") || (fullScreenInput.getTextState().getText().equalsIgnoreCase("true"))) {
+            if (CLICK == event.getAction() && heightOk && widthOk) {
+                if (checkStringIsBoolean(fullScreenInput.getTextState().getText())) {
                     this.fullscreen = Boolean.parseBoolean(fullScreenInput.getTextState().getText());
                 }
-                if(vSyncInput.getTextState().getText().equalsIgnoreCase("false") || (vSyncInput.getTextState().getText().equalsIgnoreCase("true"))) {
+                if (checkStringIsBoolean(vSyncInput.getTextState().getText())) {
                     this.vSync = Boolean.parseBoolean(vSyncInput.getTextState().getText());
                 }
-                if(debugInput.getTextState().getText().equalsIgnoreCase("false") || (debugInput.getTextState().getText().equalsIgnoreCase("true"))) {
+                if (checkStringIsBoolean(debugInput.getTextState().getText())) {
                     this.debug = Boolean.parseBoolean(debugInput.getTextState().getText());
                 }
                 try {
@@ -104,9 +126,69 @@ public class LauncherGui extends GuiType {
                 }
             }
         });
-        launchGame.setPosition(290, 100);
         this.add(launchGame);
         this.add(settings);
+        this.switchTheme();
+        Themes.getDefaultTheme().applyAll(this);
+        settingsLabel.getStyle().setFontSize(40f);
+        launchGame.getStyle().setFontSize(50f);
+    }
+
+    private boolean isNumeric(String string) {
+        if (string == null) {
+            return false;
+        }
+        try {
+            int value = Integer.parseInt(string);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
+    private Button createButton(String text, Vector2f position, Vector2f size) {
+        Button button = new Button(text, position, size);
+        button.getStyle().setFontSize(30f);
+        button.getStyle().setHorizontalAlign(CENTER);
+        button.getStyle().setVerticalAlign(MIDDLE);
+        button.getStyle().setFont(FontRegistry.ROBOTO_BOLD);
+        return button;
+    }
+
+    private Label createMessage(String messageText, Vector2f position) {
+        Label message = new Label(messageText);
+        message.setPosition(position);
+        message.getStyle().setFontSize(20f);
+        return message;
+    }
+
+    private boolean checkStringIsBoolean (String text) {
+        return text.equalsIgnoreCase("false") || text.equalsIgnoreCase("true");
+    }
+
+    private Label createOptionLabel(String title, Panel panelToAdd) {
+        Label label = new Label(title);
+        label.getStyle().setFontSize(50f);
+        panelToAdd.add(label);
+        label.setPosition(X_LABEL, this.newYLabel);
+        newYLabel=label.getPosition().y+Y_OFFSET;
+        return label;
+    }
+
+    private TextInput createOptionInput(String title, Panel panelToAdd) {
+        TextInput input = new TextInput(X_INPUT_OFFSET, this.newYLabel-Y_OFFSET-10, 70, 35);
+        input.getTextState().setText(title);
+        input.getStyle().setFontSize(20f);
+        input.getStyle().setTextColor(0,0,0,1);
+        input.getStyle().setHorizontalAlign(CENTER);
+        input.getStyle().setVerticalAlign(MIDDLE);
+        input.getStyle().getBackground().setColor(ColorConstants.white());
+        panelToAdd.add(input);
+        input.getStyle().setFontSize(30f);
+        return input;
+    }
+
+    private void switchTheme() {
         Themes.setDefaultTheme(new FlatColoredTheme(
                 fromInt(44, 62, 80, 1), // backgroundColor
                 fromInt(127, 140, 141, 1), // borderColor
@@ -119,17 +201,7 @@ public class LauncherGui extends GuiType {
                 FontRegistry.DEFAULT,
                 30f
         ));
-        Themes.getDefaultTheme().applyAll(this);
-        settingsLabel.getStyle().setFontSize(40f);
-    }
 
-    private Button createButton(String text, Vector2f position, Vector2f size) {
-        Button button = new Button(text, position, size);
-        button.getStyle().setFontSize(30f);
-        button.getStyle().setHorizontalAlign(CENTER);
-        button.getStyle().setVerticalAlign(MIDDLE);
-        button.getStyle().setFont(FontRegistry.ROBOTO_BOLD);
-        return button;
     }
 
     @Override

@@ -29,7 +29,7 @@ public class Main {
             logger.trace("Game running...");
             GameEngine gameEngine = new GameEngine("CubicWorldSimulator",
                     true, new Game(), false);
-            final Vector2i size = new Vector2i(700, 600);
+            final Vector2i size = new Vector2i(800, 750);
             GuiFactory.createGui(new LauncherGui(size), size, "CubicWorldSimulator Launcher");
         } catch (Exception e) {
             logger.error(e.getMessage());
