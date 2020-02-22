@@ -1,6 +1,7 @@
 package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.*;
+import it.cubicworldsimulator.engine.graphic.Camera;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
@@ -13,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import java.util.*;
 
@@ -33,6 +35,7 @@ public class Game implements GameLogic {
 
     private static final float Z_FAR = 1000.f;
 
+    private final Camera camera; //TODO Va messa nella scene direttamente?
 
     private Scene scene;
 
@@ -42,10 +45,12 @@ public class Game implements GameLogic {
 
     public Game() {
         renderer = new RendererImpl();
+        camera = new Camera();
     }
 
     @Override
     public void init(Window window){
+
         World world = new World("test", 424243563456L);
         WorldManager worldManager = new WorldManager(world);
         worldManager.renderChunkColumn(new Vector2f(0,0));
@@ -66,7 +71,7 @@ public class Game implements GameLogic {
         initShaderPrograms();
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
-            scene = new Scene(gameItems.toArray(GameItem[]::new), shaderProgram, skyBox);
+            scene = new Scene(gameItems.toArray(GameItem[]::new), shaderProgram, skyBox, camera);
         }catch (Exception e){
             logger.error(e.getMessage());
             logger.error(e.getStackTrace().toString());
@@ -121,7 +126,7 @@ public class Game implements GameLogic {
             // Create uniforms for world and projection matrices
             logger.debug("Creating uniforms");
             shaderProgram.createUniform("projectionMatrix");
-            shaderProgram.createUniform("worldMatrix");
+            shaderProgram.createUniform("modelViewMatrix");
             shaderProgram.createUniform("texture_sampler");
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -142,7 +147,7 @@ public class Game implements GameLogic {
             skyBoxShaderProgram.link();
             logger.debug("Creating skybox uniforms");
             skyBoxShaderProgram.createUniform("projectionMatrix");
-            skyBoxShaderProgram.createUniform("worldMatrix");
+            skyBoxShaderProgram.createUniform("modelViewMatrix");
             skyBoxShaderProgram.createUniform("texture_sampler");
         }catch (Exception e){
             logger.error(e.getMessage());
