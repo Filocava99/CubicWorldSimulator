@@ -12,7 +12,7 @@ public class SkyBox extends GameItem {
         OBJLoader objLoader = new OBJLoader();
         Mesh skyBoxMesh = objLoader.loadFromOBJ(objModel, textureFile);
         this.setMesh(skyBoxMesh);
-        this.setPosition(0,0,-20);
+        this.setPosition(0,0,0);
         this.setScale(10);
         this.shaderProgram = shaderProgram;
     }

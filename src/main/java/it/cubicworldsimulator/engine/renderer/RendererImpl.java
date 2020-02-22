@@ -4,6 +4,7 @@ import it.cubicworldsimulator.engine.GameItem;
 import it.cubicworldsimulator.engine.Scene;
 import it.cubicworldsimulator.engine.ShaderProgram;
 import it.cubicworldsimulator.engine.Transformation;
+import it.cubicworldsimulator.engine.graphic.Camera;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
 import it.cubicworldsimulator.engine.graphic.Texture;
@@ -47,65 +48,57 @@ public class RendererImpl implements Renderer {
     public void render(Scene scene, float width, float height) {
         clear();
 
-        if (scene != null ) {
+        //TODO Settare le matrici dentro i metodi render e render list o lasciarli fuori?
+        if (scene != null) {
             // Update projection Matrix
             Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, width, height, Z_NEAR, Z_FAR);
+            Matrix4f viewMatrix = transformation.getViewMatrix(scene.getCamera());
 
-            if(scene.getSkyBox() != null){
-                renderSkyBox(scene.getSkyBox(), projectionMatrix);
+            if (scene.getSkyBox() != null) {
+                renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getCamera());
             }
 
-            if(scene.getMeshMap() != null){
+            if (scene.getMeshMap() != null) {
                 scene.getShaderProgram().bind();
-
                 scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
                 scene.getShaderProgram().setUniform("texture_sampler", 0);
 
                 // Render each gameItem
-                scene.getMeshMap().forEach((k,v) -> {
-                    renderList(scene.getShaderProgram(),k,v);
+                scene.getMeshMap().forEach((k, v) -> {
+                    renderList(scene.getShaderProgram(), viewMatrix, k, v);
                 });
                 scene.getShaderProgram().unbind();
             }
         }
     }
 
-    private void render(ShaderProgram shaderProgram, GameItem gameItem){
+    private void renderSkyBox(Matrix4f projectionMatrix, SkyBox skyBox, Camera camera) {
+        skyBox.getShaderProgram().bind();
+        skyBox.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
+        skyBox.getShaderProgram().setUniform("texture_sampler", 0);
+        Matrix4f viewMatrix = transformation.getViewMatrix(camera);
+        viewMatrix.m30(0);
+        viewMatrix.m31(0);
+        viewMatrix.m32(0);
+        Matrix4f modelViewMatrix = transformation.getModelViewMatrix(skyBox, viewMatrix);
+        skyBox.getShaderProgram().setUniform("modelViewMatrix", modelViewMatrix);
+        render(skyBox);
+        skyBox.getShaderProgram().unbind();
+    }
+
+    private void render(GameItem gameItem) {
         initRender(gameItem.getMesh());
-        Matrix4f worldMatrix = transformation.getWorldMatrix(gameItem.getPosition(),gameItem.getRotation(),gameItem.getScale());
-        shaderProgram.setUniform("worldMatrix", worldMatrix);
         logger.trace("GameItem name: " + gameItem.toString());
         logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
         glDrawElements(GL_TRIANGLES, gameItem.getMesh().getVertexCount(), GL_UNSIGNED_INT, 0);
         endRender();
     }
 
-    private void renderSkyBox(SkyBox skyBox, Matrix4f projectionMatrix) {
-        skyBox.getShaderProgram().bind();
-
-        skyBox.getShaderProgram().setUniform("texture_sampler", 0);
-
-        // Update projection Matrix
-        skyBox.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
-        Matrix4f worldMatrix = transformation.getWorldMatrix(skyBox.getPosition(),skyBox.getRotation(),skyBox.getScale());
-        worldMatrix.m30(0);
-        worldMatrix.m31(0);
-        worldMatrix.m32(0);
-        skyBox.getShaderProgram().setUniform("worldMatrix", worldMatrix);
-
-        render(skyBox.getShaderProgram(), skyBox);
-
-        skyBox.getShaderProgram().unbind();
-    }
-
-    private void renderList(ShaderProgram shaderProgram, Mesh mesh, List<GameItem> gameItems){
+    private void renderList(ShaderProgram shaderProgram, Matrix4f viewMatrix, Mesh mesh, List<GameItem> gameItems) {
         initRender(mesh);
         gameItems.forEach(gameItem -> {
-            Matrix4f worldMatrix = transformation.getWorldMatrix(
-                    gameItem.getPosition(),
-                    gameItem.getRotation(),
-                    gameItem.getScale());
-            shaderProgram.setUniform("worldMatrix", worldMatrix);
+            Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
+            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             logger.trace("GameItem name: " + gameItem.toString());
             logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
             glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);

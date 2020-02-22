@@ -1,15 +1,13 @@
 package it.cubicworldsimulator.game.world;
 
-import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.MeshMaterial;
 import it.cubicworldsimulator.engine.graphic.Texture;
 import it.cubicworldsimulator.engine.loader.TextureLoader;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
+import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
-import it.cubicworldsimulator.game.world.chunk.Chunk;
-import it.cubicworldsimulator.game.world.chunk.ChunkGenerator;
-import it.cubicworldsimulator.game.world.chunk.ChunkMesh;
+import it.cubicworldsimulator.game.world.chunk.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
@@ -19,31 +17,72 @@ import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class WorldManager {
+public class WorldManager extends Thread{
 
     private static final Logger logger = LogManager.getLogger(WorldManager.class);
 
     private final World world;
+    private final ChunkGenerator chunkGenerator;
+    private final ChunkLoader chunkLoader = new ChunkLoader();
     private final Map<Object,Material> blockTypes = new HashMap<>();
+    private final Set<Vector2f> alreadyGeneratedChunksColumns;
+
     private String textureFile;
-    public Texture worldTexture;
+    private MeshMaterial worldTexture;
+
+    private final Set<ChunkMesh> activeMeshes = new LinkedHashSet<>();
 
     public WorldManager(World world) {
         loadBlockTypes();
         this.world = world;
         TextureLoader loader = new TextureLoaderImpl();
-        ChunkGenerator chunkGenerator = new ChunkGenerator(world.getSeed(), this);
-        Chunk chunk = chunkGenerator.generateChunkColumn(0,0).getChunks()[0];
-
+        chunkGenerator = new ChunkGenerator(world.getSeed(), this);
+        alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
         try{
-            worldTexture = loader.loadTexture(textureFile);
+            worldTexture = new MeshMaterial(loader.loadTexture(textureFile));
         }catch (Exception e){
             logger.error(e.getMessage());
+            System.exit(1);
         }
+    }
+
+    @Override
+    public void run(){
+        while(true){
+            try{
+                sleep(100);
+                updateActiveChunks();
+            }catch (InterruptedException e){
+                logger.error(e.getMessage());
+            }
+        }
+    }
+
+    private void updateActiveChunks(){
+
+    }
+
+    public ChunkColumn loadChunkColumn(Vector2f position){
+        ChunkColumn chunkColumn;
+        if(alreadyGeneratedChunksColumns.contains(position)){
+            chunkColumn = chunkLoader.loadChunkColumn(position).orElse(chunkGenerator.generateChunkColumn((int)position.x,(int)position.y));
+        }else{
+            chunkColumn = chunkGenerator.generateChunkColumn((int)position.x,(int)position.y);
+        }
+        return chunkColumn;
+    }
+
+    public void renderChunkColumn(Vector2f position){
+        ChunkColumn chunkColumn = loadChunkColumn(position);
+        ChunkMesh[] chunkMeshes = new ChunkMesh[Constants.chunksPerColumn];
+        for(int i = 0; i < chunkColumn.getChunks().length; i++){
+            ChunkMesh chunkMesh = new ChunkMesh(chunkColumn.getChunks()[i],blockTypes,worldTexture);
+            chunkMesh.prepareVAOContent();
+            chunkMeshes[i] = chunkMesh;
+        }
+        activeMeshes.addAll(List.of(chunkMeshes));
     }
 
     private void loadBlockTypes() {
@@ -91,5 +130,9 @@ public class WorldManager {
 
     public Map<Object, Material> getBlockTypes() {
         return Collections.unmodifiableMap(blockTypes);
+    }
+
+    public Set<ChunkMesh> getActiveMeshes() {
+        return Collections.unmodifiableSet(activeMeshes);
     }
 }

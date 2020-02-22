@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 
 import java.io.*;
-import java.util.Optional;
+import java.util.*;
 
 public class ChunkLoader {
 
@@ -50,5 +50,23 @@ public class ChunkLoader {
     }
 
     //TODO Creare un metodo per salvare un solo chunk
+
+    public Set<Vector2f> getAlreadyGeneratedChunkColumns(String worldName){
+        Set<Vector2f> alreadyGeneratedChunkColumns = new HashSet<>();
+        File chunkFolder = new File(chunkFolderPath);
+        if(chunkFolder.exists()){
+            Arrays.stream(Objects.requireNonNull(chunkFolder.listFiles(childFile -> childFile.getName().contains(".chunk")))).forEach(file -> {
+                try {
+                    String[] fileNameComponents = file.getName().split("\\.")[0].split("_");
+                    int x = Integer.parseInt(fileNameComponents[0]);
+                    int z = Integer.parseInt(fileNameComponents[1]);
+                    alreadyGeneratedChunkColumns.add(new Vector2f(x, z));
+                }catch (Exception e){
+                    logger.warn("Invalid chunk file name: " + file.getName());
+                }
+            });
+        }
+        return alreadyGeneratedChunkColumns;
+    }
 
 }
