@@ -61,7 +61,16 @@ public class WorldManager extends Thread{
     }
 
     private void updateActiveChunks(){
+        unloadOldChunks();
+        loadNewChunks();
+    }
 
+    private void unloadOldChunks(){
+        //TODO
+    }
+
+    private void loadNewChunks(){
+        //TODO
     }
 
     public ChunkColumn loadChunkColumn(Vector2f position){
