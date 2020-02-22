@@ -1,9 +1,6 @@
 package it.cubicworldsimulator.engine.renderer;
 
-import it.cubicworldsimulator.engine.GameItem;
-import it.cubicworldsimulator.engine.Scene;
-import it.cubicworldsimulator.engine.ShaderProgram;
-import it.cubicworldsimulator.engine.Transformation;
+import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.Camera;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
@@ -34,8 +31,11 @@ public class RendererImpl implements Renderer {
 
     private final Transformation transformation;
 
+    private final FrustumCullingFilter filter;
+
     public RendererImpl() {
         transformation = new Transformation();
+        filter = new FrustumCullingFilter();
     }
 
     public void init() {
@@ -59,6 +59,9 @@ public class RendererImpl implements Renderer {
             }
 
             if (scene.getMeshMap() != null) {
+                filter.updateFrustum(projectionMatrix, viewMatrix);
+                filter.filter(scene.getMeshMap());
+
                 scene.getShaderProgram().bind();
                 scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
                 scene.getShaderProgram().setUniform("texture_sampler", 0);
@@ -97,11 +100,13 @@ public class RendererImpl implements Renderer {
     private void renderList(ShaderProgram shaderProgram, Matrix4f viewMatrix, Mesh mesh, List<GameItem> gameItems) {
         initRender(mesh);
         gameItems.forEach(gameItem -> {
-            Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
-            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            logger.trace("GameItem name: " + gameItem.toString());
-            logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
-            glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+            if(gameItem.isInsideFrustum()){
+                Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
+                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                logger.trace("GameItem name: " + gameItem.toString());
+                logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
+                glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+            }
         });
         endRender();
     }
