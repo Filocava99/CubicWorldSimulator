@@ -11,6 +11,7 @@ import it.cubicworldsimulator.game.world.chunk.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
+import org.joml.Vector3i;
 import org.snakeyaml.engine.v1.api.Load;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 
@@ -19,7 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
 
-public class WorldManager extends Thread{
+public class WorldManager{
 
     private static final Logger logger = LogManager.getLogger(WorldManager.class);
 
@@ -48,21 +49,12 @@ public class WorldManager extends Thread{
         }
     }
 
-    @Override
-    public void run(){
-        while(true){
-            try{
-                sleep(100);
-                updateActiveChunks();
-            }catch (InterruptedException e){
-                logger.error(e.getMessage());
-            }
-        }
-    }
-
-    private void updateActiveChunks(){
-        unloadOldChunks();
-        loadNewChunks();
+    //TODO Controllare le perfomances, non vorrei che si inchiodasse se un giocatore fa avanti e indietro fra due chunk
+    public void updateActiveChunks(Vector3i chunkPosition){
+        new Thread(() -> {
+            unloadOldChunks();
+            loadNewChunks();
+        }).start();
     }
 
     private void unloadOldChunks(){
