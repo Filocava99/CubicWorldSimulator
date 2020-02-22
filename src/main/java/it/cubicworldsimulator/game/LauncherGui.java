@@ -7,10 +7,7 @@ import org.liquidengine.legui.component.Button;
 import org.liquidengine.legui.component.Label;
 import org.liquidengine.legui.component.Panel;
 import org.liquidengine.legui.component.TextInput;
-import org.liquidengine.legui.component.event.textinput.TextInputContentChangeEvent;
-import org.liquidengine.legui.event.Event;
 import org.liquidengine.legui.event.MouseClickEvent;
-import org.liquidengine.legui.listener.EventListener;
 import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
@@ -35,8 +32,6 @@ public class LauncherGui extends GuiType {
     private boolean debug=false;
     private float newYLabel=Y_START_VALUE;
     private long window;
-    private boolean widthOk=true;
-    private boolean heightOk=true;
 
     public LauncherGui(Vector2i size) {
         super(0,0,size.x,size.y);
@@ -49,17 +44,42 @@ public class LauncherGui extends GuiType {
 
         Label vSync = this.createOptionLabel("vSync", settings);
         TextInput vSyncInput = this.createOptionInput("true", settings);
+
         Label debugLabel = this.createOptionLabel("Debug", settings);
         TextInput debugInput = this.createOptionInput("false", settings);
+
         Label fullscreenLabel = this.createOptionLabel("Fullscreen", settings);
         TextInput fullScreenInput = this.createOptionInput("true", settings);
 
         Label widthLabel = this.createOptionLabel("Width", settings);
-        TextInput widthInput = this.createOptionInput("1080", settings);
+        TextInput widthInput = this.createOptionInput("fs", settings);
         widthInput.setEditable(false);
+
         Label heightLabel = this.createOptionLabel("Height", settings);
-        TextInput heightInput = this.createOptionInput("1920", settings);
+        TextInput heightInput = this.createOptionInput("fs", settings);
         heightInput.setEditable(false);
+
+
+        Label widthMessage = this.createMessage("Value not correct!",
+                new Vector2f(widthInput.getPosition().x + widthInput.getSize().x + 20, widthLabel.getPosition().y));
+        widthInput.addTextInputContentChangeEventListener(event -> {
+            if (!isNumericOrFs(event.getNewValue())) {
+                settings.add(widthMessage);
+                Themes.getDefaultTheme().applyAll(widthMessage);
+            } else {
+                settings.remove(widthMessage);
+            }
+        });
+        Label heightMessage = this.createMessage("Value not correct!",
+                new Vector2f(heightInput.getPosition().x + heightInput.getSize().x + 20, heightLabel.getPosition().y));
+        heightInput.addTextInputContentChangeEventListener(event -> {
+            if (!isNumericOrFs(event.getNewValue())) {
+                settings.add(heightMessage);
+                Themes.getDefaultTheme().applyAll(heightMessage);
+            } else {
+                settings.remove(heightMessage);
+            }
+        });
         Label fullScreenMessage = this.createMessage("Please choose window size",
                 new Vector2f(fullScreenInput.getPosition().x + fullScreenInput.getSize().x + 20, fullscreenLabel.getPosition().y));
         fullScreenInput.addTextInputContentChangeEventListener(event -> {
@@ -71,42 +91,19 @@ public class LauncherGui extends GuiType {
                 widthInput.getTextState().setText("1920");
                 heightInput.getTextState().setText("1080");
             } else {
-                widthOk=true;
-                heightOk=true;
                 settings.remove(fullScreenMessage);
                 widthInput.setEditable(false);
                 heightInput.setEditable(false);
                 widthInput.getTextState().setText("fs");
                 heightInput.getTextState().setText("fs");
-            }
-        });
-        Label widthMessage = this.createMessage("Value not correct!",
-                new Vector2f(widthInput.getPosition().x + widthInput.getSize().x + 20, widthLabel.getPosition().y));
-        widthInput.addTextInputContentChangeEventListener(event -> {
-            if (!isNumeric(event.getNewValue())) {
-                settings.add(widthMessage);
-                widthOk=false;
-                Themes.getDefaultTheme().applyAll(widthMessage);
-            } else {
-                widthOk=true;
                 settings.remove(widthMessage);
-            }
-        });
-        Label heightMessage = this.createMessage("Value not correct!",
-                new Vector2f(heightInput.getPosition().x + heightInput.getSize().x + 20, heightLabel.getPosition().y));
-        heightInput.addTextInputContentChangeEventListener(event -> {
-            if (!isNumeric(event.getNewValue())) {
-                settings.add(heightMessage);
-                heightOk=false;
-                Themes.getDefaultTheme().applyAll(heightMessage);
-            } else {
-                heightOk=true;
                 settings.remove(heightMessage);
             }
         });
         Button launchGame = this.createButton("Start game", new Vector2f(290, 50), new Vector2f(120, 90));
         launchGame.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
-            if (CLICK == event.getAction() && heightOk && widthOk) {
+            if (CLICK == event.getAction() && isNumericOrFs(widthInput.getTextState().getText()) &&
+                    isNumericOrFs(heightInput.getTextState().getText())) {
                 if (checkStringIsBoolean(fullScreenInput.getTextState().getText())) {
                     this.fullscreen = Boolean.parseBoolean(fullScreenInput.getTextState().getText());
                 }
@@ -134,9 +131,12 @@ public class LauncherGui extends GuiType {
         launchGame.getStyle().setFontSize(50f);
     }
 
-    private boolean isNumeric(String string) {
+    private boolean isNumericOrFs(String string) {
         if (string == null) {
             return false;
+        }
+        if (string.equals("fs") || string.equals("FS")) {
+            return true;
         }
         try {
             int value = Integer.parseInt(string);
