@@ -19,14 +19,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class WorldManager{
 
     private static final Logger logger = LogManager.getLogger(WorldManager.class);
+    private final int renderingDistance = 8;
 
     private final World world;
     private final ChunkGenerator chunkGenerator;
-    private final ChunkLoader chunkLoader = new ChunkLoader();
+    private final ChunkLoader chunkLoader;
     private final Map<Object,Material> blockTypes = new HashMap<>();
     private final Set<Vector2f> alreadyGeneratedChunksColumns;
 
@@ -40,6 +42,7 @@ public class WorldManager{
         this.world = world;
         TextureLoader loader = new TextureLoaderImpl();
         chunkGenerator = new ChunkGenerator(world.getSeed(), this);
+        chunkLoader = new ChunkLoader(world.getName());
         alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
         try{
             worldTexture = new MeshMaterial(loader.loadTexture(textureFile));
@@ -52,16 +55,34 @@ public class WorldManager{
     //TODO Controllare le perfomances, non vorrei che si inchiodasse se un giocatore fa avanti e indietro fra due chunk
     public void updateActiveChunks(Vector3i chunkPosition){
         new Thread(() -> {
-            unloadOldChunks();
-            loadNewChunks();
+            unloadOldChunks(chunkPosition);
+            loadNewChunks(chunkPosition);
         }).start();
     }
 
-    private void unloadOldChunks(){
+    private void unloadOldChunks(Vector3i chunkPosition){
         //TODO
+        Queue<Vector2f> dumpQueue = new LinkedBlockingQueue<>();
+        var iterator = world.getActiveChunks().entrySet().iterator();
+        while (iterator.hasNext()) {
+            var entry = iterator.next();
+            Vector2f chunkColumnPosition = entry.getValue().getPosition();
+            if (chunkColumnPosition.x <chunkPosition.x - renderingDistance || chunkColumnPosition.x > chunkPosition.x + renderingDistance || chunkColumnPosition.y < chunkPosition.z - renderingDistance || chunkColumnPosition.y > chunkPosition.z + renderingDistance) {
+                ChunkColumn chunkColumn = entry.getValue();
+                chunkLoader.saveChunkColumn(chunkColumn);
+                for(Chunk chunk : chunkColumn.getChunks()){
+                    Game.unloadCommands.put(chunk,new OpenGLUnloadChunkCommand(chunk));
+                    Game.loadCommands.remove(chunk);
+                }
+                dumpQueue.add(entry.getKey());
+            }
+        }
+        while(!dumpQueue.isEmpty()){
+            world.getActiveChunks().remove(dumpQueue.poll());
+        }
     }
 
-    private void loadNewChunks(){
+    private void loadNewChunks(Vector3i chunkPosition){
         //TODO
     }
 
