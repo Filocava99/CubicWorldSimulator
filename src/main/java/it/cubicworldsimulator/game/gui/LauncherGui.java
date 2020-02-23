@@ -2,12 +2,13 @@ package it.cubicworldsimulator.game.gui;
 
 import it.cubicworldsimulator.engine.GameEngine;
 import it.cubicworldsimulator.game.Game;
+import it.cubicworldsimulator.game.Main;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
-import org.liquidengine.legui.component.Button;
-import org.liquidengine.legui.component.Label;
-import org.liquidengine.legui.component.Panel;
-import org.liquidengine.legui.component.TextInput;
+import org.liquidengine.legui.component.*;
+import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelectionEventListener;
 import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.style.color.ColorConstants;
@@ -18,8 +19,11 @@ import org.liquidengine.legui.theme.colored.FlatColoredTheme;
 import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLICK;
 import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
+import static org.lwjgl.glfw.GLFW.glfwHideWindow;
 
 public class LauncherGui extends Gui {
+    private static final Logger logger = LogManager.getLogger(LauncherGui.class);
+
     //Flags
     private boolean fullscreen=true;
     private boolean vSync=true;
@@ -37,7 +41,6 @@ public class LauncherGui extends Gui {
 
     public LauncherGui(Vector2i size) {
         super(0,0,size.x,size.y);
-        System.out.println(window);
         this.createGui(size);
     }
 
@@ -53,6 +56,7 @@ public class LauncherGui extends Gui {
 
         Label fullscreenLabel = this.createOptionLabel("Fullscreen", settings);
         fullScreenInput = this.createOptionInput("true", settings);
+
 
         Label widthLabel = this.createOptionLabel("Width", settings);
         widthInput = this.createOptionInput("fs", settings);
@@ -130,7 +134,6 @@ public class LauncherGui extends Gui {
         add(settings);
         switchTheme();
         Themes.getDefaultTheme().applyAll(this);
-
         //Set others style options AFTER theme has been applied
         settingsLabel.getStyle().setFontSize(40f);
         launchGame.getStyle().setFontSize(50f);
@@ -142,7 +145,7 @@ public class LauncherGui extends Gui {
                 try {
                     GameEngine gameEngine = new GameEngine("CubicWorldSimulator",
                             this.vSync, new Game(), this.debug);
-                    glfwDestroyWindow(window);
+                    glfwHideWindow(window);
                     gameEngine.run();
                 } catch (Exception e) {
                     e.printStackTrace();
