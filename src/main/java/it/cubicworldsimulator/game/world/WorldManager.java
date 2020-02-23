@@ -4,6 +4,9 @@ import it.cubicworldsimulator.engine.graphic.MeshMaterial;
 import it.cubicworldsimulator.engine.graphic.Texture;
 import it.cubicworldsimulator.engine.loader.TextureLoader;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
+import it.cubicworldsimulator.game.CommandsQueue;
+import it.cubicworldsimulator.game.openglcommands.OpenGLLoadChunkCommand;
+import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
 import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
@@ -11,6 +14,7 @@ import it.cubicworldsimulator.game.world.chunk.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.snakeyaml.engine.v1.api.Load;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
@@ -27,6 +31,7 @@ public class WorldManager{
     private final int renderingDistance = 8;
 
     private final World world;
+    private final CommandsQueue commandsQueue;
     private final ChunkGenerator chunkGenerator;
     private final ChunkLoader chunkLoader;
     private final Map<Object,Material> blockTypes = new HashMap<>();
@@ -35,11 +40,12 @@ public class WorldManager{
     private String textureFile;
     private MeshMaterial worldTexture;
 
-    private final Set<ChunkMesh> activeMeshes = new LinkedHashSet<>();
+    private final Map<Vector3f, ChunkMesh> activeMeshes = new HashMap<>();
 
-    public WorldManager(World world) {
+    public WorldManager(World world, CommandsQueue commandsQueue) {
         loadBlockTypes();
         this.world = world;
+        this.commandsQueue = commandsQueue;
         TextureLoader loader = new TextureLoaderImpl();
         chunkGenerator = new ChunkGenerator(world.getSeed(), this);
         chunkLoader = new ChunkLoader(world.getName());
@@ -61,7 +67,6 @@ public class WorldManager{
     }
 
     private void unloadOldChunks(Vector3i chunkPosition){
-        //TODO
         Queue<Vector2f> dumpQueue = new LinkedBlockingQueue<>();
         var iterator = world.getActiveChunks().entrySet().iterator();
         while (iterator.hasNext()) {
@@ -71,8 +76,8 @@ public class WorldManager{
                 ChunkColumn chunkColumn = entry.getValue();
                 chunkLoader.saveChunkColumn(chunkColumn);
                 for(Chunk chunk : chunkColumn.getChunks()){
-                    Game.unloadCommands.put(chunk,new OpenGLUnloadChunkCommand(chunk));
-                    Game.loadCommands.remove(chunk);
+                    commandsQueue.addUnloadCommand(chunk.getPosition(), new OpenGLUnloadChunkCommand(activeMeshes.get(chunk.getPosition())));
+                    activeMeshes.remove(chunk.getPosition());
                 }
                 dumpQueue.add(entry.getKey());
             }
@@ -83,7 +88,22 @@ public class WorldManager{
     }
 
     private void loadNewChunks(Vector3i chunkPosition){
-        //TODO
+        var activeChunks = world.getActiveChunks();
+        for (int x = chunkPosition.x - renderingDistance; x <= chunkPosition.x + renderingDistance; x++) {
+            for (int z = chunkPosition.z - renderingDistance; z <= chunkPosition.z + renderingDistance; z++) {
+                Vector2f newChunkCoord = new Vector2f(x, z);
+                if (!activeChunks.containsKey(newChunkCoord)) {
+                    ChunkColumn chunkColumn = loadChunkColumn(newChunkCoord);
+                    for (Chunk chunk : chunkColumn.getChunks()) {
+                        ChunkMesh chunkMesh = new ChunkMesh(chunk, blockTypes, worldTexture);
+                        chunkMesh.prepareVAOContent();
+                        commandsQueue.addLoadCommand(chunk.getPosition(),new OpenGLLoadChunkCommand(chunkMesh));
+                        activeMeshes.put(chunk.getPosition(), chunkMesh);
+                    }
+                    activeChunks.put(newChunkCoord, chunkColumn);
+                }
+            }
+        }
     }
 
     public ChunkColumn loadChunkColumn(Vector2f position){
@@ -96,17 +116,7 @@ public class WorldManager{
         return chunkColumn;
     }
 
-    public void renderChunkColumn(Vector2f position){
-        ChunkColumn chunkColumn = loadChunkColumn(position);
-        ChunkMesh[] chunkMeshes = new ChunkMesh[Constants.chunksPerColumn];
-        for(int i = 0; i < chunkColumn.getChunks().length; i++){
-            ChunkMesh chunkMesh = new ChunkMesh(chunkColumn.getChunks()[i],blockTypes,worldTexture);
-            chunkMesh.prepareVAOContent();
-            chunkMeshes[i] = chunkMesh;
-        }
-        activeMeshes.addAll(List.of(chunkMeshes));
-    }
-
+    //TODO YAML loader class
     private void loadBlockTypes() {
         InputStream inputStream = null;
         try {
@@ -154,7 +164,7 @@ public class WorldManager{
         return Collections.unmodifiableMap(blockTypes);
     }
 
-    public Set<ChunkMesh> getActiveMeshes() {
-        return Collections.unmodifiableSet(activeMeshes);
+    public Collection<ChunkMesh> getActiveMeshes() {
+        return Collections.unmodifiableCollection(activeMeshes.values());
     }
 }
