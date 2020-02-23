@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.game;
 
+import it.cubicworldsimulator.game.gui.Gui;
 import org.joml.Vector2i;
 import org.liquidengine.legui.DefaultInitializer;
 import org.liquidengine.legui.animation.Animator;
@@ -26,11 +27,11 @@ public class GuiFactory {
     private static long[] monitors = null;
     private static boolean toggleFullscreen = false;
     private static boolean fullscreen = false;
-    private static GuiType guiType;
+    private static Gui gui;
     private static Context context;
 
-    public static void createGui(GuiType gui, Vector2i size, String title) {
-        guiType=gui;
+    public static void createGui(Gui gui, Vector2i size, String title) {
+        GuiFactory.gui =gui;
         System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
         System.setProperty("java.awt.headless", Boolean.TRUE.toString());
         if (!glfwInit()) {
@@ -131,9 +132,9 @@ public class GuiFactory {
     }
 
     static void createGuiElements(Frame frame, int w, int h) {
-        guiType.setFocusable(false);
-        guiType.getListenerMap().addListener(WindowSizeEvent.class, (WindowSizeEventListener) event -> guiType.setSize(event.getWidth(), event.getHeight()));
-        frame.getContainer().add(guiType);
+        gui.setFocusable(false);
+        gui.getListenerMap().addListener(WindowSizeEvent.class, (WindowSizeEventListener) event -> gui.setSize(event.getWidth(), event.getHeight()));
+        frame.getContainer().add(gui);
         frame.getContainer().setFocusable(false);
     }
 }
