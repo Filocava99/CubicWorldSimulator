@@ -31,7 +31,7 @@ public class GuiFactory {
     private static Context context;
 
     public static void createGui(Gui gui, Vector2i size, String title) {
-        GuiFactory.gui =gui;
+        GuiFactory.gui=gui;
         System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
         System.setProperty("java.awt.headless", Boolean.TRUE.toString());
         if (!glfwInit()) {
