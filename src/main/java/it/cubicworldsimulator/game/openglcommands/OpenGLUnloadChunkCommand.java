@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.game.openglcommands;
 
+import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.game.world.chunk.ChunkMesh;
 
 public class OpenGLUnloadChunkCommand implements OpenGLCommand {
@@ -13,5 +14,9 @@ public class OpenGLUnloadChunkCommand implements OpenGLCommand {
     @Override
     public void run() {
         mesh.cleanUp();
+    }
+
+    public Mesh getMesh() {
+        return mesh.getMesh();
     }
 }
