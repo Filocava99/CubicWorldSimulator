@@ -11,7 +11,13 @@ import java.util.*;
 public class ChunkLoader {
 
     private static final Logger logger = LogManager.getLogger(ChunkLoader.class);
-    private final String chunkFolderPath = Constants.installationFolder + File.pathSeparator + "data" + File.pathSeparator + "chunks";
+    private final String chunkFolderPath;
+    private final String worldName;
+
+    public ChunkLoader(String worldName) {
+        this.worldName = worldName;
+        chunkFolderPath = Constants.installationFolder + File.pathSeparator + "data" + File.pathSeparator + worldName + File.pathSeparator + "chunks";
+    }
 
     public Optional<ChunkColumn> loadChunkColumn(float x, float y){
         Optional<ChunkColumn> chunkColumnOptional = Optional.empty();
