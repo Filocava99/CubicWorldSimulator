@@ -140,13 +140,13 @@ public class LauncherGui extends Gui {
     private void startGame() {
         launchGame.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
             if (CLICK == event.getAction() && checkGameCanStart()) {
+                glfwHideWindow(window);
                 try {
                     gameEngine = new GameEngine("CubicWorldSimulator",
                             vSync, new Game(), debug);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                glfwHideWindow(window);
                 gameEngine.run();
             }
         });
