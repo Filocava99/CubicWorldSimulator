@@ -39,6 +39,7 @@ public class Game implements GameLogic {
 
     private final Camera camera; //TODO Va messa nella scene direttamente?
     private final Player player;
+    private final CommandsQueue commandsQueue;
     private WorldManager worldManager;
     private World world;
     private Scene scene;
@@ -52,32 +53,17 @@ public class Game implements GameLogic {
         renderer = new RendererImpl();
         camera = new Camera();
         player = new Player(camera);
+        commandsQueue = new CommandsQueue();
     }
 
     @Override
     public void init(Window window){
-
         world = new World("test", 424243563456L);
-        worldManager = new WorldManager(world);
-        worldManager.renderChunkColumn(new Vector2f(0,0));
-        worldManager.renderChunkColumn(new Vector2f(0,1));
-        worldManager.renderChunkColumn(new Vector2f(1,0));
-        worldManager.renderChunkColumn(new Vector2f(1,1));
-
-        List<GameItem> gameItems = new ArrayList<>();
-
-        //TODO Da fare meglio
-        for(ChunkMesh chunkMesh : worldManager.getActiveMeshes()){
-            chunkMesh.buildMesh();
-            GameItem gameItem = new GameItem(chunkMesh.getMesh());
-            gameItem.setPosition(chunkMesh.getChunk().getPosition());
-            gameItems.add(gameItem);
-        }
-
+        worldManager = new WorldManager(world, commandsQueue);
         initShaderPrograms();
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
-            scene = new Scene(gameItems.toArray(GameItem[]::new), shaderProgram, skyBox, camera);
+            scene = new Scene(shaderProgram, skyBox, camera);
         }catch (Exception e){
             logger.error(e.getMessage());
             logger.error(e.getStackTrace().toString());
