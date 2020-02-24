@@ -40,6 +40,12 @@ public class MouseInput {
 		return this.displacementVector;
 	}
 	
+	public boolean isLeftButtonPressed() {
+		return this.leftButtonPressed;
+	}
 	
+	public boolean isRightButtonPressed() {
+		return this.rightButtonPressed;
+	}
 	
 }
