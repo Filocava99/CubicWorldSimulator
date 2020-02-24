@@ -21,16 +21,16 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 
-public class GuiFactory {
+public class GuiFactory{
 
-    private static volatile boolean running = false;
+    private volatile boolean running = true;
     private static long[] monitors = null;
     private static boolean toggleFullscreen = false;
     private static boolean fullscreen = false;
     private static Gui gui;
     private static Context context;
 
-    public static void createGui(Gui gui, Vector2i size, String title) {
+    public void createGui(Gui gui, Vector2i size, String title) {
         GuiFactory.gui=gui;
         System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
         System.setProperty("java.awt.headless", Boolean.TRUE.toString());
@@ -67,7 +67,6 @@ public class GuiFactory {
         initializer.getCallbackKeeper().getChainWindowCloseCallback().add(glfwWindowCloseCallbackI);
 
         // Initialization finished, so we can start render loop.
-        running = true;
 
         // Everything can be done in one thread as well as in separated threads.
         // Here is one-thread example.
@@ -81,6 +80,7 @@ public class GuiFactory {
 
         context = initializer.getContext();
         while (running) {
+            System.out.println("i'm running on " + this.hashCode());
             // Also we can do it in one line
             context.updateGlfwWindow();
             Vector2i windowSize = context.getFramebufferSize();

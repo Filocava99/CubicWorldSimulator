@@ -72,7 +72,7 @@ public class Window {
         if (windowHandle == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
-
+        logger.trace("Window handle: " + windowHandle);
         // Setup resize callback
         glfwSetFramebufferSizeCallback(windowHandle, (window, width, height) -> {
             this.width = width;
@@ -141,6 +141,10 @@ public class Window {
 
     public boolean windowShouldClose() {
         return glfwWindowShouldClose(windowHandle);
+    }
+
+    public long getWindowHandle() {
+        return windowHandle;
     }
 
     public String getTitle() {

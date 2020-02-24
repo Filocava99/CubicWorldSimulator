@@ -2,6 +2,7 @@ package it.cubicworldsimulator.game.gui;
 
 import it.cubicworldsimulator.engine.GameEngine;
 import it.cubicworldsimulator.game.Game;
+import it.cubicworldsimulator.game.GuiFactory;
 import it.cubicworldsimulator.game.Main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,11 +19,11 @@ import org.liquidengine.legui.theme.colored.FlatColoredTheme;
 
 import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLICK;
 import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
-import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
-import static org.lwjgl.glfw.GLFW.glfwHideWindow;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class LauncherGui extends Gui {
     private static final Logger logger = LogManager.getLogger(LauncherGui.class);
+    GameEngine gameEngine;
 
     //Flags
     private boolean fullscreen=true;
@@ -143,13 +144,13 @@ public class LauncherGui extends Gui {
         launchGame.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
             if (CLICK == event.getAction() && checkGameCanStart()) {
                 try {
-                    GameEngine gameEngine = new GameEngine("CubicWorldSimulator",
-                            this.vSync, new Game(), this.debug);
-                    glfwHideWindow(window);
-                    gameEngine.run();
+                    gameEngine = new GameEngine("CubicWorldSimulator",
+                            vSync, new Game(), debug);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                glfwHideWindow(window);
+                gameEngine.run();
             }
         });
     }

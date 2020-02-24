@@ -1,8 +1,12 @@
 package it.cubicworldsimulator.engine;
 
 import org.joml.Vector4f;
+import org.lwjgl.glfw.GLFWWindowCloseCallback;
 
-public class GameEngine implements Runnable {
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11C.GL_FALSE;
+
+public class GameEngine extends Thread {
 
     public static final int TARGET_FPS = 75; //frames per second
 
