@@ -30,4 +30,8 @@ public class World {
     public String getName() {
         return name;
     }
+
+    protected Map<Vector2f, ChunkColumn> getActiveChunks() {
+        return activeChunks;
+    }
 }
