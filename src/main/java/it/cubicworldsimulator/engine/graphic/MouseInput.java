@@ -36,5 +36,10 @@ public class MouseInput {
 		});
 	}
 	
+	public Vector2d getDisplacementVector() {
+		return this.displacementVector;
+	}
+	
+	
 	
 }
