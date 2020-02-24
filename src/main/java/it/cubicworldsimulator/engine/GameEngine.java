@@ -100,5 +100,7 @@ public class GameEngine extends Thread {
 
     protected void cleanUp(){
         gameLogic.cleanUp();
+        glfwHideWindow(window.getWindowHandle());
+        System.exit(0);
     }
 }
