@@ -27,6 +27,8 @@ public class LauncherGui extends Gui {
     private boolean vSync=true;
     private boolean debug=false;
     private int renderingDistance=1;
+    private long worldSeed;
+    private String worldName;
 
     //GuiElement
     private TextInput vSyncInput;
@@ -35,6 +37,8 @@ public class LauncherGui extends Gui {
     private TextInput widthInput;
     private TextInput heightInput;
     private TextInput renderingDistanceInput;
+    private TextInput worldSeedInput;
+    private TextInput worldStringInput;
     private Button launchGame;
 
     public LauncherGui(Vector2i size) {
@@ -43,7 +47,7 @@ public class LauncherGui extends Gui {
     }
 
     private void createGui(Vector2i size) {
-        Panel settings = new Panel(0, 200, size.x, 400);
+        Panel settings = new Panel(0, 200, size.x, 450);
         Label settingsLabel = this.createOptionLabel("Settings", settings);
 
         Label vSync = this.createOptionLabel("vSync", settings);
@@ -111,7 +115,6 @@ public class LauncherGui extends Gui {
         renderingDistanceInput = this.createOptionInput("1", settings);
         Label renderingDistanceMessage = this.createMessage("Value must be greater or equal to 1",
                 new Vector2f(renderingDistanceInput.getPosition().x + renderingDistanceInput.getSize().x + 20, renderingDistanceLabel.getPosition().y));
-
         renderingDistanceInput.addTextInputContentChangeEventListener(event -> {
             if (!isNumeric(event.getNewValue())) {
                 renderingDistanceMessage.getTextState().setText("Value not numeric");
@@ -123,6 +126,38 @@ public class LauncherGui extends Gui {
                 Themes.getDefaultTheme().applyAll(renderingDistanceMessage);
             } else {
                 settings.remove(renderingDistanceMessage);
+            }
+        });
+
+        Label worldSeedLabel = this.createOptionLabel("World seed", settings);
+        worldSeedInput = this.createOptionInput("424243563456", settings);
+        Label seedMessage = this.createMessage("Message",
+                new Vector2f(worldSeedInput.getPosition().x + worldSeedInput.getSize().x + 20, worldSeedLabel.getPosition().y));
+        worldSeedInput.addTextInputContentChangeEventListener(event -> {
+            if (!isNumeric(event.getNewValue()) && isFiled(event.getNewValue())) {
+                seedMessage.getTextState().setText("Value not numeric");
+                settings.add(seedMessage);
+                Themes.getDefaultTheme().applyAll(seedMessage);
+            } else if (event.getNewValue().isEmpty()){
+                seedMessage.getTextState().setText("Please fill this field");
+                settings.add(seedMessage);
+                Themes.getDefaultTheme().applyAll(seedMessage);
+            } else {
+                settings.remove(seedMessage);
+            }
+        });
+
+        Label worldStringLabel = this.createOptionLabel("World name", settings);
+        worldStringInput = this.createOptionInput("world-1", settings);
+        Label nameMessage = this.createMessage("Message-1",
+                new Vector2f(worldStringInput.getPosition().x + worldStringInput.getSize().x + 20, worldStringLabel.getPosition().y));
+        worldStringInput.addTextInputContentChangeEventListener(event -> {
+            if (event.getNewValue().isEmpty()){
+                nameMessage.getTextState().setText("Please fill this field");
+                settings.add(nameMessage);
+                Themes.getDefaultTheme().applyAll(nameMessage);
+            } else {
+                settings.remove(nameMessage);
             }
         });
 
@@ -155,12 +190,15 @@ public class LauncherGui extends Gui {
     private boolean checkGameCanStart() {
         String width=widthInput.getTextState().getText();
         String height=heightInput.getTextState().getText();
+        String worldName=worldStringInput.getTextState().getText();
+        String worldSeed=worldSeedInput.getTextState().getText();
         fullscreen = parseBoolean(fullScreenInput.getTextState().getText()).orElse(fullscreen);
         vSync = parseBoolean(vSyncInput.getTextState().getText()).orElse(vSync);
         debug = parseBoolean(debugInput.getTextState().getText()).orElse(debug);
         return (isNumeric(width) ||  width.equalsIgnoreCase("fs"))  &&
                 (isNumeric(height) || height.equalsIgnoreCase("fs")) &&
-                this.checkRenderingDistance(renderingDistanceInput.getTextState().getText());
+                this.checkRenderingDistance(renderingDistanceInput.getTextState().getText()) &&
+                isFiled(worldName) && isFiled(worldSeed);
     }
 
     private boolean checkRenderingDistance (String value) {
