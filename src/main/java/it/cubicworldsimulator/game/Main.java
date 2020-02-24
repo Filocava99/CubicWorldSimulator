@@ -1,7 +1,6 @@
 package it.cubicworldsimulator.game;
 
-import it.cubicworldsimulator.engine.GameEngine;
-import it.cubicworldsimulator.game.gui.Gui;
+import it.cubicworldsimulator.game.gui.GuiFactory;
 import it.cubicworldsimulator.game.gui.LauncherGui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

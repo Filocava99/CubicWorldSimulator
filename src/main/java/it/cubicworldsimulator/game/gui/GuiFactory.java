@@ -1,6 +1,5 @@
-package it.cubicworldsimulator.game;
+package it.cubicworldsimulator.game.gui;
 
-import it.cubicworldsimulator.game.gui.Gui;
 import org.joml.Vector2i;
 import org.liquidengine.legui.DefaultInitializer;
 import org.liquidengine.legui.animation.Animator;
