@@ -79,7 +79,6 @@ public class GuiFactory{
 
         context = initializer.getContext();
         while (running) {
-            System.out.println("i'm running on " + this.hashCode());
             // Also we can do it in one line
             context.updateGlfwWindow();
             Vector2i windowSize = context.getFramebufferSize();
