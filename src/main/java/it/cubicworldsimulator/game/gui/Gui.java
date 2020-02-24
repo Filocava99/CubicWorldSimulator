@@ -13,7 +13,7 @@ import java.util.Optional;
 public abstract class Gui extends Panel {
     protected long window;
     //X position where print label
-    protected final static float X_LABEL = 5;
+    protected final static float X_LABEL = 20;
     //Y position where start to print
     protected final static float Y_START_VALUE = 15;
     //X offset between label end and input begin
@@ -50,6 +50,10 @@ public abstract class Gui extends Panel {
         return text.equalsIgnoreCase("false") || text.equalsIgnoreCase("true");
     }
 
+    protected boolean isFiled (String text) {
+        return !text.isEmpty();
+    }
+
     protected Optional<Boolean> parseBoolean (String text) {
         if (isBoolean(text)) {
             return Optional.of(Boolean.parseBoolean(text));
@@ -82,7 +86,7 @@ public abstract class Gui extends Panel {
     }
 
     protected TextInput createOptionInput(String title, Panel panelToAdd) {
-        TextInput input = new TextInput(newXInput, this.newYLabel-Y_OFFSET-10, 70, 35);
+        TextInput input = new TextInput(newXInput, this.newYLabel-Y_OFFSET-10, 130, 35);
         input.getTextState().setText(title);
         input.getStyle().setFontSize(20f);
         input.getStyle().setTextColor(0,0,0,1);
