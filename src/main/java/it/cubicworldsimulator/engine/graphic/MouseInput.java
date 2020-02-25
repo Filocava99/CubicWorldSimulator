@@ -14,7 +14,7 @@ public class MouseInput {
 	private boolean leftButtonPressed;
 	private boolean rightButtonPressed;
 	
-	public MouseInput(Window window) {
+	public MouseInput(final Window window) {
 		this.previousPosition = new Vector2d(-1, -1);
 		this.currentPosition = new Vector2d(0, 0);
 		this.displacementVector = new Vector2d();
