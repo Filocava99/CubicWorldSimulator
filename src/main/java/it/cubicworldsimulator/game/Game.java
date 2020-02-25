@@ -43,6 +43,7 @@ public class Game implements GameLogic {
     private WorldManager worldManager;
     private World world;
     private Scene scene;
+    private final Map<Mesh, List<GameItem>> meshMap = new HashMap<>();
 
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
@@ -63,7 +64,7 @@ public class Game implements GameLogic {
         initShaderPrograms();
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
-            scene = new Scene(shaderProgram, skyBox, camera);
+            scene = new Scene(meshMap, shaderProgram, skyBox, camera);
         }catch (Exception e){
             logger.error(e.getMessage());
             logger.error(e.getStackTrace().toString());
@@ -87,6 +88,14 @@ public class Game implements GameLogic {
         logger.trace("Updating");
         if(player.didPlayerChangedChunk()){
             worldManager.updateActiveChunks(player.getChunkPosition());
+        }
+        GameItem chunk = commandsQueue.runLoadCommand();
+        if(chunk != null){
+            meshMap.put(chunk.getMesh(), List.of(chunk));
+        }
+        chunk = commandsQueue.runUnloadCommand();
+        if(chunk != null){
+            meshMap.remove(chunk.getMesh());
         }
     }
 
