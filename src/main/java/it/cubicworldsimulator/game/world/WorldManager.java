@@ -29,7 +29,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class WorldManager {
 
     private static final Logger logger = LogManager.getLogger(WorldManager.class);
-    private final int renderingDistance = 8;
+    private final int renderingDistance = 2;
 
     private final World world;
     private final CommandsQueue commandsQueue;

@@ -1,10 +1,7 @@
 package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.*;
-import it.cubicworldsimulator.engine.graphic.Camera;
-import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.Player;
-import it.cubicworldsimulator.engine.graphic.SkyBox;
+import it.cubicworldsimulator.engine.graphic.*;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
@@ -20,8 +17,7 @@ import org.joml.Vector3i;
 
 import java.util.*;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Game implements GameLogic {
     private static final Logger logger = LogManager.getLogger(Game.class);
@@ -36,6 +32,10 @@ public class Game implements GameLogic {
     private static final float Z_NEAR = 0.01f;
 
     private static final float Z_FAR = 1000.f;
+
+    private static final float cameraStep = 1;
+    private static final float mouseSensitivity = 0.5f;
+    private static final Vector3f cameraMovement = new Vector3f();
 
     private final Camera camera; //TODO Va messa nella scene direttamente?
     private final Player player;
@@ -73,19 +73,39 @@ public class Game implements GameLogic {
     }
 
     @Override
-    public void input(Window window) {
-        if (window.isKeyPressed(GLFW_KEY_UP)) {
-            direction = 1;
-        } else if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-            direction = -1;
-        } else {
-            direction = 0;
+    public void input(Window window, MouseInput mouseInput) {
+        cameraMovement.set(0, 0, 0);
+        if (window.isKeyPressed(GLFW_KEY_W)) {
+            cameraMovement.z = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_S)) {
+            cameraMovement.z = 1;
+        }
+        if (window.isKeyPressed(GLFW_KEY_A)) {
+            cameraMovement.x = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_D)) {
+            cameraMovement.x = 1;
+        }
+        if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
+            cameraMovement.y = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_SPACE)) {
+            cameraMovement.y = 1;
         }
     }
 
     @Override
-    public void update(float interval) {
+    public void update(float interval, MouseInput mouseInput) {
         logger.trace("Updating");
+        logger.debug(camera.getPosition().toString());
+        // Update camera position
+        camera.movePosition(cameraMovement.x * cameraStep,
+                cameraMovement.y * cameraStep,
+                cameraMovement.z * cameraStep);
+
+        // Update camera based on mouse
+        if (mouseInput.isRightButtonPressed()) {
+            Vector2f rotVec = mouseInput.getDisplacementVector();
+            camera.moveRotation(rotVec.x * mouseSensitivity, rotVec.y * mouseSensitivity, 0);
+        }
         if(player.didPlayerChangedChunk()){
             worldManager.updateActiveChunks(player.getChunkPosition());
         }

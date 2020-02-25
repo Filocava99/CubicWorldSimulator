@@ -52,13 +52,13 @@ public class RendererImpl implements Renderer {
         if (scene != null) {
             // Update projection Matrix
             Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, width, height, Z_NEAR, Z_FAR);
-            Matrix4f viewMatrix = transformation.getViewMatrix(scene.getCamera());
 
             if (scene.getSkyBox() != null) {
                 renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getCamera());
             }
 
             if (scene.getMeshMap() != null) {
+                Matrix4f viewMatrix = transformation.getViewMatrix(scene.getCamera());
                 filter.updateFrustum(projectionMatrix, viewMatrix);
                 filter.filter(scene.getMeshMap());
 
@@ -101,6 +101,7 @@ public class RendererImpl implements Renderer {
         initRender(mesh);
         gameItems.forEach(gameItem -> {
             if(gameItem.isInsideFrustum()){
+                logger.debug(gameItem.getPosition().toString());
                 Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
                 shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 logger.trace("GameItem name: " + gameItem.toString());
