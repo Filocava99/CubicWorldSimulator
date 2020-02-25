@@ -1,6 +1,7 @@
 package it.cubicworldsimulator.engine.graphic;
 
 import org.joml.Vector2d;
+import org.joml.Vector2f;
 
 import it.cubicworldsimulator.engine.Window;
 import static org.lwjgl.glfw.GLFW.*;
@@ -8,7 +9,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class MouseInput {
 	private final Vector2d previousPosition;
 	private final Vector2d currentPosition;
-	private final Vector2d displacementVector;
+	private final Vector2f displacementVector;
 	private final Window window;
 	private boolean pointerInWindow;
 	private boolean leftButtonPressed;
@@ -17,7 +18,7 @@ public class MouseInput {
 	public MouseInput(final Window window) {
 		this.previousPosition = new Vector2d(-1, -1);
 		this.currentPosition = new Vector2d(0, 0);
-		this.displacementVector = new Vector2d();
+		this.displacementVector = new Vector2f();
 		this.pointerInWindow = false;
 		this.leftButtonPressed = false;
 		this.rightButtonPressed = false;
@@ -30,7 +31,7 @@ public class MouseInput {
 		setMouseButtonPressed();
 	}
 	
-	public Vector2d getDisplacementVector() {
+	public Vector2f getDisplacementVector() {
 		return this.displacementVector;
 	}
 	
@@ -51,10 +52,10 @@ public class MouseInput {
 			boolean rotateX = (deltaX != 0);
 			boolean rotateY = (deltaY != 0);
 			if(rotateX) {
-				this.displacementVector.y = deltaX;
+				this.displacementVector.y = (float) deltaX;
 			}
 			if(rotateY) {
-				this.displacementVector.x = deltaY;
+				this.displacementVector.x = (float) deltaY;
 			}
 		}
 		this.previousPosition.x = this.currentPosition.x;
