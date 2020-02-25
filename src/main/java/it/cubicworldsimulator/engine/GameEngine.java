@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.engine;
 
+import it.cubicworldsimulator.engine.graphic.MouseInput;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFWWindowCloseCallback;
 
@@ -14,6 +15,8 @@ public class GameEngine extends Thread {
 
     private final Window window;
 
+    private  final MouseInput mouseInput;
+
     private final Timer timer;
 
     private final GameLogic gameLogic;
@@ -25,6 +28,7 @@ public class GameEngine extends Thread {
     public GameEngine(String windowTitle, int width, int height, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
         Vector4f clearColor = new Vector4f(0.0f,0.0f,255.0f,0.0f); //TODO Creare diversi costruttori in modo da passare il clearColor facoltativamente
         window = new Window(windowTitle, width, height, clearColor, vSync, debug);
+        mouseInput = new MouseInput();
         this.gameLogic = gameLogic;
         timer = new Timer();
     }
@@ -44,6 +48,7 @@ public class GameEngine extends Thread {
     protected void init() throws Exception {
         window.init();
         timer.init();
+        mouseInput.init(window);
         gameLogic.init(window);
     }
 
@@ -86,11 +91,12 @@ public class GameEngine extends Thread {
     }
 
     protected void input() {
-        gameLogic.input(window);
+        mouseInput.input(window);
+        gameLogic.input(window, mouseInput);
     }
 
     protected void update(float interval) {
-        gameLogic.update(interval);
+        gameLogic.update(interval, mouseInput);
     }
 
     protected void render() {
