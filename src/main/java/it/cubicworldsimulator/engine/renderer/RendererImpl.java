@@ -101,7 +101,6 @@ public class RendererImpl implements Renderer {
         initRender(mesh);
         gameItems.forEach(gameItem -> {
             if(gameItem.isInsideFrustum()){
-                logger.debug(gameItem.getPosition().toString());
                 Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
                 shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 logger.trace("GameItem name: " + gameItem.toString());
