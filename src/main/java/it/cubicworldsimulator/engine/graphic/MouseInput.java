@@ -23,17 +23,9 @@ public class MouseInput {
 	}
 	
 	public void init(Window window) {
-		glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xpos, ypos) ->{
-			this.currentPosition.x = xpos;
-			this.currentPosition.y = ypos;
-		});
-		glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered)->{
-			this.pointerInWindow = entered;
-		});
-		glfwSetMouseButtonCallback(window.getWindowHandle(), (windowHandle, button, action, mode)->{
-			this.leftButtonPressed = (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS);
-			this.rightButtonPressed = (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS);
-		});
+		setCursorPosition(window);
+		checkCursorEnter(window);
+		setMouseButtonPressed(window);
 	}
 	
 	public Vector2d getDisplacementVector() {
@@ -46,6 +38,36 @@ public class MouseInput {
 	
 	public boolean isRightButtonPressed() {
 		return this.rightButtonPressed;
+	}
+	
+	public void input(Window window) {
+		this.displacementVector.x = 0;
+		this.displacementVector.y = 0;
+		
+		if(this.previousPosition.x > 0 && this.previousPosition.y > 0 && this.pointerInWindow) {
+			
+		}
+		
+	}
+	
+	private void setCursorPosition(Window window) {
+		glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xpos, ypos) ->{
+			this.currentPosition.x = xpos;
+			this.currentPosition.y = ypos;
+		});
+	}
+	
+	private void checkCursorEnter(Window window) {
+		glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered)->{
+			this.pointerInWindow = entered;
+		});
+	}
+	
+	private void setMouseButtonPressed(Window window) {
+		glfwSetMouseButtonCallback(window.getWindowHandle(), (windowHandle, button, action, mode)->{
+			this.leftButtonPressed = (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS);
+			this.rightButtonPressed = (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS);
+		});
 	}
 	
 }
