@@ -23,7 +23,7 @@ public class Player {
 
     public boolean didPlayerChangedChunk(){
         Vector3i chunkCoord = worldCoordToChunkCoord(camera.getPosition());
-        final boolean result = chunkCoord.equals(lastChunk);
+        final boolean result = !chunkCoord.equals(lastChunk);
         if(result){
             lastChunk = chunkCoord;
         }
