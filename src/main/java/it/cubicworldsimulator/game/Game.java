@@ -3,6 +3,7 @@ package it.cubicworldsimulator.game;
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.Camera;
 import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.MouseInput;
 import it.cubicworldsimulator.engine.graphic.Player;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
@@ -22,6 +23,7 @@ import java.util.*;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Game implements GameLogic {
     private static final Logger logger = LogManager.getLogger(Game.class);
@@ -36,6 +38,10 @@ public class Game implements GameLogic {
     private static final float Z_NEAR = 0.01f;
 
     private static final float Z_FAR = 1000.f;
+    
+    private static final float CAMERA_POS_STEP = 0.05f;
+
+    private static final float MOUSE_SENSITIVITY = 0.2f;
 
     private final Camera camera; //TODO Va messa nella scene direttamente?
     private final Player player;
@@ -48,6 +54,8 @@ public class Game implements GameLogic {
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
+    
+    private final Vector3f cameraInc;
 
     //TODO Ha senso il metodo init()? Se ha senso conviene chiamarlo a parte oppure direttamente dal costruttore?
     public Game() {
@@ -55,6 +63,7 @@ public class Game implements GameLogic {
         camera = new Camera();
         player = new Player(camera);
         commandsQueue = new CommandsQueue();
+        this.cameraInc = new Vector3f();
     }
 
     @Override
@@ -73,19 +82,38 @@ public class Game implements GameLogic {
     }
 
     @Override
-    public void input(Window window) {
-        if (window.isKeyPressed(GLFW_KEY_UP)) {
-            direction = 1;
-        } else if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-            direction = -1;
-        } else {
-            direction = 0;
-        }
+    public void input(Window window, MouseInput mouseInput) {
+    	this.cameraInc.set(0,0,0);
+    	if(window.isKeyPressed(GLFW_KEY_W)) {
+    		this.cameraInc.z = -1;
+    	}else if(window.isKeyPressed(GLFW_KEY_S)){
+    		this.cameraInc.z = 1;
+    	}
+    	if(window.isKeyPressed(GLFW_KEY_A)) {
+    		this.cameraInc.x = -1;
+    	}else if(window.isKeyPressed(GLFW_KEY_D)) {
+    		this.cameraInc.x = 1;
+    	}
+    	if(window.isKeyPressed(GLFW_KEY_Z)) {
+    		this.cameraInc.y = -1;
+    	}else if(window.isKeyPressed(GLFW_KEY_X)) {
+    		this.cameraInc.y = 1;
+    	}
     }
 
     @Override
-    public void update(float interval) {
+    public void update(float interval, MouseInput mouseInput) {
         logger.trace("Updating");
+        
+        this.camera.movePosition(this.cameraInc.x * CAMERA_POS_STEP,
+        		this.cameraInc.y * CAMERA_POS_STEP,
+        		this.cameraInc.z * CAMERA_POS_STEP);
+        
+        if(mouseInput.isRightButtonPressed()) {
+        	Vector2f rotationVector = mouseInput.getDisplacementVector();
+        	camera.setRotation(rotationVector.x * MOUSE_SENSITIVITY, rotationVector.y * MOUSE_SENSITIVITY, 0);
+        }
+        
         if(player.didPlayerChangedChunk()){
             worldManager.updateActiveChunks(player.getChunkPosition());
         }

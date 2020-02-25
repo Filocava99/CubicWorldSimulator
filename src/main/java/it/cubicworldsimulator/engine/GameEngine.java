@@ -3,6 +3,8 @@ package it.cubicworldsimulator.engine;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFWWindowCloseCallback;
 
+import it.cubicworldsimulator.engine.graphic.MouseInput;
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11C.GL_FALSE;
 
@@ -17,6 +19,8 @@ public class GameEngine extends Thread {
     private final Timer timer;
 
     private final GameLogic gameLogic;
+    
+    private final MouseInput mouseInput;
 
     public GameEngine(String windowTitle, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
         this(windowTitle, 0, 0, vSync, gameLogic, debug);
@@ -27,6 +31,7 @@ public class GameEngine extends Thread {
         window = new Window(windowTitle, width, height, clearColor, vSync, debug);
         this.gameLogic = gameLogic;
         timer = new Timer();
+        this.mouseInput = new MouseInput(this.window);
     }
 
     @Override
@@ -86,11 +91,12 @@ public class GameEngine extends Thread {
     }
 
     protected void input() {
-        gameLogic.input(window);
+    	this.mouseInput.input();
+        gameLogic.input(window, this.mouseInput);
     }
 
     protected void update(float interval) {
-        gameLogic.update(interval);
+        gameLogic.update(interval, this.mouseInput);
     }
 
     protected void render() {
