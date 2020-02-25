@@ -45,11 +45,20 @@ public class MouseInput {
 	public void input() {
 		this.displacementVector.x = 0;
 		this.displacementVector.y = 0;
-		
 		if(this.previousPosition.x > 0 && this.previousPosition.y > 0 && this.pointerInWindow) {
-			
+			double deltaX = this.currentPosition.x - this.previousPosition.x;
+			double deltaY = this.currentPosition.y - this.previousPosition.y;
+			boolean rotateX = (deltaX != 0);
+			boolean rotateY = (deltaY != 0);
+			if(rotateX) {
+				this.displacementVector.y = deltaX;
+			}
+			if(rotateY) {
+				this.displacementVector.x = deltaY;
+			}
 		}
-		
+		this.previousPosition.x = this.currentPosition.x;
+		this.previousPosition.y = this.currentPosition.y;
 	}
 	
 	private void setCursorPosition() {
