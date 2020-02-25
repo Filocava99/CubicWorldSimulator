@@ -31,7 +31,7 @@ public class Game implements GameLogic {
 
     private static final float Z_NEAR = 0.01f;
 
-    private static final float Z_FAR = 1000.f;
+    private static final float Z_FAR = 10000.f;
 
     private static final float cameraStep = 1;
     private static final float mouseSensitivity = 0.5f;
@@ -59,7 +59,7 @@ public class Game implements GameLogic {
 
     @Override
     public void init(Window window){
-        world = new World("test", 424243563456L);
+        world = new World("test", 463456L);
         worldManager = new WorldManager(world, commandsQueue);
         initShaderPrograms();
         try {

@@ -130,6 +130,7 @@ public class WorldManager {
         Map<String, Object> textureConfig = (Map<String, Object>) load.loadFromInputStream(inputStream);
         textureFile = textureConfig.get("file").toString();
         float textureStep = Float.parseFloat(textureConfig.get("step").toString());
+        logger.debug(textureStep);
         Map<String, Object> blocksList = (Map<String, Object>) textureConfig.get("blocks");
         blocksList.entrySet().stream().forEach(entry -> {
             String blockName = entry.getKey();
@@ -147,8 +148,8 @@ public class WorldManager {
                         break;
                     }
                     Map<String, Object> faceInfo = (Map<String, Object>) iterator.next().getValue();
-                    float x = Float.parseFloat(faceInfo.get("x").toString()) * textureStep;
-                    float y = Float.parseFloat(faceInfo.get("y").toString()) * textureStep;
+                    float x = Float.parseFloat(faceInfo.get("x").toString());
+                    float y = Float.parseFloat(faceInfo.get("y").toString());
                     coords[i] = new Vector2f(x, y);
                     i++;
                 }
