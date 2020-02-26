@@ -27,7 +27,7 @@
         <Logger name="it.cubicworldsimulator.engine.renderer.RendererImpl" level="debug" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        <Root level="info">
+        <Root level="debug">
             <AppenderRef ref="LogToConsole"/>
             <AppenderRef ref="Async"/>
         </Root>

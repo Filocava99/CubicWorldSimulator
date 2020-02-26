@@ -5,12 +5,8 @@ import it.cubicworldsimulator.engine.graphic.*;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
-import it.cubicworldsimulator.game.world.chunk.Chunk;
-import it.cubicworldsimulator.game.world.chunk.ChunkColumn;
-import it.cubicworldsimulator.game.world.chunk.ChunkMesh;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -65,6 +61,14 @@ public class Game implements GameLogic {
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
             scene = new Scene(meshMap, shaderProgram, skyBox, camera);
+            worldManager.updateActiveChunksSync(new Vector3i(0,0,0));
+            while(commandsQueue.hasLoadCommand()){
+                GameItem chunk = commandsQueue.runLoadCommand();
+                if(chunk != null){
+                    logger.debug("Adding chunk mesh");
+                    meshMap.put(chunk.getMesh(), List.of(chunk));
+                }
+            }
         }catch (Exception e){
             logger.error(e.getMessage());
             logger.error(e.getStackTrace().toString());
@@ -95,7 +99,6 @@ public class Game implements GameLogic {
     @Override
     public void update(float interval, MouseInput mouseInput) {
         logger.trace("Updating");
-        logger.debug(camera.getPosition().toString());
         // Update camera position
         camera.movePosition(cameraMovement.x * cameraStep,
                 cameraMovement.y * cameraStep,
@@ -107,15 +110,21 @@ public class Game implements GameLogic {
             camera.moveRotation(rotVec.x * mouseSensitivity, rotVec.y * mouseSensitivity, 0);
         }
         if(player.didPlayerChangedChunk()){
-            worldManager.updateActiveChunks(player.getChunkPosition());
+            worldManager.updateActiveChunksAsync(player.getChunkPosition());
         }
-        GameItem chunk = commandsQueue.runLoadCommand();
-        if(chunk != null){
-            meshMap.put(chunk.getMesh(), List.of(chunk));
-        }
-        chunk = commandsQueue.runUnloadCommand();
-        if(chunk != null){
-            meshMap.remove(chunk.getMesh());
+        for(int i = 0; i < 1; i++){
+            GameItem chunk = commandsQueue.runLoadCommand();
+            if(chunk != null){
+                logger.debug("Adding chunk mesh");
+                meshMap.put(chunk.getMesh(), List.of(chunk));
+            }
+            chunk = commandsQueue.runUnloadCommand();
+            if(chunk != null){
+                //logger.debug("Removing chunk mesh");
+                //logger.debug(chunk.getMesh() == null);
+                var list = meshMap.remove(chunk.getMesh());
+                //logger.debug(list == null);
+            }
         }
     }
 

@@ -76,4 +76,8 @@ public class CommandsQueue {
         }
     }
 
+    public boolean hasLoadCommand(){
+        return !loadCommands.isEmpty();
+    }
+
 }
