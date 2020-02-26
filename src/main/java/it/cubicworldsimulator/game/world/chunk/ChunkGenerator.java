@@ -6,8 +6,11 @@ import it.cubicworldsimulator.game.world.WorldManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
+import org.joml.Vector2i;
+import org.joml.Vector3i;
 
 import java.util.Arrays;
+import java.util.Random;
 
 public class ChunkGenerator {
     private static final Logger logger = LogManager.getLogger(ChunkGenerator.class);
@@ -52,6 +55,94 @@ public class ChunkGenerator {
             chunks[i] = new Chunk(Arrays.copyOfRange(blocks, 4096 * i, 4096 * i + 4096), new SerializableVector3f(chunkX, i, chunkZ));
         }
         //System.out.println("Fine generazione");
-        return new ChunkColumn(chunks, new Vector2f(chunkX, chunkZ));
+        ChunkColumn chunkColumn = new ChunkColumn(chunks, new Vector2f(chunkX, chunkZ));
+        generateTrees(chunkColumn);
+        return chunkColumn;
+    }
+
+    private void generateTrees(ChunkColumn chunkColumn) {
+        Random random = new Random();
+        for (int i = 0; i < 5; i++) {
+            int x = Math.abs(random.nextInt() % 12) + 2;
+            int z = Math.abs(random.nextInt() % 12) + 2;
+            System.out.println(x);
+            System.out.println(z);
+            int y = getHeight(new Vector2i(x,z), chunkColumn);
+            Vector3i treePos = new Vector3i(x, y, z);
+            int height = random.nextInt()%2+4;
+            if(isSpaceAvailableForTree(chunkColumn,treePos, height)){
+                growTree(chunkColumn, treePos, height);
+            }
+        }
+    }
+
+    private int getHeight(Vector2i coord, ChunkColumn chunkColumn){
+        for(int i = 1; i < 256; i++){
+            byte blockId = chunkColumn.getBlock(new Vector3i(coord.x, i, coord.y));
+            if(blockId == worldManager.getBlockTypes().get("air").getId()){
+                return Math.max(0,i);
+            }
+        }
+        return 255;
+    }
+
+    private boolean isSpaceAvailableForTree(ChunkColumn chunkColumn, Vector3i coord, int height){
+        if(coord.y>0){
+            if(chunkColumn.getBlock(new Vector3i(coord.x, coord.y-1, coord.z)) == worldManager.getBlockTypes().get("water").getId()){
+                return false;
+            }
+        }
+        return coord.y + height <= 255;
+    }
+
+    /*
+    L: max	max-1	max-2	max-3
+	.....	.....	%###%	%###%
+	..#..	.%#%.	#####	#####
+	.###.	.#O#.	##O##	##O##
+	..#..	.%#%.	#####	#####
+	.....	.....	%###%	%###%
+
+    Key:
+    . air
+    # leaves
+    O tree trunk
+    % contains leaves 50% of the time
+     */
+    //TODO Pattern dell'albero da file o con classe apposita
+    private void growTree(ChunkColumn chunk, Vector3i pos, int height) {
+        byte logId = worldManager.getBlockTypes().get("log").getId();
+        byte leafId = worldManager.getBlockTypes().get("leaf").getId();
+        //Max layer
+       // if (height + pos.y)
+
+        for(int i = 0; i <= height; i++){
+            //tronco
+            chunk.setBlock(new Vector3i(pos.x, pos.y + i, pos.z), logId);
+            if(i>height-3){
+                chunk.setBlock(new Vector3i(pos.x-1, pos.y + i, pos.z), leafId);
+                chunk.setBlock(new Vector3i(pos.x+1, pos.y + i, pos.z), leafId);
+                chunk.setBlock(new Vector3i(pos.x, pos.y + i, pos.z-1), leafId);
+                chunk.setBlock(new Vector3i(pos.x, pos.y + i, pos.z+1), leafId);
+            }
+        }
+        //max
+        chunk.setBlock(new Vector3i(pos.x, pos.y + height, pos.z), leafId);
+
+        //max-1
+
+        Random random = new Random();
+        if(random.nextBoolean()){
+            chunk.setBlock(new Vector3i(pos.x-1, pos.y + height, pos.z-1), leafId);
+        }
+        if(random.nextBoolean()){
+            chunk.setBlock(new Vector3i(pos.x-1, pos.y + height, pos.z+1), leafId);
+        }
+        if(random.nextBoolean()){
+            chunk.setBlock(new Vector3i(pos.x+1, pos.y + height, pos.z-1), leafId);
+        }
+        if(random.nextBoolean()){
+            chunk.setBlock(new Vector3i(pos.x+1, pos.y + height, pos.z+1), leafId);
+        }
     }
 }
