@@ -29,7 +29,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class WorldManager {
 
     private static final Logger logger = LogManager.getLogger(WorldManager.class);
-    private final int renderingDistance = 2;
+    private final int renderingDistance = 6;
 
     private final World world;
     private final CommandsQueue commandsQueue;
@@ -60,11 +60,16 @@ public class WorldManager {
     }
 
     //TODO Controllare le perfomances, non vorrei che si inchiodasse se un giocatore fa avanti e indietro fra due chunk
-    public void updateActiveChunks(Vector3i chunkPosition) {
+    public void updateActiveChunksAsync(Vector3i chunkPosition) {
         new Thread(() -> {
             unloadOldChunks(chunkPosition);
             loadNewChunks(chunkPosition);
         }).start();
+    }
+
+    public void updateActiveChunksSync(Vector3i chunkPosition) {
+        unloadOldChunks(chunkPosition);
+        loadNewChunks(chunkPosition);
     }
 
     private void unloadOldChunks(Vector3i chunkPosition) {
