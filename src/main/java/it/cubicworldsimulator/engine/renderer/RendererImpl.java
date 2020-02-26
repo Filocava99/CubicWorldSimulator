@@ -53,10 +53,6 @@ public class RendererImpl implements Renderer {
             // Update projection Matrix
             Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, width, height, Z_NEAR, Z_FAR);
 
-            if (scene.getSkyBox() != null) {
-                renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getCamera());
-            }
-
             if (scene.getMeshMap() != null) {
                 Matrix4f viewMatrix = transformation.getViewMatrix(scene.getCamera());
                 filter.updateFrustum(projectionMatrix, viewMatrix);
@@ -71,6 +67,10 @@ public class RendererImpl implements Renderer {
                     renderList(scene.getShaderProgram(), viewMatrix, k, v);
                 });
                 scene.getShaderProgram().unbind();
+            }
+
+            if (scene.getSkyBox() != null) {
+                renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getCamera());
             }
         }
     }
