@@ -1,7 +1,5 @@
 package it.cubicworldsimulator.engine.graphic;
 
-import org.joml.Vector2d;
-
 import it.cubicworldsimulator.engine.Window;
 import org.joml.Vector2f;
 
@@ -14,49 +12,24 @@ public class MouseInput {
 	private boolean pointerInWindow;
 	private boolean leftButtonPressed;
 	private boolean rightButtonPressed;
+	private final Window window;
 	
-	public MouseInput() {
+	public MouseInput(Window window) {
 		this.previousPosition = new Vector2f(-1, -1);
 		this.currentPosition = new Vector2f(0, 0);
 		this.displacementVector = new Vector2f();
 		this.pointerInWindow = false;
 		this.leftButtonPressed = false;
 		this.rightButtonPressed = false;
+		this.window = window;
 	}
 	
-	public void init(Window window) {
-		glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xpos, ypos) ->{
-			this.currentPosition.x = (float)xpos;
-			this.currentPosition.y = (float)ypos;
-		});
-		glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered)->{
-			this.pointerInWindow = entered;
-		});
-		glfwSetMouseButtonCallback(window.getWindowHandle(), (windowHandle, button, action, mode)->{
-			this.leftButtonPressed = (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS);
-			this.rightButtonPressed = (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS);
-		});
+	public void init() {
+		setCursorPosition();
+		checkCursorEnter();
+		setMouseButtonPressed();
 	}
-
-	public void input(Window window) {
-		displacementVector.x = 0;
-		displacementVector.y = 0;
-		if (previousPosition.x > 0 && previousPosition.y > 0 && pointerInWindow) {
-			double deltax = currentPosition.x - previousPosition.x;
-			double deltay = currentPosition.y - previousPosition.y;
-			boolean rotateX = deltax != 0;
-			boolean rotateY = deltay != 0;
-			if (rotateX) {
-				displacementVector.y = (float) deltax;
-			}
-			if (rotateY) {
-				displacementVector.x = (float) deltay;
-			}
-		}
-		previousPosition.x = currentPosition.x;
-		previousPosition.y = currentPosition.y;
-	}
-
+	
 	public Vector2f getDisplacementVector() {
 		return this.displacementVector;
 	}
@@ -69,4 +42,43 @@ public class MouseInput {
 		return this.rightButtonPressed;
 	}
 	
+	public void input() {
+		this.displacementVector.x = 0;
+		this.displacementVector.y = 0;
+		if(this.previousPosition.x > 0 && this.previousPosition.y > 0 && this.pointerInWindow) {
+			double deltaX = this.currentPosition.x - this.previousPosition.x;
+			double deltaY = this.currentPosition.y - this.previousPosition.y;
+			boolean rotateX = (deltaX != 0);
+			boolean rotateY = (deltaY != 0);
+			if(rotateX) {
+				this.displacementVector.y = (float) deltaX;
+			}
+			if(rotateY) {
+				this.displacementVector.x = (float) deltaY;
+			}
+		}
+		this.previousPosition.x = this.currentPosition.x;
+		this.previousPosition.y = this.currentPosition.y;
+	}
+
+	private void setCursorPosition() {
+		glfwSetCursorPosCallback(this.window.getWindowHandle(), (windowHandle, xpos, ypos) ->{
+			this.currentPosition.x = (float)xpos;
+			this.currentPosition.y = (float)ypos;
+		});
+	}
+
+	private void checkCursorEnter() {
+		glfwSetCursorEnterCallback(this.window.getWindowHandle(), (windowHandle, entered)->{
+			this.pointerInWindow = entered;
+		});
+	}
+
+	private void setMouseButtonPressed() {
+		glfwSetMouseButtonCallback(this.window.getWindowHandle(), (windowHandle, button, action, mode)->{
+			this.leftButtonPressed = (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS);
+			this.rightButtonPressed = (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS);
+		});
+	}
+
 }
