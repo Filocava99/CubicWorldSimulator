@@ -47,7 +47,7 @@ public class ChunkMesh implements Serializable {
         }
         if (!areVBOsArraysEmpty()) {
             try {
-                mesh = new Mesh(verticesArray, uvsArray, indicesArray, meshMaterial, Constants.chunkAxisSize);
+                mesh = new Mesh(verticesArray, uvsArray, normalsArray, indicesArray, meshMaterial, Constants.chunkAxisSize);
                 meshReady = true;
             } catch (Exception e) {
                 e.printStackTrace();
