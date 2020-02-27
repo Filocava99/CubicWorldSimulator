@@ -1,6 +1,8 @@
 package it.cubicworldsimulator.engine;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 
 import java.util.HashMap;
@@ -112,11 +114,13 @@ public class ShaderProgram {
     	createUniform(uniformName + ".intensity");
     }
     
-    public void createMateriaUniform(String uniformName) {
-    	
+    public void createMateriaUniform(String uniformName) throws Exception {
+    	createUniform(uniformName + ".ambient");
+    	createUniform(uniformName + ".diffuse");
+    	createUniform(uniformName + ".specular");
+    	createUniform(uniformName + ".hasTexture");
+    	createUniform(uniformName + ".reflectance");
     }
-    
-    
     
     public void setUniform(String uniformName, int value) {
         glUniform1i(this.uniforms.get(uniformName), value);
@@ -128,6 +132,18 @@ public class ShaderProgram {
             glUniformMatrix4fv(this.uniforms.get(uniformName), false,
                     value.get(stack.mallocFloat(16)));
         }
+    }
+    
+    public void setUniform(String uniformName, float value) {
+    	glUniform1f(uniforms.get(uniformName), value);
+    }
+    
+    public void setUniform(String uniformName, Vector3f value) {
+    	glUniform3f(uniforms.get(uniformName), value.x, value.y, value.z);
+    }
+    
+    public void setUniform(String uniformName, Vector4f value) {
+    	glUniform4f(uniforms.get(uniformName), value.x, value.y, value.z, value.w);
     }
 
     public void bind() {
