@@ -106,6 +106,14 @@ public class ShaderProgram {
         createUniform(uniformName + ".cutoff");
     }
     
+    public void createDirectionalLightUnform(String uniformName) throws Exception {
+    	createUniform(".colour");
+    	createUniform(".direction");
+    	createUniform(".intensity");
+    }
+    
+    
+    
     
     
     public void setUniform(String uniformName, int value) {
