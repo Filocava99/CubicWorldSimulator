@@ -1,11 +1,9 @@
 package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.GameItem;
-import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.game.openglcommands.OpenGLCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLLoadChunkCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
-import it.cubicworldsimulator.game.world.chunk.ChunkMesh;
 import org.joml.Vector3f;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +35,7 @@ public class CommandsQueue {
             Vector3f coords = inverseLoadCommandsMap.remove(command);
             loadCommandsMap.remove(coords);
             GameItem gameItem = new GameItem(command.getMesh());
-            gameItem.setPosition(coords);
+            gameItem.setPosition((int)coords.x << 4, (int)coords.y << 4, (int)coords.z << 4); //TODO Salvare il 4 come costante nella classe Constants
             return gameItem;
         }
         return null;
@@ -50,7 +48,7 @@ public class CommandsQueue {
             Vector3f coords = inverseUnloadCommandsMap.remove(command);
             unloadCommandsMap.remove(coords);
             GameItem gameItem = new GameItem(command.getMesh());
-            gameItem.setPosition(coords);
+            gameItem.setPosition((int)coords.x << 4, (int)coords.y << 4, (int)coords.z << 4); //TODO E' necessario?
             return gameItem;
         }
         return null;
@@ -76,6 +74,10 @@ public class CommandsQueue {
             inverseUnloadCommandsMap.put(command, coord);
             unloadCommands.add(command);
         }
+    }
+
+    public boolean hasLoadCommand(){
+        return !loadCommands.isEmpty();
     }
 
 }

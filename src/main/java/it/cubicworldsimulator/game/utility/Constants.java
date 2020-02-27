@@ -16,12 +16,13 @@ public class Constants {
         maxHeight = chunkAxisSize * chunksPerColumn;
         final String osName = System.getProperty("os.name");
         if(osName.contains("Windows")){
-            installationFolder = System.getProperty("user.home") + File.pathSeparator + "Desktop/CubicWorldSimulator";
+            installationFolder = System.getProperty("user.home") + File.separator + "Desktop" + File.separator + "CubicWorldSimulator";
         }else if(osName.contains("Mac")){
-            installationFolder = System.getProperty("user.home") + File.pathSeparator + "Desktop/CubicWorldSimulator";
+            installationFolder = System.getProperty("user.home") + File.separator + "Desktop" + File.separator + "CubicWorldSimulator";
         }else{
-            installationFolder = System.getProperty("user.home") + File.pathSeparator + "Desktop/CubicWorldSimulator";
+            installationFolder = System.getProperty("user.home") + File.separator + "Desktop" + File.separator + "CubicWorldSimulator";
         }
+        System.out.println(installationFolder);
     }
 
 }

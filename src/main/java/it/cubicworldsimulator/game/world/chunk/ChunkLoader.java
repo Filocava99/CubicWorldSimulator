@@ -16,7 +16,8 @@ public class ChunkLoader {
 
     public ChunkLoader(String worldName) {
         this.worldName = worldName;
-        chunkFolderPath = Constants.installationFolder + File.pathSeparator + "data" + File.pathSeparator + worldName + File.pathSeparator + "chunks";
+        chunkFolderPath = Constants.installationFolder + File.separator + "data" + File.separator + worldName + File.separator + "chunks";
+        logger.info(chunkFolderPath);
     }
 
     public Optional<ChunkColumn> loadChunkColumn(float x, float y){
@@ -24,7 +25,7 @@ public class ChunkLoader {
         try{
             File chunkFolder = new File(chunkFolderPath);
             chunkFolder.mkdirs();
-            File chunkFile = new File(chunkFolderPath + File.pathSeparator + x + "_" + y + ".chunk");
+            File chunkFile = new File(chunkFolderPath + File.separator + x + "_" + y + ".chunk");
             ChunkColumn chunkColumn = null;
             if(chunkFile.exists()){
                 ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(chunkFile));
@@ -45,7 +46,7 @@ public class ChunkLoader {
         try{
             File chunkFolder = new File(chunkFolderPath);
             chunkFolder.mkdirs();
-            File chunkFile = new File(chunkFolderPath + File.pathSeparator + chunkColumn.getPosition().x + "_" + chunkColumn.getPosition().y + ".chunk");
+            File chunkFile = new File(chunkFolderPath + File.separator + chunkColumn.getPosition().x + "_" + chunkColumn.getPosition().y + ".chunk");
             if(chunkFile.exists()){
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(chunkFile));
                 objectOutputStream.writeObject(chunkColumn);

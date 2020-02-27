@@ -3,6 +3,7 @@ package it.cubicworldsimulator.game.world.chunk;
 import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.utility.math.SerializableVector3f;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.io.Serializable;
 
@@ -26,6 +27,14 @@ public class Chunk implements Serializable {
 
     public Vector3f getPosition() {
         return position;
+    }
+
+    public void setBlock(int x, int y, int z, byte blockId){
+        blocks[x + (y << 8) + (z << 4)] = blockId;
+    }
+
+    public void setBlock(Vector3i coord, byte blockId){
+        setBlock(coord.x, coord.y, coord.z, blockId);
     }
 
     public byte getBlock(int x, int y, int z) {
