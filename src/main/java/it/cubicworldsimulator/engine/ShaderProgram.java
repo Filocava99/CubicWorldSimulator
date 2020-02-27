@@ -107,12 +107,14 @@ public class ShaderProgram {
     }
     
     public void createDirectionalLightUnform(String uniformName) throws Exception {
-    	createUniform(".colour");
-    	createUniform(".direction");
-    	createUniform(".intensity");
+    	createUniform(uniformName +".colour");
+    	createUniform(uniformName + ".direction");
+    	createUniform(uniformName + ".intensity");
     }
     
-    
+    public void createMateriaUniform(String uniformName) {
+    	
+    }
     
     
     
