@@ -5,6 +5,9 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 
+import it.cubicworldsimulator.engine.graphic.PointLight;
+import it.cubicworldsimulator.engine.graphic.SpotLight;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -145,7 +148,35 @@ public class ShaderProgram {
     public void setUniform(String uniformName, Vector4f value) {
     	glUniform4f(uniforms.get(uniformName), value.x, value.y, value.z, value.w);
     }
-
+    
+    public void setUniform(String uniformName, PointLight[] pointLights) {
+    	int numLights = pointLights != null ? pointLights.length : 0;
+    	for(int i = 0; i < numLights; i++) {
+    		setUniform(uniformName, pointLights[i], i);
+    	}
+    }
+    
+    public void setUniform(String uniformName, PointLight pointLight, int pos) {
+    	setUniform(uniformName + "[" + pos + "]", pointLight);
+    }
+    
+    public void setUniform(String uniformName, PointLight pointLight) {
+    	 setUniform(uniformName + ".colour", pointLight.getColour());
+         setUniform(uniformName + ".position", pointLight.getPosition());
+         setUniform(uniformName + ".intensity", pointLight.getIntensity());
+         PointLight.Attenuation att = pointLight.getAtt();
+         setUniform(uniformName + ".att.constant", att.getCostant());
+         setUniform(uniformName + ".att.linear", att.getLinear());
+         setUniform(uniformName + ".att.exponent", att.getExponent());
+    }
+    
+    public void setUniform(String uniformName, SpotLight spotLight){
+    	setUniform(uniformName + ".pl", spotLight.getPointLight());
+        setUniform(uniformName + ".conedir", spotLight.getConeDirection());
+        setUniform(uniformName + ".cutoff", spotLight.getCutoffAngleCosine());
+    }
+    
+    
     public void bind() {
         glUseProgram(this.programId);
     }
