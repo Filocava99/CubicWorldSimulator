@@ -2,6 +2,7 @@ package it.cubicworldsimulator.engine;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -12,6 +13,15 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
+
+    /**
+     * Field of View in Radians
+     */
+    private static final float FOV = (float) Math.toRadians(60.0f);
+
+    private static final float Z_NEAR = 0.01f;
+
+    private static final float Z_FAR = 1000.f;
 
     private static final Logger logger = LogManager.getLogger(Window.class);
 
@@ -25,6 +35,8 @@ public class Window {
 
     private boolean resized;
 
+    private Matrix4f projectionMatrix;
+
     private boolean vSync;
     private final boolean debug;
     private final Vector4f clearColor;
@@ -37,6 +49,7 @@ public class Window {
         this.resized = false;
         this.debug = debug;
         this.clearColor = clearColor;
+        this.projectionMatrix = new Matrix4f();
     }
 
     public void init() {
@@ -183,5 +196,10 @@ public class Window {
         }
         glfwSwapBuffers(windowHandle);
         glfwPollEvents();
+    }
+
+    public Matrix4f updateProjectionMatrix() {
+        float aspectRatio = (float) width / (float) height;
+        return projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
     }
 }
