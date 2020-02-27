@@ -1,9 +1,8 @@
 package it.cubicworldsimulator.engine;
 
+import it.cubicworldsimulator.engine.graphic.MouseInput;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFWWindowCloseCallback;
-
-import it.cubicworldsimulator.engine.graphic.MouseInput;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11C.GL_FALSE;
@@ -16,11 +15,11 @@ public class GameEngine extends Thread {
 
     private final Window window;
 
+    private  final MouseInput mouseInput;
+
     private final Timer timer;
 
     private final GameLogic gameLogic;
-    
-    private final MouseInput mouseInput;
 
     public GameEngine(String windowTitle, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
         this(windowTitle, 0, 0, vSync, gameLogic, debug);
@@ -29,9 +28,9 @@ public class GameEngine extends Thread {
     public GameEngine(String windowTitle, int width, int height, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
         Vector4f clearColor = new Vector4f(0.0f,0.0f,255.0f,0.0f); //TODO Creare diversi costruttori in modo da passare il clearColor facoltativamente
         window = new Window(windowTitle, width, height, clearColor, vSync, debug);
+        mouseInput = new MouseInput(window);
         this.gameLogic = gameLogic;
         timer = new Timer();
-        this.mouseInput = new MouseInput(this.window);
     }
 
     @Override
@@ -49,6 +48,7 @@ public class GameEngine extends Thread {
     protected void init() throws Exception {
         window.init();
         timer.init();
+        mouseInput.init();
         gameLogic.init(window);
     }
 
@@ -91,12 +91,12 @@ public class GameEngine extends Thread {
     }
 
     protected void input() {
-    	this.mouseInput.input();
-        gameLogic.input(window, this.mouseInput);
+        mouseInput.input();
+        gameLogic.input(window, mouseInput);
     }
 
     protected void update(float interval) {
-        gameLogic.update(interval, this.mouseInput);
+        gameLogic.update(interval, mouseInput);
     }
 
     protected void render() {
