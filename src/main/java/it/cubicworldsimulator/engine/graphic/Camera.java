@@ -1,5 +1,7 @@
 package it.cubicworldsimulator.engine.graphic;
 
+import it.cubicworldsimulator.engine.Transformation;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class Camera {
@@ -8,14 +10,27 @@ public class Camera {
 
     private final Vector3f rotation;
 
+    private final Transformation transformation;
+
+    private Matrix4f viewMatrix;
+
     public Camera() {
-        position = new Vector3f(0, 0, 0);
-        rotation = new Vector3f(0, 0, 0);
+        this(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
     }
 
     public Camera(Vector3f position, Vector3f rotation) {
         this.position = position;
         this.rotation = rotation;
+        transformation = new Transformation();
+        viewMatrix = new Matrix4f();
+    }
+
+    public Matrix4f updateViewMatrix(){
+        return transformation.updateGenericViewMatrix(position, rotation, viewMatrix);
+    }
+
+    public Matrix4f getViewMatrix(){
+        return viewMatrix;
     }
 
     public Vector3f getPosition() {
