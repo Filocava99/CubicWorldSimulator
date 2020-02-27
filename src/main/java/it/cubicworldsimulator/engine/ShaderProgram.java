@@ -78,7 +78,36 @@ public class ShaderProgram {
         }
         this.uniforms.put(uniformName, uniformLocation);
     }
-
+    
+    public void createPointLightListUniform(String uniformName, int size) throws Exception {
+		for (int i = 0; i < size; i++) {
+			createPointLightUniform(uniformName + "[" + i + "]");
+		}
+    }
+    
+    public void createPointLightUniform(String uniformName) throws Exception{
+    	createUniform(uniformName + ".colour");
+    	createUniform(uniformName + ".position");
+    	createUniform(uniformName + ".intensity");
+    	createUniform(uniformName + ".att.constant");
+    	createUniform(uniformName + ".att.linear");
+    	createUniform(uniformName + ".att.exponent");
+    }
+    
+    public void createSpotLightListUniform(String uniformName, int size) throws Exception {
+    	for(int i = 0; i < size; i++) {
+    		createSpotLightUniform(uniformName);
+    	}
+    }
+    
+    public void createSpotLightUniform(String uniformName) throws Exception {
+    	createPointLightUniform(uniformName + ".pl");
+        createUniform(uniformName + ".conedir");
+        createUniform(uniformName + ".cutoff");
+    }
+    
+    
+    
     public void setUniform(String uniformName, int value) {
         glUniform1i(this.uniforms.get(uniformName), value);
     }
