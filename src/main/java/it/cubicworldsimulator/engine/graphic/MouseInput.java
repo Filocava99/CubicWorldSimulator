@@ -2,7 +2,6 @@ package it.cubicworldsimulator.engine.graphic;
 
 import org.joml.Vector2d;
 import org.joml.Vector2f;
-
 import it.cubicworldsimulator.engine.Window;
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -10,25 +9,23 @@ public class MouseInput {
 	private final Vector2d previousPosition;
 	private final Vector2d currentPosition;
 	private final Vector2f displacementVector;
-	private final Window window;
 	private boolean pointerInWindow;
 	private boolean leftButtonPressed;
 	private boolean rightButtonPressed;
 	
-	public MouseInput(final Window window) {
+	public MouseInput() {
 		this.previousPosition = new Vector2d(-1, -1);
 		this.currentPosition = new Vector2d(0, 0);
 		this.displacementVector = new Vector2f();
 		this.pointerInWindow = false;
 		this.leftButtonPressed = false;
 		this.rightButtonPressed = false;
-		this.window = window;
 	}
 	
-	public void init() {
-		setCursorPosition();
-		checkCursorEnter();
-		setMouseButtonPressed();
+	public void init(Window window) {
+		setCursorPosition(window);
+		checkCursorEnter(window);
+		setMouseButtonPressed(window);
 	}
 	
 	public Vector2f getDisplacementVector() {
@@ -62,21 +59,21 @@ public class MouseInput {
 		this.previousPosition.y = this.currentPosition.y;
 	}
 	
-	private void setCursorPosition() {
-		glfwSetCursorPosCallback(this.window.getWindowHandle(), (windowHandle, xpos, ypos) ->{
+	private void setCursorPosition(Window window) {
+		glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xpos, ypos) ->{
 			this.currentPosition.x = xpos;
 			this.currentPosition.y = ypos;
 		});
 	}
 	
-	private void checkCursorEnter() {
-		glfwSetCursorEnterCallback(this.window.getWindowHandle(), (windowHandle, entered)->{
+	private void checkCursorEnter(Window window) {
+		glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered)->{
 			this.pointerInWindow = entered;
 		});
 	}
 	
-	private void setMouseButtonPressed() {
-		glfwSetMouseButtonCallback(this.window.getWindowHandle(), (windowHandle, button, action, mode)->{
+	private void setMouseButtonPressed(Window window) {
+		glfwSetMouseButtonCallback(window.getWindowHandle(), (windowHandle, button, action, mode)->{
 			this.leftButtonPressed = (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS);
 			this.rightButtonPressed = (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS);
 		});

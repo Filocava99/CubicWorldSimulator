@@ -31,7 +31,7 @@ public class GameEngine extends Thread {
         window = new Window(windowTitle, width, height, clearColor, vSync, debug);
         this.gameLogic = gameLogic;
         timer = new Timer();
-        this.mouseInput = new MouseInput(this.window);
+        this.mouseInput = new MouseInput();
     }
 
     @Override
@@ -50,6 +50,7 @@ public class GameEngine extends Thread {
         window.init();
         timer.init();
         gameLogic.init(window);
+        this.mouseInput.init(this.window);
     }
 
     protected void gameLoop() {
