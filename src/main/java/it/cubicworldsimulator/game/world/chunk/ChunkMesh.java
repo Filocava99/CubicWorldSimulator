@@ -11,10 +11,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class ChunkMesh implements Serializable {
@@ -30,6 +27,7 @@ public class ChunkMesh implements Serializable {
     private final transient Map<Object, Material> blocksTypes;
     private final transient MeshMaterial meshMaterial;
     private transient Mesh mesh;
+    private boolean meshReady = false;
 
     private float[] verticesArray;
     private int[] indicesArray;
@@ -50,6 +48,7 @@ public class ChunkMesh implements Serializable {
         if (!areVBOsArraysEmpty()) {
             try {
                 mesh = new Mesh(verticesArray, uvsArray, indicesArray, meshMaterial, Constants.chunkAxisSize);
+                meshReady = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -59,7 +58,7 @@ public class ChunkMesh implements Serializable {
     public void cleanUp() {
         if (mesh != null) {
             mesh.cleanUp();
-            mesh = null;
+            meshReady = false;
         }
     }
 
@@ -71,7 +70,6 @@ public class ChunkMesh implements Serializable {
         for (int y = 0; y < 16; y++) {
             for (int z = 0; z < 16; z++) {
                 for (int x = 0; x < 16; x++) {
-                    //System.out.println(x + " " + y + " " + z);
                     byte block = chunk.getBlock(x, y, z);
                     if (block != blocksTypes.get("air").getId()) {
                         if (isTopFaceVisible(x, y, z)) {
@@ -161,11 +159,11 @@ public class ChunkMesh implements Serializable {
         uvsArray = floatListToArray(uvsList);
         normalsArray = vectorListToArray(normalsList);
         indicesArray = intListToArray(indicesList);
-        logger.debug("Prepared VBOs arrays");
-        logger.debug("Indices: " + indicesArray.length);
-        logger.debug("UVs: " + uvsArray.length);
-        logger.debug("Normals: " + normalsArray.length);
-        logger.debug("Vertices: " + verticesArray.length);
+        logger.trace("Prepared VBOs arrays");
+        logger.trace("Indices: " + indicesArray.length);
+        logger.trace("UVs: " + uvsArray.length);
+        logger.trace("Normals: " + normalsArray.length);
+        logger.trace("Vertices: " + verticesArray.length);
         cleanLists();
     }
     public Mesh getMesh() {
@@ -173,7 +171,7 @@ public class ChunkMesh implements Serializable {
     }
 
     public boolean hasMesh(){
-        return mesh != null;
+        return meshReady;
     }
 
     private boolean areVBOsArraysEmpty() {
@@ -303,10 +301,23 @@ public class ChunkMesh implements Serializable {
     }
 
     private void cleanLists() {
-        logger.debug("Cleaning lists");
+        logger.trace("Cleaning lists");
         this.verticesList = null;
         this.indicesList = null;
         this.uvsList = null;
         this.normalsList = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChunkMesh chunkMesh = (ChunkMesh) o;
+        return chunk.equals(chunkMesh.chunk);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(chunk);
     }
 }
