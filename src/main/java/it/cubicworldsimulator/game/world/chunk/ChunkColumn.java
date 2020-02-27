@@ -2,6 +2,7 @@ package it.cubicworldsimulator.game.world.chunk;
 
 import it.cubicworldsimulator.game.utility.Constants;
 import org.joml.Vector2f;
+import org.joml.Vector3i;
 
 import java.io.Serializable;
 
@@ -15,6 +16,25 @@ public class ChunkColumn implements Serializable {
         }
         this.chunks = chunks;
         this.position = position;
+    }
+
+    //TODO Togliere magic numers
+    public void setBlock(Vector3i coord, byte blockId){
+        System.out.println(coord.toString());
+        System.out.println(coord.y/16);
+        int chunkY = coord.y/16;
+        Chunk chunk = chunks[coord.y/16]; //sarebbe diviso 16
+        int blockY = coord.y-chunkY*16;
+        chunk.setBlock(new Vector3i(coord.x, blockY, coord.z), blockId);
+    }
+
+    public byte getBlock(Vector3i coord){
+        System.out.println(coord.toString());
+        System.out.println(coord.y/16);
+        int chunkY = coord.y/16;
+        Chunk chunk = chunks[coord.y/16]; //sarebbe diviso 16
+        int blockY = coord.y-chunkY*16;
+        return chunk.getBlock(coord.x, blockY, coord.z); //TODO Vector3f vs Vector3i
     }
 
     public Chunk[] getChunks() {

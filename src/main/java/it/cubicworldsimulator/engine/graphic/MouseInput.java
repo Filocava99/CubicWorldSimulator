@@ -1,21 +1,22 @@
 package it.cubicworldsimulator.engine.graphic;
 
-import org.joml.Vector2d;
+import it.cubicworldsimulator.engine.Window;
 import org.joml.Vector2f;
 import it.cubicworldsimulator.engine.Window;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 public class MouseInput {
-	private final Vector2d previousPosition;
-	private final Vector2d currentPosition;
+	private final Vector2f previousPosition;
+	private final Vector2f currentPosition;
 	private final Vector2f displacementVector;
 	private boolean pointerInWindow;
 	private boolean leftButtonPressed;
 	private boolean rightButtonPressed;
-	
+
 	public MouseInput() {
-		this.previousPosition = new Vector2d(-1, -1);
-		this.currentPosition = new Vector2d(0, 0);
+		this.previousPosition = new Vector2f(-1, -1);
+		this.currentPosition = new Vector2f(0, 0);
 		this.displacementVector = new Vector2f();
 		this.pointerInWindow = false;
 		this.leftButtonPressed = false;
@@ -58,11 +59,12 @@ public class MouseInput {
 		this.previousPosition.x = this.currentPosition.x;
 		this.previousPosition.y = this.currentPosition.y;
 	}
+
 	
 	private void setCursorPosition(Window window) {
 		glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xpos, ypos) ->{
-			this.currentPosition.x = xpos;
-			this.currentPosition.y = ypos;
+			this.currentPosition.x = (float) xpos;
+			this.currentPosition.y = (float) ypos;
 		});
 	}
 	
@@ -78,5 +80,5 @@ public class MouseInput {
 			this.rightButtonPressed = (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS);
 		});
 	}
-	
+
 }

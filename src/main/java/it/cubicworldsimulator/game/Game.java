@@ -1,28 +1,18 @@
 package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.*;
-import it.cubicworldsimulator.engine.graphic.Camera;
-import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.MouseInput;
-import it.cubicworldsimulator.engine.graphic.Player;
-import it.cubicworldsimulator.engine.graphic.SkyBox;
+import it.cubicworldsimulator.engine.graphic.*;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
-import it.cubicworldsimulator.game.world.chunk.Chunk;
-import it.cubicworldsimulator.game.world.chunk.ChunkColumn;
-import it.cubicworldsimulator.game.world.chunk.ChunkMesh;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.*;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Game implements GameLogic {
@@ -37,11 +27,11 @@ public class Game implements GameLogic {
 
     private static final float Z_NEAR = 0.01f;
 
-    private static final float Z_FAR = 1000.f;
-    
-    private static final float CAMERA_POS_STEP = 0.05f;
+    private static final float Z_FAR = 10000.f;
 
-    private static final float MOUSE_SENSITIVITY = 0.2f;
+    private static final float cameraStep = 1;
+    private static final float mouseSensitivity = 0.5f;
+    private static final Vector3f cameraMovement = new Vector3f();
 
     private final Camera camera; //TODO Va messa nella scene direttamente?
     private final Player player;
@@ -49,12 +39,11 @@ public class Game implements GameLogic {
     private WorldManager worldManager;
     private World world;
     private Scene scene;
+    private final Map<Mesh, List<GameItem>> meshMap = new HashMap<>();
 
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
-    
-    private final Vector3f cameraInc;
 
     //TODO Ha senso il metodo init()? Se ha senso conviene chiamarlo a parte oppure direttamente dal costruttore?
     public Game() {
@@ -62,17 +51,24 @@ public class Game implements GameLogic {
         camera = new Camera();
         player = new Player(camera);
         commandsQueue = new CommandsQueue();
-        this.cameraInc = new Vector3f();
     }
 
     @Override
     public void init(Window window){
-        world = new World("test", 424243563456L);
+        world = new World("test", 463456L);
         worldManager = new WorldManager(world, commandsQueue);
         initShaderPrograms();
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
-            scene = new Scene(shaderProgram, skyBox, camera);
+            scene = new Scene(meshMap, shaderProgram, skyBox, camera);
+            worldManager.updateActiveChunksSync(new Vector3i(0,0,0));
+            while(commandsQueue.hasLoadCommand()){
+                GameItem chunk = commandsQueue.runLoadCommand();
+                if(chunk != null){
+                    logger.debug("Adding chunk mesh");
+                    meshMap.put(chunk.getMesh(), List.of(chunk));
+                }
+            }
         }catch (Exception e){
             logger.error(e.getMessage());
             logger.error(e.getStackTrace().toString());
@@ -82,39 +78,53 @@ public class Game implements GameLogic {
 
     @Override
     public void input(Window window, MouseInput mouseInput) {
-    	this.cameraInc.set(0,0,0);
-    	if(window.isKeyPressed(GLFW_KEY_W)) {
-    		this.cameraInc.z = -1;
-    	}else if(window.isKeyPressed(GLFW_KEY_S)){
-    		this.cameraInc.z = 1;
-    	}
-    	if(window.isKeyPressed(GLFW_KEY_A)) {
-    		this.cameraInc.x = -1;
-    	}else if(window.isKeyPressed(GLFW_KEY_D)) {
-    		this.cameraInc.x = 1;
-    	}
-    	if(window.isKeyPressed(GLFW_KEY_Z)) {
-    		this.cameraInc.y = -1;
-    	}else if(window.isKeyPressed(GLFW_KEY_X)) {
-    		this.cameraInc.y = 1;
-    	}
+        cameraMovement.set(0, 0, 0);
+        if (window.isKeyPressed(GLFW_KEY_W)) {
+            cameraMovement.z = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_S)) {
+            cameraMovement.z = 1;
+        }
+        if (window.isKeyPressed(GLFW_KEY_A)) {
+            cameraMovement.x = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_D)) {
+            cameraMovement.x = 1;
+        }
+        if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
+            cameraMovement.y = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_SPACE)) {
+            cameraMovement.y = 1;
+        }
     }
 
     @Override
     public void update(float interval, MouseInput mouseInput) {
         logger.trace("Updating");
-        
-        this.camera.movePosition(this.cameraInc.x * CAMERA_POS_STEP,
-        		this.cameraInc.y * CAMERA_POS_STEP,
-        		this.cameraInc.z * CAMERA_POS_STEP);
-        
-        if(mouseInput.isRightButtonPressed()) {
-        	Vector2f rotationVector = mouseInput.getDisplacementVector();
-        	camera.setRotation(rotationVector.x * MOUSE_SENSITIVITY, rotationVector.y * MOUSE_SENSITIVITY, 0);
+        // Update camera position
+        camera.movePosition(cameraMovement.x * cameraStep,
+                cameraMovement.y * cameraStep,
+                cameraMovement.z * cameraStep);
+
+        // Update camera based on mouse
+        if (mouseInput.isRightButtonPressed()) {
+            Vector2f rotVec = mouseInput.getDisplacementVector();
+            camera.moveRotation(rotVec.x * mouseSensitivity, rotVec.y * mouseSensitivity, 0);
         }
-        
         if(player.didPlayerChangedChunk()){
-            worldManager.updateActiveChunks(player.getChunkPosition());
+            worldManager.updateActiveChunksAsync(player.getChunkPosition());
+        }
+        for(int i = 0; i < 1; i++){
+            GameItem chunk = commandsQueue.runLoadCommand();
+            if(chunk != null){
+                logger.debug("Adding chunk mesh");
+                meshMap.put(chunk.getMesh(), List.of(chunk));
+            }
+            chunk = commandsQueue.runUnloadCommand();
+            if(chunk != null){
+                //logger.debug("Removing chunk mesh");
+                //logger.debug(chunk.getMesh() == null);
+                var list = meshMap.remove(chunk.getMesh());
+                //logger.debug(list == null);
+            }
         }
     }
 
