@@ -13,6 +13,7 @@ public class MouseInput {
 	private boolean leftButtonPressed;
 	private boolean rightButtonPressed;
 	private final Window window;
+	private final float mouseSensitivity = 0.5f; //TODO Magic number
 	
 	public MouseInput(Window window) {
 		this.previousPosition = new Vector2f(-1, -1);
@@ -81,4 +82,7 @@ public class MouseInput {
 		});
 	}
 
+	public float getMouseSensitivity() {
+		return mouseSensitivity;
+	}
 }

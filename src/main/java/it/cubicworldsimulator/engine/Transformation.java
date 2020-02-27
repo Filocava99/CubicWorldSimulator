@@ -5,11 +5,13 @@ import org.joml.Vector3f;
 
 public class Transformation {
 
+    @Deprecated
     private final Matrix4f projectionMatrix;
 
     @Deprecated
     private final Matrix4f worldMatrix;
 
+    @Deprecated
     private final Matrix4f viewMatrix;
 
     private final Matrix4f modelViewMatrix;
@@ -21,6 +23,7 @@ public class Transformation {
         modelViewMatrix = new Matrix4f();
     }
 
+    @Deprecated
     public final Matrix4f getProjectionMatrix(float fov, float width, float height, float zNear, float zFar) {
         return projectionMatrix.setPerspective(fov, width / height, zNear, zFar);
     }

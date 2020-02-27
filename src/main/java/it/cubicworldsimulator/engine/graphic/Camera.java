@@ -5,6 +5,9 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class Camera {
+    //TODO Magic numbers
+    private final float cameraStep = 1;
+    private final Vector3f cameraMovement = new Vector3f();
 
     private final Vector3f position;
 
@@ -69,5 +72,13 @@ public class Camera {
         rotation.x += offsetX;
         rotation.y += offsetY;
         rotation.z += offsetZ;
+    }
+
+    public float getCameraStep() {
+        return cameraStep;
+    }
+
+    public Vector3f getCameraMovement() {
+        return cameraMovement;
     }
 }
