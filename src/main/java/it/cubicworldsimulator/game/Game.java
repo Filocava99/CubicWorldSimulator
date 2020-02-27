@@ -120,7 +120,7 @@ public class Game implements GameLogic {
     @Override
     public void render(Window window) {
         logger.trace("Rendering");
-        renderer.render(scene, window.getWidth(), window.getHeight());
+        renderer.render(scene, window);
     }
 
     @Override

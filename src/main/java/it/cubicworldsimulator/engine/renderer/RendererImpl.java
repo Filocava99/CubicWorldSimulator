@@ -20,14 +20,7 @@ public class RendererImpl implements Renderer {
 
     private static final Logger logger = LogManager.getLogger(RendererImpl.class);
 
-    /**
-     * Field of View in Radians
-     */
-    private static final float FOV = (float) Math.toRadians(60.0f);
 
-    private static final float Z_NEAR = 0.01f;
-
-    private static final float Z_FAR = 1000.f;
 
     private final Transformation transformation;
 
@@ -45,13 +38,13 @@ public class RendererImpl implements Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Scene scene, float width, float height) {
+    public void render(Scene scene, Window window) {
         clear();
 
         //TODO Settare le matrici dentro i metodi render e render list o lasciarli fuori?
         if (scene != null) {
             // Update projection Matrix
-            Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, width, height, Z_NEAR, Z_FAR);
+            Matrix4f projectionMatrix = window.updateProjectionMatrix();
 
             if (scene.getMeshMap() != null) {
                 Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
