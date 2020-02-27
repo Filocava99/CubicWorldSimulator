@@ -3,13 +3,11 @@
 in  vec2 outTexCoord;
 out vec4 fragColor;
 
-//Will hold the value of the texture unit that we want to work with
 uniform sampler2D texture_sampler;
 uniform vec3 ambientLight;
 uniform float specularPower;
 uniform Material material;
 uniform PointLight pointLight;
-uniform vec3 camera_pos;
 
 vec4 ambientC;
 vec4 diffuseC;
