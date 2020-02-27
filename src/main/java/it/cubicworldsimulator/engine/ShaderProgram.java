@@ -180,7 +180,7 @@ public class ShaderProgram {
     }
     
     public void setUniform(String uniformName, DirectionalLight dirLight) {
-        setUniform(uniformName + ".colour", dirLight.getColor());
+        setUniform(uniformName + ".colour", dirLight.getColour());
         setUniform(uniformName + ".direction", dirLight.getDirection());
         setUniform(uniformName + ".intensity", dirLight.getIntensity());
     }
