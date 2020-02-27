@@ -18,17 +18,6 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Game implements GameLogic {
     private static final Logger logger = LogManager.getLogger(Game.class);
 
-    private int direction = 0;
-
-    /**
-     * Field of View in Radians
-     */
-    private static final float FOV = (float) Math.toRadians(60.0f);
-
-    private static final float Z_NEAR = 0.01f;
-
-    private static final float Z_FAR = 10000.f;
-
     private static final float cameraStep = 1;
     private static final float mouseSensitivity = 0.5f;
     private static final Vector3f cameraMovement = new Vector3f();

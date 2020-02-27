@@ -1,6 +1,5 @@
 package it.cubicworldsimulator.engine;
 
-import it.cubicworldsimulator.engine.graphic.Camera;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -45,10 +44,8 @@ public class Transformation {
         return modelViewMatrix;
     }
 
-    public Matrix4f getViewMatrix(Camera camera) {
-        Vector3f cameraPos = camera.getPosition();
-        Vector3f rotation = camera.getRotation();
-
+    @Deprecated
+    public Matrix4f getViewMatrix(Vector3f cameraPos, Vector3f rotation) {
         viewMatrix.identity();
         // First do the rotation so camera rotates over its position
         viewMatrix.rotate((float)Math.toRadians(rotation.x), new Vector3f(1, 0, 0))
@@ -58,4 +55,13 @@ public class Transformation {
         //If we did the opposite we would not be rotating along the camera position but along the coordinates origin.
         return viewMatrix;
     }
+
+    public Matrix4f updateGenericViewMatrix(Vector3f position, Vector3f rotation, Matrix4f matrix) {
+        // First do the rotation so camera rotates over its position
+        return matrix.rotationX((float)Math.toRadians(rotation.x))
+                .rotateY((float)Math.toRadians(rotation.y))
+                .translate(-position.x, -position.y, -position.z);
+    }
+
+
 }
