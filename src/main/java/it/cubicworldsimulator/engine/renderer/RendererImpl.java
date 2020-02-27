@@ -20,9 +20,7 @@ public class RendererImpl implements Renderer {
 
     private static final Logger logger = LogManager.getLogger(RendererImpl.class);
 
-
-
-    private final Transformation transformation;
+    private final Transformation transformation; //TODO Da discutere
 
     private final FrustumCullingFilter filter;
 
@@ -40,12 +38,9 @@ public class RendererImpl implements Renderer {
 
     public void render(Scene scene, Window window) {
         clear();
-
-        //TODO Settare le matrici dentro i metodi render e render list o lasciarli fuori?
         if (scene != null) {
             // Update projection Matrix
             Matrix4f projectionMatrix = window.updateProjectionMatrix();
-
             if (scene.getMeshMap() != null) {
                 Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
                 filter.updateFrustum(projectionMatrix, viewMatrix);
@@ -61,7 +56,6 @@ public class RendererImpl implements Renderer {
                 });
                 scene.getShaderProgram().unbind();
             }
-
             if (scene.getSkyBox() != null) {
                 renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getCamera());
             }
