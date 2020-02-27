@@ -33,19 +33,21 @@ public class Mesh {
     private final int vaoId;
     private final int posVboId;
     private final int idxVboId;
+    private final int norVboId;
     private final int vertexCount;
     private final List<Integer> textureVboList = new ArrayList<>();
     private final MeshMaterial material;
     private final float boundingRadius;
 
-    public Mesh (float[] positions, float[] textCoords, int[] indices, String textureFileName) throws Exception {
-        this(positions, textCoords, indices, new MeshMaterial(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
+    public Mesh (float[] positions, float[] textCoords,float[] normals, int[] indices, String textureFileName) throws Exception {
+		this(positions, textCoords, normals, indices, new MeshMaterial(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
     }
 
-    public Mesh(float[] positions, float[] textCoords, int[] indices, MeshMaterial texture, float boundingRadius) {
-        FloatBuffer posBuffer = null;
+    public Mesh(float[] positions, float[] textCoords,float[] normals, int[] indices , MeshMaterial texture, float boundingRadius) {
+		FloatBuffer posBuffer = null;
         IntBuffer indicesBuffer = null;
         FloatBuffer textCoordsBuffer = null;
+        FloatBuffer vecNormalsBuffer = null;
         this.material = texture;
         this.boundingRadius = boundingRadius;
 
@@ -91,6 +93,19 @@ public class Mesh {
 
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
             GL30.glBindVertexArray(0);
+            
+            //normals VBO
+            norVboId = glGenBuffers();
+            vecNormalsBuffer = MemoryUtil.memAllocFloat(normals.length);
+            vecNormalsBuffer.put(normals).flip();
+            glBindBuffer(GL_ARRAY_BUFFER, norVboId);
+            glBufferData(GL_ARRAY_BUFFER, vecNormalsBuffer, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
+
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+            GL30.glBindVertexArray(0);
+            
         } finally {
             if (posBuffer != null) {
                 MemoryUtil.memFree(posBuffer);
@@ -100,6 +115,9 @@ public class Mesh {
             }
             if (textCoordsBuffer != null) {
                 MemoryUtil.memFree(textCoordsBuffer);
+            }
+            if(vecNormalsBuffer != null) {
+            	MemoryUtil.memFree(vecNormalsBuffer);
             }
         }
     }
