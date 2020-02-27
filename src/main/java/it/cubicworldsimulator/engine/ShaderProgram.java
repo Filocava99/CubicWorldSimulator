@@ -10,25 +10,25 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class ShaderProgram {
 
-    private final int programId;
+	private final int programId;
     private final Map<String, Integer> uniforms;
     private int vertexShaderId;
     private int fragmentShaderId;
 
-    public ShaderProgram() throws Exception {
-        programId = glCreateProgram();
+	public ShaderProgram() throws Exception {
+        this.programId = glCreateProgram();
         this.uniforms = new HashMap<>();
-        if (programId == 0) {
+        if (this.programId == 0) {
             throw new Exception("Could not create Shader");
         }
     }
 
     public void createVertexShader(String shaderCode) throws Exception {
-        vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER);
+        this.vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER);
     }
 
     public void createFragmentShader(String shaderCode) throws Exception {
-        fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER);
+        this.fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER);
     }
 
     protected int createShader(String shaderCode, int shaderType) throws Exception {
@@ -44,55 +44,55 @@ public class ShaderProgram {
             throw new Exception("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024));
         }
 
-        glAttachShader(programId, shaderId);
+        glAttachShader(this.programId, shaderId);
 
         return shaderId;
     }
 
     public void link() throws Exception {
-        glLinkProgram(programId);
-        if (glGetProgrami(programId, GL_LINK_STATUS) == 0) {
-            throw new Exception("Error linking Shader code: " + glGetProgramInfoLog(programId, 1024));
+        glLinkProgram(this.programId);
+        if (glGetProgrami(this.programId, GL_LINK_STATUS) == 0) {
+            throw new Exception("Error linking Shader code: " + glGetProgramInfoLog(this.programId, 1024));
         }
-        if (vertexShaderId != 0) {
-            glDetachShader(programId, vertexShaderId);
+        if (this.vertexShaderId != 0) {
+            glDetachShader(this.programId, this.vertexShaderId);
         }
-        if (fragmentShaderId != 0) {
-            glDetachShader(programId, fragmentShaderId);
+        if (this.fragmentShaderId != 0) {
+            glDetachShader(this.programId, this.fragmentShaderId);
         }
     }
 
     public void validateProgram() {
-        glValidateProgram(programId);
-        if (glGetProgrami(programId, GL_VALIDATE_STATUS) == 0) {
-            System.err.println("Warning validating Shader code: " + glGetProgramInfoLog(programId, 1024));
+        glValidateProgram(this.programId);
+        if (glGetProgrami(this.programId, GL_VALIDATE_STATUS) == 0) {
+            System.err.println("Warning validating Shader code: " + glGetProgramInfoLog(this.programId, 1024));
         }
     }
 
     public void createUniform(String uniformName) throws Exception {
-        int uniformLocation = glGetUniformLocation(programId,
+        int uniformLocation = glGetUniformLocation(this.programId,
                 uniformName);
         if (uniformLocation < 0) {
             throw new Exception("Could not find uniform:" +
                     uniformName);
         }
-        uniforms.put(uniformName, uniformLocation);
+        this.uniforms.put(uniformName, uniformLocation);
     }
 
     public void setUniform(String uniformName, int value) {
-        glUniform1i(uniforms.get(uniformName), value);
+        glUniform1i(this.uniforms.get(uniformName), value);
     }
 
     public void setUniform(String uniformName, Matrix4f value) {
         // Dump the matrix into a float buffer
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            glUniformMatrix4fv(uniforms.get(uniformName), false,
+            glUniformMatrix4fv(this.uniforms.get(uniformName), false,
                     value.get(stack.mallocFloat(16)));
         }
     }
 
     public void bind() {
-        glUseProgram(programId);
+        glUseProgram(this.programId);
     }
 
     public void unbind() {
@@ -101,8 +101,8 @@ public class ShaderProgram {
 
     public void cleanup() {
         unbind();
-        if (programId != 0) {
-            glDeleteProgram(programId);
+        if (this.programId != 0) {
+            glDeleteProgram(this.programId);
         }
     }
 }
