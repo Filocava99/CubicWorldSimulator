@@ -2,7 +2,6 @@ package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.Window;
 import org.joml.Vector2f;
-import it.cubicworldsimulator.engine.Window;
 
 import static org.lwjgl.glfw.GLFW.*;
 
