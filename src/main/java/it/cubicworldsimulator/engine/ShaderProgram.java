@@ -5,8 +5,11 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 
+import it.cubicworldsimulator.engine.graphic.DirectionalLight;
+import it.cubicworldsimulator.engine.graphic.MeshMaterial;
 import it.cubicworldsimulator.engine.graphic.PointLight;
 import it.cubicworldsimulator.engine.graphic.SpotLight;
+import it.cubicworldsimulator.game.world.block.Material;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -174,6 +177,20 @@ public class ShaderProgram {
     	setUniform(uniformName + ".pl", spotLight.getPointLight());
         setUniform(uniformName + ".conedir", spotLight.getConeDirection());
         setUniform(uniformName + ".cutoff", spotLight.getCutoffAngleCosine());
+    }
+    
+    public void setUniform(String uniformName, DirectionalLight dirLight) {
+        setUniform(uniformName + ".colour", dirLight.getColor());
+        setUniform(uniformName + ".direction", dirLight.getDirection());
+        setUniform(uniformName + ".intensity", dirLight.getIntensity());
+    }
+    
+    public void setUniform(String uniformName, MeshMaterial material) {
+    	 setUniform(uniformName + ".ambient", material.getAmbientColour());
+         setUniform(uniformName + ".diffuse", material.getDiffuseColour());
+         setUniform(uniformName + ".specular", material.getSpecularColour());
+         setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
+         setUniform(uniformName + ".reflectance", material.getReflectance());
     }
     
     
