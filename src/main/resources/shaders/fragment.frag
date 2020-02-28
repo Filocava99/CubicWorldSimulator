@@ -8,6 +8,7 @@ uniform vec3 ambientLight;
 uniform float specularPower;
 uniform Material material;
 uniform PointLight pointLight;
+uniform SpotLight spotLight;
 
 vec4 ambientC;
 vec4 diffuseC;
@@ -25,6 +26,12 @@ struct PointLight{
 	float intensity;
 	Attenuation att;
 };
+
+struct SpotLight{
+	PointLight pointLight;
+	vec3 coneDirection;
+	float cutoffCosine;
+}
 
 struct Material{
 	vec4 ambient;
@@ -76,14 +83,28 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal)
     return (diffuseColour + specColour) / attenuationInv;
 }
 
+vec4 calcSpotLight(SpotLight spotLight, vec3 position, vec3 normal){
+	vec3 light_direction = light.pointLight.position - position;
+	vec3 to_light_direction = normalize(light_direction);
+	vec3 from_light_direction = -( to_light_direction );
+	float spot_alfa = dot(from_light_direction, normalize(spotLight.coneDirection));
+	
+	vec4 colour = vec4(0,0,0,0);
+	
+	if( spot_alfa > spotLight.cutoffCosine){
+		colour = calcPointLight(spotLight.pointLight, position, normal);
+		colour = colour * ( 1.0 - (1.0 - spot_alfa) / (1.0 - spotLight.cutoffCosine) );
+	}
+	
+	return colour;
+}
+
 void main()
 {
-    setupColours(material, outTexCoord);
-    //will set up the ambientC, diffuseC and specularC variables with the appropriate colours
+    setupColours(material, outTexCoord); //will set up the ambientC, diffuseC and specularC variables with the appropriate colours
 
-    vec4 diffuseSpecularComp = calcPointLight(pointLight, mvVertexPos, mvVertexNormal);
-    //we calculate the diffuse and specular components, taking into consideration the attenuation
-
-    fragColor = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
-    //The final colour is calculated by adding the ambient component 
+    vec4 diffuseSpecularComp = calcPointLight(pointLight, mvVertexPos, mvVertexNormal); //we calculate the diffuse and specular components, taking into consideration the attenuation
+	
+	
+    fragColor = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp; //The final colour is calculated by adding the ambient component 
 }
