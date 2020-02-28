@@ -20,16 +20,7 @@ public class RendererImpl implements Renderer {
 
     private static final Logger logger = LogManager.getLogger(RendererImpl.class);
 
-    /**
-     * Field of View in Radians
-     */
-    private static final float FOV = (float) Math.toRadians(60.0f);
-
-    private static final float Z_NEAR = 0.01f;
-
-    private static final float Z_FAR = 1000.f;
-
-    private final Transformation transformation;
+    private final Transformation transformation; //TODO Da discutere
 
     private final FrustumCullingFilter filter;
 
@@ -45,16 +36,13 @@ public class RendererImpl implements Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Scene scene, float width, float height) {
+    public void render(Scene scene, Window window) {
         clear();
-
-        //TODO Settare le matrici dentro i metodi render e render list o lasciarli fuori?
         if (scene != null) {
             // Update projection Matrix
-            Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, width, height, Z_NEAR, Z_FAR);
-
+            Matrix4f projectionMatrix = window.updateProjectionMatrix();
             if (scene.getMeshMap() != null) {
-                Matrix4f viewMatrix = transformation.getViewMatrix(scene.getCamera());
+                Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
                 filter.updateFrustum(projectionMatrix, viewMatrix);
                 filter.filter(scene.getMeshMap());
 
@@ -68,7 +56,6 @@ public class RendererImpl implements Renderer {
                 });
                 scene.getShaderProgram().unbind();
             }
-
             if (scene.getSkyBox() != null) {
                 renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getCamera());
             }
@@ -79,7 +66,7 @@ public class RendererImpl implements Renderer {
         skyBox.getShaderProgram().bind();
         skyBox.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
         skyBox.getShaderProgram().setUniform("texture_sampler", 0);
-        Matrix4f viewMatrix = transformation.getViewMatrix(camera);
+        Matrix4f viewMatrix = camera.getViewMatrix();
         viewMatrix.m30(0);
         viewMatrix.m31(0);
         viewMatrix.m32(0);
