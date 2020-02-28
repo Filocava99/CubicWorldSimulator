@@ -40,6 +40,10 @@ public class ChunkMesh implements Serializable {
         this.meshMaterial = meshMaterial;
     }
 
+    /**
+     * Initialize the mesh instance. That method must be called from the main thread otherwise OpenGL will trigger an exception
+     * and the game will crash
+     */
     public void buildMesh() {
         if (chunk.wasModified() || areVBOsArraysEmpty()) {
             System.out.println("It should not be called");
@@ -55,6 +59,9 @@ public class ChunkMesh implements Serializable {
         }
     }
 
+    /**
+     * Delete the mesh instance and its VBOs/VAOs
+     */
     public void cleanUp() {
         if (mesh != null) {
             mesh.cleanUp();
@@ -62,6 +69,10 @@ public class ChunkMesh implements Serializable {
         }
     }
 
+    /**
+     * Prepare the arrays to be used to instantiate the mesh. It is computationally expensive so it is suggested to call it
+     * from a separate thread. It is OpenGL thread safe.
+     */
     public void prepareVAOContent() {
         verticesList = new ArrayList<>();
         indicesList = new ArrayList<>();
@@ -107,19 +118,29 @@ public class ChunkMesh implements Serializable {
         cleanLists();
     }
 
+    /**
+     * Return the chunk mesh
+     * @return Mesh
+     */
     public Mesh getMesh() {
         return mesh;
     }
 
+    /**
+     * Returns true if the mesh can be used (already loaded on the GPU), otherwise returns false
+     * @return boolean
+     */
     public boolean hasMesh() {
         return meshReady;
     }
 
+    /**
+     * Returns true if the arrays used to instantiate the mesh are empty
+     * @return Boolean
+     */
     private boolean areVBOsArraysEmpty() {
         return verticesArray == null && uvsArray == null && normalsArray == null && indicesArray == null;
     }
-
-    //TODO Strategy?
 
     private float[] vectorListToArray(List<Vector3f> list) {
         float[] array = new float[list.size() * 3];
@@ -144,6 +165,13 @@ public class ChunkMesh implements Serializable {
         return array;
     }
 
+    /**
+     * Adds the vertices and indices of a face of a cube
+     * @param v1 Top left coordinate of the face
+     * @param v2 Bottom left coordinate of the face
+     * @param v3 Bottom right coordinate of the face
+     * @param v4 Top right coordinate of the face
+     */
     private void addFace(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4) {
         int size = verticesList.size() - 1;
         //Add vertices
@@ -160,6 +188,13 @@ public class ChunkMesh implements Serializable {
         indicesList.add(size + 3);
     }
 
+    /**
+     * Adds the texture coordinates of a face of a cube
+     * @param v1 Top left coordinate of the texture
+     * @param v2 Bottom left coordinate of the texture
+     * @param v3 Bottom right coordinate of the texture
+     * @param v4 Top right coordinate of the texture
+     */
     private void addTexture(Vector2f v1, Vector2f v2, Vector2f v3, Vector2f v4) {
         uvsList.add(v1.x);
         uvsList.add(v1.y);
@@ -171,6 +206,13 @@ public class ChunkMesh implements Serializable {
         uvsList.add(v4.y);
     }
 
+    /**
+     * Returns true if the top face of the cube is not hidden by another block
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @return Boolean
+     */
     private boolean isTopFaceVisible(int x, int y, int z) {
         if (y >= 0 && y < 15) {
             return chunk.getBlock(x, y + 1, z) == blocksTypes.get("air").getId();
@@ -179,6 +221,13 @@ public class ChunkMesh implements Serializable {
         }
     }
 
+    /**
+     * Adds all the elements required to render the top face of a cube(vertices, indices, normals and textures coordinates)
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @param block block id
+     */
     private void addTopFace(float x, float y, float z, byte block) {
         Vector3f v1 = new Vector3f(x, y + 1, z);
         Vector3f v2 = new Vector3f(x, y + 1, z + 1);
@@ -190,18 +239,28 @@ public class ChunkMesh implements Serializable {
         addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
     }
 
+    /**
+     * Returns true if the bottom face of the cube is not hidden by another block
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @return Boolean
+     */
     private boolean isBottomFaceVisible(int x, int y, int z) {
         if (y > 0 && y <= 15) {
-            if (chunk.getBlock(x, y - 1, z) == blocksTypes.get("air").getId()) {
-                return true;
-            } else {
-                return false;
-            }
+            return chunk.getBlock(x, y - 1, z) == blocksTypes.get("air").getId();
         } else {
             return true;
         }
     }
 
+    /**
+     * Adds all the elements required to render the bottom face of a cube(vertices, indices, normals and textures coordinates)
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @param block block id
+     */
     private void addBottomFace(float x, float y, float z, byte block) {
         Vector3f v1 = new Vector3f(x, y, z + 1);
         Vector3f v2 = new Vector3f(x, y, z);
@@ -213,18 +272,28 @@ public class ChunkMesh implements Serializable {
         addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
     }
 
+    /**
+     * Returns true if the front face of the cube is not hidden by another block
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @return Boolean
+     */
     private boolean isFrontFaceVisible(int x, int y, int z) {
         if (z < 15) {
-            if (chunk.getBlock(x, y, z + 1) == blocksTypes.get("air").getId()) {
-                return true;
-            } else {
-                return false;
-            }
+            return chunk.getBlock(x, y, z + 1) == blocksTypes.get("air").getId();
         } else {
             return true;
         }
     }
 
+    /**
+     * Adds all the elements required to render the front face of a cube(vertices, indices, normals and textures coordinates)
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @param block block id
+     */
     private void addFrontFace(float x, float y, float z, byte block) {
         Vector3f v1 = new Vector3f(x, y + 1, z + 1);
         Vector3f v2 = new Vector3f(x, y, z + 1);
@@ -236,18 +305,28 @@ public class ChunkMesh implements Serializable {
         addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
     }
 
+    /**
+     * Returns true if the back face of the cube is not hidden by another block
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @return Boolean
+     */
     private boolean isBackFaceVisible(int x, int y, int z) {
         if (z > 0) {
-            if (chunk.getBlock(x, y, z - 1) == blocksTypes.get("air").getId()) {
-                return true;
-            } else {
-                return false;
-            }
+            return chunk.getBlock(x, y, z - 1) == blocksTypes.get("air").getId();
         } else {
             return true;
         }
     }
 
+    /**
+     * Adds all the elements required to render the back face of a cube(vertices, indices, normals and textures coordinates)
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @param block block id
+     */
     private void addBackFace(float x, float y, float z, byte block) {
         Vector3f v1 = new Vector3f(x + 1, y + 1, z);
         Vector3f v2 = new Vector3f(x + 1, y, z);
@@ -259,18 +338,28 @@ public class ChunkMesh implements Serializable {
         addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
     }
 
+    /**
+     * Returns true if the left face of the cube is not hidden by another block
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @return Boolean
+     */
     private boolean isLeftFaceVisible(int x, int y, int z) {
         if (x > 0) {
-            if (chunk.getBlock(x - 1, y, z) == blocksTypes.get("air").getId()) {
-                return true;
-            } else {
-                return false;
-            }
+            return chunk.getBlock(x - 1, y, z) == blocksTypes.get("air").getId();
         } else {
             return true;
         }
     }
 
+    /**
+     * Adds all the elements required to render the left face of a cube(vertices, indices, normals and textures coordinates)
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @param block block id
+     */
     private void addLeftFace(float x, float y, float z, byte block) {
         Vector3f v1 = new Vector3f(x, y + 1, z);
         Vector3f v2 = new Vector3f(x, y, z);
@@ -282,18 +371,28 @@ public class ChunkMesh implements Serializable {
         addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
     }
 
+    /**
+     * Returns true if the right face of the cube is not hidden by another block
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @return Boolean
+     */
     private boolean isRightFaceVisible(int x, int y, int z) {
         if (x < 15) {
-            if (chunk.getBlock(x + 1, y, z) == blocksTypes.get("air").getId()) {
-                return true;
-            } else {
-                return false;
-            }
+            return chunk.getBlock(x + 1, y, z) == blocksTypes.get("air").getId();
         } else {
             return true;
         }
     }
 
+    /**
+     * Adds all the elements required to render the right face of a cube(vertices, indices, normals and textures coordinates)
+     * @param x block x coordinate
+     * @param y block y coordinate
+     * @param z block z coordinate
+     * @param block block id
+     */
     private void addRightFace(float x, float y, float z, byte block){
         Vector3f v1 = new Vector3f(x + 1, y + 1, z + 1);
         Vector3f v2 = new Vector3f(x + 1, y, z + 1);
@@ -305,10 +404,17 @@ public class ChunkMesh implements Serializable {
         addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
     }
 
+    /**
+     * Returns the chunk on which it is based the mesh
+     * @return Chunk
+     */
     public Chunk getChunk() {
         return chunk;
     }
 
+    /**
+     * Deletes all the lists used to build the VBOs arrays
+     */
     private void cleanLists() {
         logger.trace("Cleaning lists");
         this.verticesList = null;
