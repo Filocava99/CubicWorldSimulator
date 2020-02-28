@@ -1,7 +1,5 @@
 package it.cubicworldsimulator.game.world;
 
-import it.cubicworldsimulator.engine.GameItem;
-import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.MeshMaterial;
 import it.cubicworldsimulator.engine.loader.TextureLoader;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
@@ -18,12 +16,8 @@ import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -101,6 +95,7 @@ public class WorldManager {
                 Vector2f newChunkCoord = new Vector2f(x, z);
                 if (!activeChunks.containsKey(newChunkCoord)) {
                     ChunkColumn chunkColumn = loadChunkColumn(newChunkCoord);
+                    alreadyGeneratedChunksColumns.add(newChunkCoord);
                     for (int i = 15; i >= 0; i--) {
                         Chunk chunk = chunkColumn.getChunks()[i];
                         ChunkMesh chunkMesh = new ChunkMesh(chunk, blockTypes, worldTexture);
