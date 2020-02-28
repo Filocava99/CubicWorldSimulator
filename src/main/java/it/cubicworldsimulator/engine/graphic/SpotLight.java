@@ -13,6 +13,11 @@ public class SpotLight {
 		this.cutoffAngleCosine = cutoffAngleCosine;
 	}
 	
+	public SpotLight(SpotLight spotLight) {
+		this(spotLight.getPointLight(), new Vector3f(spotLight.getConeDirection()), 
+				spotLight.getCutoffAngleCosine());
+	}
+	
 	public PointLight getPointLight() {
 		return this.pointLight;
 	}

@@ -16,7 +16,17 @@ public class PointLight {
 		this.att = new Attenuation(1,0,0);
 	}
 	
-	public class Attenuation {
+	public PointLight(final Vector3f colour, final Vector3f position, final float intensity, final Attenuation attenuation) {
+		this(colour, position, intensity);
+		this.att = attenuation;
+	}
+	
+	public PointLight(final PointLight pointLight) {
+		this(new Vector3f(pointLight.getColour()), new Vector3f(pointLight.getPosition()), pointLight.getIntensity(), 
+				pointLight.getAtt());
+	}
+	
+	public static class Attenuation {
 		
 		private float costant;
 		private float linear;
@@ -57,4 +67,21 @@ public class PointLight {
 		return att;
 	}
 
+	public void setColour(Vector3f colour) {
+		this.colour = colour;
+	}
+
+	public void setPosition(Vector3f position) {
+		this.position = position;
+	}
+
+	public void setIntensity(float intensity) {
+		this.intensity = intensity;
+	}
+
+	public void setAtt(Attenuation att) {
+		this.att = att;
+	}
+
+	
 }
