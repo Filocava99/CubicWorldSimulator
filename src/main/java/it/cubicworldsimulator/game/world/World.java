@@ -11,7 +11,7 @@ public class World {
 
     private final List<Chunk> chunks;
     private final long seed;
-    private final String name; //Non si puo' cambiare il nome del mondo a runtime. Oppure vogliamo lasciarlo fare? Boh
+    private final String name; //TODO Non si puo' cambiare il nome del mondo a runtime. Oppure vogliamo lasciarlo fare? Boh
     private final ConcurrentHashMap<Vector2f, ChunkColumn> activeChunks = new ConcurrentHashMap<>(); //TODO Non mi piace
 
     public World(String name, long seed){
