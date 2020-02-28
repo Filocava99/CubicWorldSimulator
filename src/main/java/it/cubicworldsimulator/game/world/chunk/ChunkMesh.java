@@ -40,7 +40,7 @@ public class ChunkMesh implements Serializable {
         this.meshMaterial = meshMaterial;
     }
 
-    public void buildMesh(){
+    public void buildMesh() {
         if (chunk.wasModified() || areVBOsArraysEmpty()) {
             System.out.println("It should not be called");
             prepareVAOContent();
@@ -73,82 +73,22 @@ public class ChunkMesh implements Serializable {
                     byte block = chunk.getBlock(x, y, z);
                     if (block != blocksTypes.get("air").getId()) {
                         if (isTopFaceVisible(x, y, z)) {
-                            Vector3f v1 = new Vector3f(x, y + 1, z);
-                            Vector3f v2 = new Vector3f(x, y + 1, z + 1);
-                            Vector3f v3 = new Vector3f(x + 1, y + 1, z + 1);
-                            Vector3f v4 = new Vector3f(x + 1, y + 1, z);
-                            addFace(v1, v2, v3, v4);
-                            normalsList.add(new Vector3f(0, 1, 0));
-                            normalsList.add(new Vector3f(0, 1, 0));
-                            normalsList.add(new Vector3f(0, 1, 0));
-                            normalsList.add(new Vector3f(0, 1, 0));
-                            BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getTopFace();
-                            addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
+                            addTopFace(x, y, z, block);
                         }
                         if (isBottomFaceVisible(x, y, z)) {
-                            Vector3f v1 = new Vector3f(x, y, z + 1);
-                            Vector3f v2 = new Vector3f(x, y, z);
-                            Vector3f v3 = new Vector3f(x + 1, y, z);
-                            Vector3f v4 = new Vector3f(x + 1, y, z + 1);
-                            addFace(v1, v2, v3, v4);
-                            normalsList.add(new Vector3f(0, -1, 0));
-                            normalsList.add(new Vector3f(0, -1, 0));
-                            normalsList.add(new Vector3f(0, -1, 0));
-                            normalsList.add(new Vector3f(0, -1, 0));
-                            BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getBotFace();
-                            addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
+                            addBottomFace(x, y, z, block);
                         }
                         if (isFrontFaceVisible(x, y, z)) {
-                            Vector3f v1 = new Vector3f(x, y + 1, z + 1);
-                            Vector3f v2 = new Vector3f(x, y, z + 1);
-                            Vector3f v3 = new Vector3f(x + 1, y, z + 1);
-                            Vector3f v4 = new Vector3f(x + 1, y + 1, z + 1);
-                            addFace(v1, v2, v3, v4);
-                            normalsList.add(new Vector3f(0, 0, 1));
-                            normalsList.add(new Vector3f(0, 0, 1));
-                            normalsList.add(new Vector3f(0, 0, 1));
-                            normalsList.add(new Vector3f(0, 0, 1));
-                            BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getFrontFace();
-                            addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
+                            addFrontFace(x, y, z, block);
                         }
                         if (isBackFaceVisible(x, y, z)) {
-                            Vector3f v1 = new Vector3f(x + 1, y + 1, z);
-                            Vector3f v2 = new Vector3f(x + 1, y, z);
-                            Vector3f v3 = new Vector3f(x, y, z);
-                            Vector3f v4 = new Vector3f(x, y + 1, z);
-                            addFace(v1, v2, v3, v4);
-                            normalsList.add(new Vector3f(0, 0, -1));
-                            normalsList.add(new Vector3f(0, 0, -1));
-                            normalsList.add(new Vector3f(0, 0, -1));
-                            normalsList.add(new Vector3f(0, 0, -1));
-                            BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getBackFace();
-                            addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
+                            addBackFace(x, y, z, block);
                         }
                         if (isLeftFaceVisible(x, y, z)) {
-                            Vector3f v1 = new Vector3f(x, y + 1, z);
-                            Vector3f v2 = new Vector3f(x, y, z);
-                            Vector3f v3 = new Vector3f(x, y, z + 1);
-                            Vector3f v4 = new Vector3f(x, y + 1, z + 1);
-                            addFace(v1, v2, v3, v4);
-                            normalsList.add(new Vector3f(-1, 0, 0));
-                            normalsList.add(new Vector3f(-1, 0, 0));
-                            normalsList.add(new Vector3f(-1, 0, 0));
-                            normalsList.add(new Vector3f(-1, 0, 0));
-                            BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getLeftFace();
-                            addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
+                            addLeftFace(x, y, z, block);
                         }
                         if (isRightFaceVisible(x, y, z)) {
-                            Vector3f v1 = new Vector3f(x + 1, y + 1, z + 1);
-                            Vector3f v2 = new Vector3f(x + 1, y, z + 1);
-                            Vector3f v3 = new Vector3f(x + 1, y, z);
-                            Vector3f v4 = new Vector3f(x + 1, y + 1, z);
-                            addFace(v1, v2, v3, v4);
-                            normalsList.add(new Vector3f(1, 0, 0));
-                            normalsList.add(new Vector3f(1, 0, 0));
-                            normalsList.add(new Vector3f(1, 0, 0));
-                            normalsList.add(new Vector3f(1, 0, 0));
-                            BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getRightFace();
-                            addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
+                            addRightFace(x,y,z,block);
                         }
                     }
                 }
@@ -166,11 +106,12 @@ public class ChunkMesh implements Serializable {
         logger.trace("Vertices: " + verticesArray.length);
         cleanLists();
     }
+
     public Mesh getMesh() {
         return mesh;
     }
 
-    public boolean hasMesh(){
+    public boolean hasMesh() {
         return meshReady;
     }
 
@@ -182,12 +123,12 @@ public class ChunkMesh implements Serializable {
 
     private float[] vectorListToArray(List<Vector3f> list) {
         float[] array = new float[list.size() * 3];
-        for (int i = 0; i < list.size(); i++) {
-            org.joml.Vector3f vertex = list.get(i);
-            array[i * 3] = vertex.x;
-            array[i * 3 + 1] = vertex.y;
-            array[i * 3 + 2] = vertex.z;
-        }
+        IntStream.range(0, list.size()).forEach(i -> {
+            Vector3f vertex = list.get(i);
+            array[i*3] = vertex.x;
+            array[i*3+1] = vertex.y;
+            array[i*3+2] = vertex.z;
+        });
         return array;
     }
 
@@ -205,10 +146,12 @@ public class ChunkMesh implements Serializable {
 
     private void addFace(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4) {
         int size = verticesList.size() - 1;
+        //Add vertices
         verticesList.add(v1);
         verticesList.add(v2);
         verticesList.add(v3);
         verticesList.add(v4);
+        //Add indices
         indicesList.add(size + 1);
         indicesList.add(size + 2);
         indicesList.add(size + 4);
@@ -236,6 +179,17 @@ public class ChunkMesh implements Serializable {
         }
     }
 
+    private void addTopFace(float x, float y, float z, byte block) {
+        Vector3f v1 = new Vector3f(x, y + 1, z);
+        Vector3f v2 = new Vector3f(x, y + 1, z + 1);
+        Vector3f v3 = new Vector3f(x + 1, y + 1, z + 1);
+        Vector3f v4 = new Vector3f(x + 1, y + 1, z);
+        addFace(v1, v2, v3, v4);
+        IntStream.range(0,4).forEach(i -> normalsList.add(new Vector3f(0, 1, 0)));
+        BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getTopFace();
+        addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
+    }
+
     private boolean isBottomFaceVisible(int x, int y, int z) {
         if (y > 0 && y <= 15) {
             if (chunk.getBlock(x, y - 1, z) == blocksTypes.get("air").getId()) {
@@ -246,6 +200,17 @@ public class ChunkMesh implements Serializable {
         } else {
             return true;
         }
+    }
+
+    private void addBottomFace(float x, float y, float z, byte block) {
+        Vector3f v1 = new Vector3f(x, y, z + 1);
+        Vector3f v2 = new Vector3f(x, y, z);
+        Vector3f v3 = new Vector3f(x + 1, y, z);
+        Vector3f v4 = new Vector3f(x + 1, y, z + 1);
+        addFace(v1, v2, v3, v4);
+        IntStream.range(0,4).forEach(i -> normalsList.add(new Vector3f(0, -1, 0)));
+        BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getBotFace();
+        addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
     }
 
     private boolean isFrontFaceVisible(int x, int y, int z) {
@@ -260,6 +225,17 @@ public class ChunkMesh implements Serializable {
         }
     }
 
+    private void addFrontFace(float x, float y, float z, byte block) {
+        Vector3f v1 = new Vector3f(x, y + 1, z + 1);
+        Vector3f v2 = new Vector3f(x, y, z + 1);
+        Vector3f v3 = new Vector3f(x + 1, y, z + 1);
+        Vector3f v4 = new Vector3f(x + 1, y + 1, z + 1);
+        addFace(v1, v2, v3, v4);
+        IntStream.range(0,4).forEach(i -> normalsList.add(new Vector3f(0, 0, 1)));
+        BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getFrontFace();
+        addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
+    }
+
     private boolean isBackFaceVisible(int x, int y, int z) {
         if (z > 0) {
             if (chunk.getBlock(x, y, z - 1) == blocksTypes.get("air").getId()) {
@@ -270,6 +246,17 @@ public class ChunkMesh implements Serializable {
         } else {
             return true;
         }
+    }
+
+    private void addBackFace(float x, float y, float z, byte block) {
+        Vector3f v1 = new Vector3f(x + 1, y + 1, z);
+        Vector3f v2 = new Vector3f(x + 1, y, z);
+        Vector3f v3 = new Vector3f(x, y, z);
+        Vector3f v4 = new Vector3f(x, y + 1, z);
+        addFace(v1, v2, v3, v4);
+        IntStream.range(0,4).forEach(i -> normalsList.add(new Vector3f(0, 0, -1)));
+        BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getBackFace();
+        addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
     }
 
     private boolean isLeftFaceVisible(int x, int y, int z) {
@@ -284,6 +271,17 @@ public class ChunkMesh implements Serializable {
         }
     }
 
+    private void addLeftFace(float x, float y, float z, byte block) {
+        Vector3f v1 = new Vector3f(x, y + 1, z);
+        Vector3f v2 = new Vector3f(x, y, z);
+        Vector3f v3 = new Vector3f(x, y, z + 1);
+        Vector3f v4 = new Vector3f(x, y + 1, z + 1);
+        addFace(v1, v2, v3, v4);
+        IntStream.range(0,4).forEach(i -> normalsList.add(new Vector3f(-1, 0, 0)));
+        BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getLeftFace();
+        addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
+    }
+
     private boolean isRightFaceVisible(int x, int y, int z) {
         if (x < 15) {
             if (chunk.getBlock(x + 1, y, z) == blocksTypes.get("air").getId()) {
@@ -294,6 +292,17 @@ public class ChunkMesh implements Serializable {
         } else {
             return true;
         }
+    }
+
+    private void addRightFace(float x, float y, float z, byte block){
+        Vector3f v1 = new Vector3f(x + 1, y + 1, z + 1);
+        Vector3f v2 = new Vector3f(x + 1, y, z + 1);
+        Vector3f v3 = new Vector3f(x + 1, y, z);
+        Vector3f v4 = new Vector3f(x + 1, y + 1, z);
+        addFace(v1, v2, v3, v4);
+        IntStream.range(0,4).forEach(i -> normalsList.add(new Vector3f(1, 0, 0)));
+        BlockTexture.FaceTexture faceTexture = blocksTypes.get(block).getBlockTexture().getRightFace();
+        addTexture(faceTexture.getTopLeft(), faceTexture.getBotLeft(), faceTexture.getBotRight(), faceTexture.getTopRight());
     }
 
     public Chunk getChunk() {
