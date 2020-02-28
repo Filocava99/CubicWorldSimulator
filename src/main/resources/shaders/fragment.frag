@@ -8,6 +8,7 @@ uniform vec3 ambientLight;
 uniform float specularPower;
 uniform Material material;
 uniform PointLight pointLight;
+uniform SpotLight spotLight;
 uniform DirectionalLight directionalLight;
 
 
@@ -27,6 +28,14 @@ struct PointLight{
 	float intensity;
 	Attenuation att;
 };
+
+struct SpotLight
+{
+    PointLight pointLight;
+    vec3 coneDirection;
+    float cutoffCosine;
+};
+
 
 struct DirectionalLight{
 	vec3 colour;
