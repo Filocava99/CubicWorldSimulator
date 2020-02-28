@@ -66,14 +66,14 @@ public class Game implements GameLogic {
     public void input(Window window, MouseInput mouseInput) {
 
         camera.getCameraMovement().set(0, 0, 0);
-        if (window.isKeyPressed(GLFW_KEY_W)) {
+        if (window.isKeyPressed(GLFW_KEY_W) || (window.isKeyPressed(GLFW_KEY_UP))) {
             camera.getCameraMovement().z = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_S)) {
+        } else if (window.isKeyPressed(GLFW_KEY_S) || (window.isKeyPressed(GLFW_KEY_DOWN))) {
             camera.getCameraMovement().z = 1;
         }
-        if (window.isKeyPressed(GLFW_KEY_A)) {
+        if (window.isKeyPressed(GLFW_KEY_A) || (window.isKeyPressed(GLFW_KEY_LEFT))) {
             camera.getCameraMovement().x = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_D)) {
+        } else if (window.isKeyPressed(GLFW_KEY_D) || (window.isKeyPressed(GLFW_KEY_RIGHT))) {
             camera.getCameraMovement().x = 1;
 
         }

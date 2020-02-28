@@ -31,7 +31,7 @@ public class GameEngine extends Thread {
         //mouseInput = new MouseInput(window);
         this.gameLogic = gameLogic;
         timer = new Timer();
-        this.mouseInput = new MouseInput();
+        this.mouseInput = new MouseInput(this.window);
 
     }
 
