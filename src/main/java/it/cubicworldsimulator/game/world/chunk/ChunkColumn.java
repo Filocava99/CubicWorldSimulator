@@ -20,8 +20,6 @@ public class ChunkColumn implements Serializable {
 
     //TODO Togliere magic numers
     public void setBlock(Vector3i coord, byte blockId){
-        System.out.println(coord.toString());
-        System.out.println(coord.y/16);
         int chunkY = coord.y/16;
         Chunk chunk = chunks[coord.y/16]; //sarebbe diviso 16
         int blockY = coord.y-chunkY*16;
@@ -29,8 +27,6 @@ public class ChunkColumn implements Serializable {
     }
 
     public byte getBlock(Vector3i coord){
-        System.out.println(coord.toString());
-        System.out.println(coord.y/16);
         int chunkY = coord.y/16;
         Chunk chunk = chunks[coord.y/16]; //sarebbe diviso 16
         int blockY = coord.y-chunkY*16;

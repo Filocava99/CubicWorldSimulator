@@ -47,11 +47,10 @@ public class ChunkLoader {
             File chunkFolder = new File(chunkFolderPath);
             chunkFolder.mkdirs();
             File chunkFile = new File(chunkFolderPath + File.separator + chunkColumn.getPosition().x + "_" + chunkColumn.getPosition().y + ".chunk");
-            if(chunkFile.exists()){
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(chunkFile));
-                objectOutputStream.writeObject(chunkColumn);
-            }
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(chunkFile));
+            objectOutputStream.writeObject(chunkColumn);
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage());
         }
     }

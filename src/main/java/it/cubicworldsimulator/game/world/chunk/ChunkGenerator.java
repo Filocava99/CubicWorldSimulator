@@ -65,8 +65,6 @@ public class ChunkGenerator {
         for (int i = 0; i < 5; i++) {
             int x = Math.abs(random.nextInt() % 12) + 2;
             int z = Math.abs(random.nextInt() % 12) + 2;
-            System.out.println(x);
-            System.out.println(z);
             int y = getHeight(new Vector2i(x,z), chunkColumn);
             Vector3i treePos = new Vector3i(x, y, z);
             int height = random.nextInt()%2+4;
