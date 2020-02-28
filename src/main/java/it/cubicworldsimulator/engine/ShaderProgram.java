@@ -100,6 +100,10 @@ public class ShaderProgram {
     	setUniform(uniformName + "[" + pos + "]", pointLight);
     }
     
+    public void setUniform(String uniformName, SpotLight spotLight, int pos) {
+    	setUniform(uniformName + "[" + pos + "]", spotLight);
+    }
+    
     public void setUniform(String uniformName, PointLight pointLight) {
     	 setUniform(uniformName + ".colour", pointLight.getColour());
          setUniform(uniformName + ".position", pointLight.getPosition());
