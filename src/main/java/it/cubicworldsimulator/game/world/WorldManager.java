@@ -36,6 +36,7 @@ public class WorldManager {
     private final ConcurrentHashMap<Vector3f, ChunkMesh> chunkMeshes = new ConcurrentHashMap<>();
 
     private String textureFile;
+    private float textureStep;
     private MeshMaterial worldTexture;
 
     public WorldManager(World world, CommandsQueue commandsQueue) {
@@ -46,7 +47,7 @@ public class WorldManager {
         this.alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
         TextureLoader loader = new TextureLoaderImpl();
         try {
-            loadBlockTypes();
+            loadConfig("src/main/resources/default.yml");
             worldTexture = new MeshMaterial(loader.loadTexture(textureFile));
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -119,11 +120,19 @@ public class WorldManager {
         return chunkColumn;
     }
 
-    private void loadBlockTypes() throws FileNotFoundException {
+    private void loadConfig(String configFileName) throws FileNotFoundException {
         YAMLLoader yamlLoader = new YAMLLoader();
-        YAMLComponent root = yamlLoader.loadFile("src/main/resources/default.yml");
+        YAMLComponent root = yamlLoader.loadFile(configFileName);
+        loadTextureConfig(root);
+        loadBlockTypes(root);
+    }
+
+    private void loadTextureConfig(YAMLComponent root){
         textureFile = root.getString("file");
-        float textureStep = root.getFloat("step");
+        textureStep = root.getFloat("step");
+    }
+
+    private void loadBlockTypes(YAMLComponent root)  {
         YAMLComponent blocksList = root.getYAMLComponent("blocks");
         blocksList.getEntrySet().forEach(entry -> {
             String blockName = entry.getKey();
