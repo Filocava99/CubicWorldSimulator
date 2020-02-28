@@ -37,20 +37,19 @@ public class WorldManager {
     private final ChunkLoader chunkLoader;
     private final Map<Object, Material> blockTypes = new HashMap<>();
     private final Set<Vector2f> alreadyGeneratedChunksColumns;
+    private final ConcurrentHashMap<Vector3f, ChunkMesh> chunkMeshes = new ConcurrentHashMap<>();
 
     private String textureFile;
     private MeshMaterial worldTexture;
 
-    private final ConcurrentHashMap<Vector3f, ChunkMesh> chunkMeshes = new ConcurrentHashMap<>();
-
     public WorldManager(World world, CommandsQueue commandsQueue) {
-        loadBlockTypes();
         this.world = world;
         this.commandsQueue = commandsQueue;
+        this.chunkGenerator = new ChunkGenerator(world.getSeed(), this);
+        this.chunkLoader = new ChunkLoader(world.getName());
+        this.alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
         TextureLoader loader = new TextureLoaderImpl();
-        chunkGenerator = new ChunkGenerator(world.getSeed(), this);
-        chunkLoader = new ChunkLoader(world.getName());
-        alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
+        loadBlockTypes();
         try {
             worldTexture = new MeshMaterial(loader.loadTexture(textureFile));
         } catch (Exception e) {
@@ -62,8 +61,7 @@ public class WorldManager {
     //TODO Controllare le perfomances, non vorrei che si inchiodasse se un giocatore fa avanti e indietro fra due chunk
     public void updateActiveChunksAsync(Vector3i chunkPosition) {
         new Thread(() -> {
-            unloadOldChunks(chunkPosition);
-            loadNewChunks(chunkPosition);
+            updateActiveChunksSync(chunkPosition);
         }).start();
     }
 
