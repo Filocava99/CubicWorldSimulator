@@ -9,7 +9,6 @@ import it.cubicworldsimulator.engine.graphic.DirectionalLight;
 import it.cubicworldsimulator.engine.graphic.MeshMaterial;
 import it.cubicworldsimulator.engine.graphic.PointLight;
 import it.cubicworldsimulator.engine.graphic.SpotLight;
-import it.cubicworldsimulator.game.world.block.Material;
 
 import java.util.HashMap;
 import java.util.Map;
