@@ -2,7 +2,9 @@ package it.cubicworldsimulator.game.utility.yaml;
 
 import org.lwjgl.system.CallbackI;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public class YAMLComponent {
 
@@ -42,6 +44,26 @@ public class YAMLComponent {
 
     public Object getObject(String field){
         return map.get(field);
+    }
+
+    public YAMLComponent getYAMLComponent(String field){
+        if(getObject(field) != null){
+            return new YAMLComponent(getObject(field));
+        }else{
+            return null;
+        }
+    }
+
+    public Set<String> getKeys(){
+        return map.keySet();
+    }
+
+    public Collection<Object> getValues(){
+        return map.values();
+    }
+
+    public Set<Map.Entry<String, Object>> getEntrySet(){
+        return map.entrySet();
     }
 
 }

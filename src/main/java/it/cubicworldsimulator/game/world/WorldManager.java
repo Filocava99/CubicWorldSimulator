@@ -8,6 +8,8 @@ import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
 import it.cubicworldsimulator.game.CommandsQueue;
 import it.cubicworldsimulator.game.openglcommands.OpenGLLoadChunkCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
+import it.cubicworldsimulator.game.utility.yaml.YAMLComponent;
+import it.cubicworldsimulator.game.utility.yaml.YAMLLoader;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
 import it.cubicworldsimulator.game.world.chunk.*;
@@ -49,11 +51,12 @@ public class WorldManager {
         this.chunkLoader = new ChunkLoader(world.getName());
         this.alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
         TextureLoader loader = new TextureLoaderImpl();
-        loadBlockTypes();
         try {
+            loadBlockTypes();
             worldTexture = new MeshMaterial(loader.loadTexture(textureFile));
         } catch (Exception e) {
             logger.error(e.getMessage());
+            e.printStackTrace();
             System.exit(1);
         }
     }
@@ -121,38 +124,30 @@ public class WorldManager {
         return chunkColumn;
     }
 
-    //TODO YAML loader class
-    private void loadBlockTypes() {
-        InputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream("src/main/resources/default.yml");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        Load load = new Load(new LoadSettingsBuilder().setLabel("test").build());
-        Map<String, Object> textureConfig = (Map<String, Object>) load.loadFromInputStream(inputStream);
-        textureFile = textureConfig.get("file").toString();
-        float textureStep = Float.parseFloat(textureConfig.get("step").toString());
-        logger.debug(textureStep);
-        Map<String, Object> blocksList = (Map<String, Object>) textureConfig.get("blocks");
-        blocksList.entrySet().stream().forEach(entry -> {
+    private void loadBlockTypes() throws FileNotFoundException {
+        YAMLLoader yamlLoader = new YAMLLoader();
+        YAMLComponent root = yamlLoader.loadFile("src/main/resources/default.yml");
+        textureFile = root.getString("file");
+        float textureStep = root.getFloat("step");
+        YAMLComponent blocksList = root.getYAMLComponent("blocks");
+        blocksList.getEntrySet().forEach(entry -> {
             String blockName = entry.getKey();
-            Map<String, Object> blockInfo = (Map<String, Object>) entry.getValue();
-            byte blockId = Byte.parseByte(blockInfo.get("id").toString());
-            Map<String, Object> blockTextureInfo = (Map<String, Object>) blockInfo.get("textures");
+            YAMLComponent blockInfo = new YAMLComponent(entry.getValue());
+            byte blockId = blockInfo.getByte("id");
+            YAMLComponent blockTextureInfo = blockInfo.getYAMLComponent("textures");
             Material material = null;
             if (blockTextureInfo != null) {
                 Vector2f[] coords = new Vector2f[6];
-                var iterator = blockTextureInfo.entrySet().iterator();
+                var iterator = blockTextureInfo.getEntrySet().iterator();
                 int i = 0;
                 while (iterator.hasNext()) {
                     if (i == 6) {
                         logger.warn("Found more than six coordinates for block '" + blockName + "' !");
                         break;
                     }
-                    Map<String, Object> faceInfo = (Map<String, Object>) iterator.next().getValue();
-                    float x = Float.parseFloat(faceInfo.get("x").toString());
-                    float y = Float.parseFloat(faceInfo.get("y").toString());
+                    YAMLComponent faceInfo = new YAMLComponent(iterator.next().getValue());
+                    float x = faceInfo.getFloat("x");
+                    float y = faceInfo.getFloat("y");
                     coords[i] = new Vector2f(x, y);
                     i++;
                 }
