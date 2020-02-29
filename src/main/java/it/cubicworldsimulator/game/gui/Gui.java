@@ -54,18 +54,6 @@ public abstract class Gui extends Panel {
         this.window=window;
     }
 
-    protected boolean isNumeric(String text) {
-        if (text == null || text.isEmpty()) {
-            return false;
-        }
-        try {
-            Integer.parseInt(text);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
-
     protected boolean isBoolean (String text) {
         return text.equalsIgnoreCase("false") || text.equalsIgnoreCase("true");
     }
