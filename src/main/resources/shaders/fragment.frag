@@ -16,7 +16,6 @@ uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform DirectionalLight directionalLight;
 
-
 vec4 ambientC;
 vec4 diffuseC;
 vec4 specularC;
@@ -34,8 +33,7 @@ struct PointLight{
 	Attenuation att;
 };
 
-struct SpotLight
-{
+struct SpotLight{
     PointLight pointLight;
     vec3 coneDirection;
     float cutoffCosine;
@@ -56,16 +54,14 @@ struct Material{
 	float reflectance;
 };
 
-void setupColours(Material material, vec2 textCoord)
-{
-    if (material.hasTexture == 1)
-    {
+void setupColours(Material material, vec2 textCoord) {
+
+    if (material.hasTexture == 1) {
         ambientC = texture(texture_sampler, textCoord);
         diffuseC = ambientC;
         specularC = ambientC;
     }
-    else
-    {
+    else {
         ambientC = material.ambient;
         diffuseC = material.diffuse;
         specularC = material.specular;
