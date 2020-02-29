@@ -2,6 +2,7 @@ package it.cubicworldsimulator.game.gui;
 
 import it.cubicworldsimulator.engine.GameEngine;
 import it.cubicworldsimulator.game.Game;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2d;
@@ -16,6 +17,7 @@ import org.liquidengine.legui.theme.Themes;
 import org.liquidengine.legui.theme.colored.FlatColoredTheme;
 import org.lwjgl.glfw.GLFWVidMode;
 
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLICK;
 import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
 import static org.lwjgl.glfw.GLFW.*;
@@ -209,7 +211,7 @@ public class LauncherGui extends Gui {
     }
 
     private boolean checkRenderingDistance (String value) {
-        if (this.isNumeric(value)) {
+        if (isNumeric(value)) {
             return (Integer.parseInt(value))>=1;
         }
         return false;
