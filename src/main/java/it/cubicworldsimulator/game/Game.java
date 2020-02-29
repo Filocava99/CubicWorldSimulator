@@ -234,7 +234,8 @@ public class Game implements GameLogic {
             
         } catch (Exception e) {
             logger.error(e.getMessage());
-            logger.error(e.getStackTrace().toString());
+            //logger.error(e.getStackTrace().toString());
+            e.printStackTrace();
             System.exit(3);
         }
     }
