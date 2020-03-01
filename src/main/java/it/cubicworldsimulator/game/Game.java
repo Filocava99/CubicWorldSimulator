@@ -32,13 +32,15 @@ public class Game implements GameLogic {
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
-    private Vector3f ambientLight;
-    private PointLight[] pointLightList;
-    private SpotLight[] spotLightList;
-    private DirectionalLight directionalLight;
     private float lightAngle;
     private float spotAngle = 0;
     private float spotInc = 1;
+    
+    /*private Vector3f ambientLight;
+    private PointLight[] pointLightList;
+    private SpotLight[] spotLightList;
+    private DirectionalLight directionalLight;*/
+    
 
     //TODO Ha senso il metodo init()? Se ha senso conviene chiamarlo a parte oppure direttamente dal costruttore?
     public Game() {
@@ -70,7 +72,7 @@ public class Game implements GameLogic {
             System.exit(2);
         }
         
-        this.ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+        /*this.ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
         
         Vector3f lightPosition = new Vector3f (0,0,1);
         float lightIntensity = 1.0f;
@@ -89,8 +91,21 @@ public class Game implements GameLogic {
         this.spotLightList = new SpotLight[] { spotLight };
         
         lightPosition = new Vector3f(-1,0,0);
-        this.directionalLight = new DirectionalLight(new Vector3f(1,1,1), lightPosition, lightIntensity);
+        this.directionalLight = new DirectionalLight(new Vector3f(1,1,1), lightPosition, lightIntensity);*/
         
+        
+        setUpLights();
+        //TODO forse qua va settata la posizione della camera
+    }
+    
+    private void setUpLights() {
+    	SceneLight sceneLight = new SceneLight();
+    	sceneLight.setAmbientLight(new Vector3f(1.0f, 1.0f, 1.0f));
+    	float lightIntensity = 1.0f;
+    	Vector3f lightPosition = new Vector3f(-1, 0, 0);
+    	Vector3f lightColor = new Vector3f(1, 1, 1);
+    	sceneLight.setDirectionalLight(new DirectionalLight(lightColor, lightPosition, lightIntensity));
+    	this.scene.setSceneLight(sceneLight);
     }
 
     @Override
@@ -114,12 +129,12 @@ public class Game implements GameLogic {
             camera.getCameraMovement().y = 1;
         }
         
-        float lightPos = this.spotLightList[0].getPointLight().getPosition().z;
+        /*float lightPos = this.spotLightList[0].getPointLight().getPosition().z;
         if(window.isKeyPressed(GLFW_KEY_N)) {
         	this.spotLightList[0].getPointLight().getPosition().z = lightPos + 0.1f;
         } else if (window.isKeyPressed(GLFW_KEY_M)) {
         	this.spotLightList[0].getPointLight().getPosition().z = lightPos - 0.1f;
-        }
+        }*/
         
     }
 
