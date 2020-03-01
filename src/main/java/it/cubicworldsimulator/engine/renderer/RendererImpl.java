@@ -42,15 +42,14 @@ public class RendererImpl implements Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Scene scene, Window window, Vector3f ambientLight, PointLight[] pointLightList,
-    		SpotLight[] spotLightList, DirectionalLight directionalLight) {
+    public void render(Scene scene, Window window) {
         clear();
         if (scene != null) {
             // Update projection Matrix
             Matrix4f projectionMatrix = window.updateProjectionMatrix();
             if (scene.getMeshMap() != null) {
                 Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
-                renderLight(scene, viewMatrix, ambientLight, pointLightList, spotLightList, directionalLight);
+                renderLight(scene, viewMatrix);
                 filter.updateFrustum(projectionMatrix, viewMatrix);
                 filter.filter(scene.getMeshMap());
 
@@ -109,13 +108,15 @@ public class RendererImpl implements Renderer {
         endRender();
     }
     
-    private void renderLight(Scene scene, Matrix4f viewMatrix, Vector3f ambientLight, PointLight[] pointLightList, 
-    		SpotLight[] spotLightList, DirectionalLight directionalLight) {
+    private void renderLight(Scene scene, Matrix4f viewMatrix) {
     	
-    	scene.getShaderProgram().setUniform("ambientLight", ambientLight);
+    	SceneLight sceneLight = scene.getSceneLight();
+    	
+    	scene.getShaderProgram().setUniform("ambientLight", sceneLight.getAmbientLight());
     	scene.getShaderProgram().setUniform("specularPower", specularPower);
     	
     	//PointLights
+    	PointLight[] pointLightList = sceneLight.getPointLights();
     	int numPointLights = pointLightList != null ? pointLightList.length : 0;
     	for (int i = 0; i < numPointLights; i++) {
     		PointLight currPointLight = new PointLight(pointLightList[i]);
@@ -129,6 +130,7 @@ public class RendererImpl implements Renderer {
     	}
     	
     	//SpotLight
+    	SpotLight[] spotLightList = sceneLight.getSpotLights();
     	int numSpotLights = spotLightList != null ? spotLightList.length : 0;
     	for (int i = 0; i < numSpotLights; i++) {
     		SpotLight currSpotLight = new SpotLight(spotLightList[i]);
@@ -142,7 +144,7 @@ public class RendererImpl implements Renderer {
     	}
     	
     	//DirectionalLight
-    	DirectionalLight currDirLight = new DirectionalLight(directionalLight);
+    	DirectionalLight currDirLight = new DirectionalLight(sceneLight.getDirectionalLight());
     	Vector4f dir = new Vector4f(currDirLight.getDirection(),0);
     	dir.mul(viewMatrix);
     	currDirLight.setDirection(new Vector3f(dir.x, dir.y, dir.z));
