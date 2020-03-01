@@ -129,7 +129,8 @@ public class Game implements GameLogic {
             camera.getCameraMovement().y = 1;
         }
         
-        /*float lightPos = this.spotLightList[0].getPointLight().getPosition().z;
+        /* TODO va tolta
+         float lightPos = this.spotLightList[0].getPointLight().getPosition().z;
         if(window.isKeyPressed(GLFW_KEY_N)) {
         	this.spotLightList[0].getPointLight().getPosition().z = lightPos + 0.1f;
         } else if (window.isKeyPressed(GLFW_KEY_M)) {
@@ -151,7 +152,7 @@ public class Game implements GameLogic {
             Vector2f rotVec = mouseInput.getDisplacementVector();
             camera.moveRotation(rotVec.x * mouseInput.getMouseSensitivity(), rotVec.y * mouseInput.getMouseSensitivity(), 0);
         }
-        
+       /*//TODO va tolta
         // Update spot light direction
         this.spotAngle += this.spotInc * 0.05f;
         if (this.spotAngle > 2) {
@@ -184,6 +185,9 @@ public class Game implements GameLogic {
         double angRad = Math.toRadians(this.lightAngle);
         this.directionalLight.getDirection().x = (float) Math.sin(angRad);
         this.directionalLight.getDirection().y = (float) Math.cos(angRad);
+        */
+      
+        updateLights();
         
         if(player.didPlayerChangedChunk()){
             worldManager.updateActiveChunksAsync(player.getChunkPosition());
@@ -205,11 +209,42 @@ public class Game implements GameLogic {
         
         
     }
+    
+    private void updateLights() {
+        SceneLight sceneLight = this.scene.getSceneLight();
+        
+        //Update directional light
+        DirectionalLight directionalLight = sceneLight.getDirectionalLight();
+        this.lightAngle = this.lightAngle + 1.1f;
+        if(this.lightAngle > 90) {
+        	directionalLight.setIntensity(0);
+        	if(this.lightAngle >= 360) {
+        		this.lightAngle = -90;
+        	}
+        	sceneLight.getAmbientLight().set(0.3f, 0.3f, 0.3f);
+        }else if( this.lightAngle <= -80 || this.lightAngle >= 80) {
+        	float factor = 1 - (float) (Math.abs(this.lightAngle) - 80) / 10.0f;
+        	sceneLight.getAmbientLight().set(factor, factor, factor);
+        	directionalLight.setIntensity(factor);
+        	directionalLight.getColor().y = Math.max(factor, 0.9f);
+        	directionalLight.getColor().z = Math.max(factor, 0.5f);
+        }else {
+        	sceneLight.getAmbientLight().set(1, 1, 1);
+        	directionalLight.setIntensity(1);
+        	directionalLight.getColor().x = 1;
+        	directionalLight.getColor().y = 1;
+        	directionalLight.getColor().z = 1;
+        }
+        
+        double angleRadians = Math.toRadians(this.lightAngle);
+        directionalLight.getDirection().x = (float) Math.sin(angleRadians);
+        directionalLight.getDirection().y = (float) Math.cos(angleRadians);
+    }
 
     @Override
     public void render(Window window) {
         logger.trace("Rendering");
-        renderer.render(scene, window, ambientLight, pointLightList, spotLightList, directionalLight);
+        renderer.render(scene, window);
     }
 
     @Override
