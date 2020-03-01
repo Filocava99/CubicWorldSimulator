@@ -35,12 +35,6 @@ public class Game implements GameLogic {
     private float lightAngle;
     private float spotAngle = 0;
     private float spotInc = 1;
-    
-    /*private Vector3f ambientLight;
-    private PointLight[] pointLightList;
-    private SpotLight[] spotLightList;
-    private DirectionalLight directionalLight;*/
-    
 
     //TODO Ha senso il metodo init()? Se ha senso conviene chiamarlo a parte oppure direttamente dal costruttore?
     public Game() {
@@ -71,28 +65,6 @@ public class Game implements GameLogic {
             logger.error(e.getStackTrace().toString());
             System.exit(2);
         }
-        
-        /*this.ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
-        
-        Vector3f lightPosition = new Vector3f (0,0,1);
-        float lightIntensity = 1.0f;
-        PointLight pointLight = new PointLight(new Vector3f(1,1,1), lightPosition, lightIntensity);
-        PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
-        pointLight.setAtt(att);
-        this.pointLightList = new PointLight[] { pointLight };
-        
-        lightPosition = new Vector3f (0,0,10);
-        pointLight = new PointLight(new Vector3f(1,1,1), lightPosition, lightIntensity);
-        att = new PointLight.Attenuation(0.0f, 0.0f, 0.2f);
-        pointLight.setAtt(att);
-        Vector3f coneDirection = new Vector3f (0,0,-1);
-        float cutOffAngle = (float)Math.cos(Math.toRadians(140));
-        SpotLight spotLight = new SpotLight(pointLight, coneDirection, cutOffAngle);
-        this.spotLightList = new SpotLight[] { spotLight };
-        
-        lightPosition = new Vector3f(-1,0,0);
-        this.directionalLight = new DirectionalLight(new Vector3f(1,1,1), lightPosition, lightIntensity);*/
-        
         
         setUpLights();
         //TODO forse qua va settata la posizione della camera
@@ -128,15 +100,6 @@ public class Game implements GameLogic {
         } else if (window.isKeyPressed(GLFW_KEY_SPACE)) {
             camera.getCameraMovement().y = 1;
         }
-        
-        /* TODO va tolta
-         float lightPos = this.spotLightList[0].getPointLight().getPosition().z;
-        if(window.isKeyPressed(GLFW_KEY_N)) {
-        	this.spotLightList[0].getPointLight().getPosition().z = lightPos + 0.1f;
-        } else if (window.isKeyPressed(GLFW_KEY_M)) {
-        	this.spotLightList[0].getPointLight().getPosition().z = lightPos - 0.1f;
-        }*/
-        
     }
 
     @Override
@@ -152,40 +115,6 @@ public class Game implements GameLogic {
             Vector2f rotVec = mouseInput.getDisplacementVector();
             camera.moveRotation(rotVec.x * mouseInput.getMouseSensitivity(), rotVec.y * mouseInput.getMouseSensitivity(), 0);
         }
-       /*//TODO va tolta
-        // Update spot light direction
-        this.spotAngle += this.spotInc * 0.05f;
-        if (this.spotAngle > 2) {
-            this.spotInc = -1;
-        } else if (this.spotAngle < -2) {
-            this.spotInc = 1;
-        }
-        double spotAngleRad = Math.toRadians(this.spotAngle);
-        Vector3f coneDir = this.spotLightList[0].getConeDirection();
-        coneDir.y = (float) Math.sin(spotAngleRad);
-
-        // Update directional light direction, intensity and colour
-        this.lightAngle += 1.1f;
-        if (this.lightAngle > 90) {
-            this.directionalLight.setIntensity(0);
-            if (this.lightAngle >= 360) {
-                this.lightAngle = -90;
-            }
-        } else if (this.lightAngle <= -80 || this.lightAngle >= 80) {
-            float factor = 1 - (float) (Math.abs(this.lightAngle) - 80) / 10.0f;
-            this.directionalLight.setIntensity(factor);
-            this.directionalLight.getColor().y = Math.max(factor, 0.9f);
-            this.directionalLight.getColor().z = Math.max(factor, 0.5f);
-        } else {
-            this.directionalLight.setIntensity(1);
-            this.directionalLight.getColor().x = 1;
-            this.directionalLight.getColor().y = 1;
-            this.directionalLight.getColor().z = 1;
-        }
-        double angRad = Math.toRadians(this.lightAngle);
-        this.directionalLight.getDirection().x = (float) Math.sin(angRad);
-        this.directionalLight.getDirection().y = (float) Math.cos(angRad);
-        */
       
         updateLights();
         
