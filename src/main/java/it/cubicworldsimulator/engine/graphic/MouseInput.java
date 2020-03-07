@@ -12,9 +12,12 @@ public class MouseInput {
 	private boolean pointerInWindow;
 	private boolean leftButtonPressed;
 	private boolean rightButtonPressed;
+
 	private final Window window;
+	private final float mouseSensitivity = 0.5f; //TODO Magic number
 	
 	public MouseInput(Window window) {
+
 		this.previousPosition = new Vector2f(-1, -1);
 		this.currentPosition = new Vector2f(0, 0);
 		this.displacementVector = new Vector2f();
@@ -24,10 +27,10 @@ public class MouseInput {
 		this.window = window;
 	}
 	
-	public void init() {
-		setCursorPosition();
-		checkCursorEnter();
-		setMouseButtonPressed();
+	public void init(Window window) {
+		setCursorPosition(window);
+		checkCursorEnter(window);
+		setMouseButtonPressed(window);
 	}
 	
 	public Vector2f getDisplacementVector() {
@@ -61,24 +64,28 @@ public class MouseInput {
 		this.previousPosition.y = this.currentPosition.y;
 	}
 
-	private void setCursorPosition() {
-		glfwSetCursorPosCallback(this.window.getWindowHandle(), (windowHandle, xpos, ypos) ->{
-			this.currentPosition.x = (float)xpos;
-			this.currentPosition.y = (float)ypos;
+	
+	private void setCursorPosition(Window window) {
+		glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xpos, ypos) ->{
+			this.currentPosition.x = (float) xpos;
+			this.currentPosition.y = (float) ypos;
 		});
 	}
-
-	private void checkCursorEnter() {
-		glfwSetCursorEnterCallback(this.window.getWindowHandle(), (windowHandle, entered)->{
+	
+	private void checkCursorEnter(Window window) {
+		glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered)->{
 			this.pointerInWindow = entered;
 		});
 	}
-
-	private void setMouseButtonPressed() {
-		glfwSetMouseButtonCallback(this.window.getWindowHandle(), (windowHandle, button, action, mode)->{
+	
+	private void setMouseButtonPressed(Window window) {
+		glfwSetMouseButtonCallback(window.getWindowHandle(), (windowHandle, button, action, mode)->{
 			this.leftButtonPressed = (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS);
 			this.rightButtonPressed = (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS);
 		});
 	}
 
+	public float getMouseSensitivity() {
+		return mouseSensitivity;
+	}
 }

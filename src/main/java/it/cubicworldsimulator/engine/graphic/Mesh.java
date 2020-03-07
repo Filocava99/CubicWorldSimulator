@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Mesh {
-
     private final int vertexCount;
     private final MeshMaterial material;
     private final float boundingRadius;

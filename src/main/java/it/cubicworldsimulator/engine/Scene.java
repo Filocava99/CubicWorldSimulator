@@ -12,7 +12,8 @@ public class Scene {
     private final ShaderProgram shaderProgram;
     private final SkyBox skyBox;
     private final Camera camera;
-
+    private SceneLight sceneLight;
+    
     public Scene(Map<Mesh, List<GameItem>> meshMap, ShaderProgram shaderProgram, SkyBox skyBox, Camera camera) {
         this.meshMap = meshMap;
         this.shaderProgram = shaderProgram;
@@ -61,6 +62,14 @@ public class Scene {
 
     public ShaderProgram getShaderProgram() {
         return shaderProgram;
+    }
+    
+    public SceneLight getSceneLight() {
+    	return this.sceneLight;
+    }
+    
+    public void setSceneLight(SceneLight sceneLight) {
+    	this.sceneLight = sceneLight;
     }
 
     //TODO Unmodifiable map? Not sure :(
