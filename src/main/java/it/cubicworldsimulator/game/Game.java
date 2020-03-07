@@ -11,27 +11,16 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Game implements GameLogic {
     private static final Logger logger = LogManager.getLogger(Game.class);
-
-    private int direction = 0;
-
-    /**
-     * Field of View in Radians
-     */
-    private static final float FOV = (float) Math.toRadians(60.0f);
-
-    private static final float Z_NEAR = 0.01f;
-
-    private static final float Z_FAR = 10000.f;
-
-    private static final float cameraStep = 1;
-    private static final float mouseSensitivity = 0.5f;
-    private static final Vector3f cameraMovement = new Vector3f();
+    private static final int MAX_POINT_LIGHTS = 5;
+    private static final int MAX_SPOT_LIGHTS = 5;
 
     private final Camera camera; //TODO Va messa nella scene direttamente?
     private final Player player;
@@ -40,10 +29,12 @@ public class Game implements GameLogic {
     private World world;
     private Scene scene;
     private final Map<Mesh, List<GameItem>> meshMap = new HashMap<>();
-
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
+    private float lightAngle;
+    private float spotAngle = 0;
+    private float spotInc = 1;
 
     //TODO Ha senso il metodo init()? Se ha senso conviene chiamarlo a parte oppure direttamente dal costruttore?
     public Game() {
@@ -74,25 +65,40 @@ public class Game implements GameLogic {
             logger.error(e.getStackTrace().toString());
             System.exit(2);
         }
+        
+        setUpLights();
+        //TODO forse qua va settata la posizione della camera
+    }
+    
+    private void setUpLights() {
+    	SceneLight sceneLight = new SceneLight();
+    	sceneLight.setAmbientLight(new Vector3f(1.0f, 1.0f, 1.0f));
+    	float lightIntensity = 1.0f;
+    	Vector3f lightPosition = new Vector3f(-1, 0, 0);
+    	Vector3f lightColor = new Vector3f(1, 1, 1);
+    	sceneLight.setDirectionalLight(new DirectionalLight(lightColor, lightPosition, lightIntensity));
+    	this.scene.setSceneLight(sceneLight);
     }
 
     @Override
     public void input(Window window, MouseInput mouseInput) {
-        cameraMovement.set(0, 0, 0);
-        if (window.isKeyPressed(GLFW_KEY_W)) {
-            cameraMovement.z = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_S)) {
-            cameraMovement.z = 1;
+
+        camera.getCameraMovement().set(0, 0, 0);
+        if (window.isKeyPressed(GLFW_KEY_W) || (window.isKeyPressed(GLFW_KEY_UP))) {
+            camera.getCameraMovement().z = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_S) || (window.isKeyPressed(GLFW_KEY_DOWN))) {
+            camera.getCameraMovement().z = 1;
         }
-        if (window.isKeyPressed(GLFW_KEY_A)) {
-            cameraMovement.x = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_D)) {
-            cameraMovement.x = 1;
+        if (window.isKeyPressed(GLFW_KEY_A) || (window.isKeyPressed(GLFW_KEY_LEFT))) {
+            camera.getCameraMovement().x = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_D) || (window.isKeyPressed(GLFW_KEY_RIGHT))) {
+            camera.getCameraMovement().x = 1;
+
         }
         if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
-            cameraMovement.y = -1;
+            camera.getCameraMovement().y = -1;
         } else if (window.isKeyPressed(GLFW_KEY_SPACE)) {
-            cameraMovement.y = 1;
+            camera.getCameraMovement().y = 1;
         }
     }
 
@@ -100,15 +106,18 @@ public class Game implements GameLogic {
     public void update(float interval, MouseInput mouseInput) {
         logger.trace("Updating");
         // Update camera position
-        camera.movePosition(cameraMovement.x * cameraStep,
-                cameraMovement.y * cameraStep,
-                cameraMovement.z * cameraStep);
+        camera.movePosition(camera.getCameraMovement().x * camera.getCameraStep(),
+                camera.getCameraMovement().y * camera.getCameraStep(),
+                camera.getCameraMovement().z * camera.getCameraStep());
 
         // Update camera based on mouse
         if (mouseInput.isRightButtonPressed()) {
             Vector2f rotVec = mouseInput.getDisplacementVector();
-            camera.moveRotation(rotVec.x * mouseSensitivity, rotVec.y * mouseSensitivity, 0);
+            camera.moveRotation(rotVec.x * mouseInput.getMouseSensitivity(), rotVec.y * mouseInput.getMouseSensitivity(), 0);
         }
+      
+        updateLights();
+        
         if(player.didPlayerChangedChunk()){
             worldManager.updateActiveChunksAsync(player.getChunkPosition());
         }
@@ -126,12 +135,45 @@ public class Game implements GameLogic {
                 //logger.debug(list == null);
             }
         }
+        
+        
+    }
+    
+    private void updateLights() {
+        SceneLight sceneLight = this.scene.getSceneLight();
+        
+        //Update directional light
+        DirectionalLight directionalLight = sceneLight.getDirectionalLight();
+        this.lightAngle = this.lightAngle + 1.1f;
+        if(this.lightAngle > 90) {
+        	directionalLight.setIntensity(0);
+        	if(this.lightAngle >= 360) {
+        		this.lightAngle = -90;
+        	}
+        	sceneLight.getAmbientLight().set(0.3f, 0.3f, 0.3f);
+        }else if( this.lightAngle <= -80 || this.lightAngle >= 80) {
+        	float factor = 1 - (float) (Math.abs(this.lightAngle) - 80) / 10.0f;
+        	sceneLight.getAmbientLight().set(factor, factor, factor);
+        	directionalLight.setIntensity(factor);
+        	directionalLight.getColor().y = Math.max(factor, 0.9f);
+        	directionalLight.getColor().z = Math.max(factor, 0.5f);
+        }else {
+        	sceneLight.getAmbientLight().set(1, 1, 1);
+        	directionalLight.setIntensity(1);
+        	directionalLight.getColor().x = 1;
+        	directionalLight.getColor().y = 1;
+        	directionalLight.getColor().z = 1;
+        }
+        
+        double angleRadians = Math.toRadians(this.lightAngle);
+        directionalLight.getDirection().x = (float) Math.sin(angleRadians);
+        directionalLight.getDirection().y = (float) Math.cos(angleRadians);
     }
 
     @Override
     public void render(Window window) {
         logger.trace("Rendering");
-        renderer.render(scene, window.getWidth(), window.getHeight());
+        renderer.render(scene, window);
     }
 
     @Override
@@ -160,9 +202,19 @@ public class Game implements GameLogic {
             shaderProgram.createUniform("projectionMatrix");
             shaderProgram.createUniform("modelViewMatrix");
             shaderProgram.createUniform("texture_sampler");
+            
+            //AGGIUNTA PELATINI
+            shaderProgram.createMateriaUniform("material");
+            shaderProgram.createUniform("specularPower");
+            shaderProgram.createUniform("ambientLight");
+            shaderProgram.createPointLightListUniform("pointLights", MAX_POINT_LIGHTS);
+            shaderProgram.createSpotLightListUniform("spotLights", MAX_SPOT_LIGHTS);
+            shaderProgram.createDirectionalLightUnform("directionalLight");
+            
         } catch (Exception e) {
             logger.error(e.getMessage());
-            logger.error(e.getStackTrace().toString());
+            //logger.error(e.getStackTrace().toString());
+            e.printStackTrace();
             System.exit(3);
         }
     }
