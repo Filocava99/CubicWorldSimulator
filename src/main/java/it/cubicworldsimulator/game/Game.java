@@ -49,14 +49,17 @@ public class Game implements GameLogic {
             scene = new Scene(meshMap, shaderProgram, skyBox, camera);
             worldManager.updateActiveChunksSync(new Vector3i(0,0,0));
             while(commandsQueue.hasLoadCommand()){
-                GameItem chunk = commandsQueue.runLoadCommand();
-                if(chunk != null){
+                GameItem[] chunks = commandsQueue.runLoadCommand();
+                if(chunks != null){
                     logger.trace("Adding chunk mesh");
-                    meshMap.put(chunk.getMesh(), List.of(chunk));
+                    for(GameItem gameItem : chunks){
+                        meshMap.put(gameItem.getMesh(), List.of(gameItem));
+                    }
                 }
             }
         }catch (Exception e){
             logger.error(e.getMessage());
+            e.printStackTrace();
             System.exit(2);
         }
     }
@@ -98,17 +101,20 @@ public class Game implements GameLogic {
             worldManager.updateActiveChunksAsync(player.getChunkPosition());
         }
         for(int i = 0; i < 1; i++){
-            GameItem chunk = commandsQueue.runLoadCommand();
-            if(chunk != null){
+            GameItem[] chunks = commandsQueue.runLoadCommand();
+            if(chunks != null){
                 logger.trace("Adding chunk mesh");
-                meshMap.put(chunk.getMesh(), List.of(chunk));
+                for(GameItem gameItem : chunks){
+                    meshMap.put(gameItem.getMesh(), List.of(gameItem));
+                }
             }
-            chunk = commandsQueue.runUnloadCommand();
-            if(chunk != null){
+            chunks = commandsQueue.runUnloadCommand();
+            if(chunks != null){
                 logger.trace("Removing chunk mesh");
                 //logger.debug(chunk.getMesh() == null);
-                var list = meshMap.remove(chunk.getMesh());
-                //logger.debug(list == null);
+                for(GameItem gameItem : chunks){
+                    meshMap.remove(gameItem.getMesh());
+                }
             }
         }
     }
