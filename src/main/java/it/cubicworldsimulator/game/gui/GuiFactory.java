@@ -26,34 +26,42 @@ public class GuiFactory{
     private static long[] monitors = null;
     private static boolean toggleFullscreen = false;
     private static boolean fullscreen = false;
-    private static Gui gui;
+    private Gui gui;
     private static Context context;
+    private int width;
+    private int height;
+    private int refreshRate;
 
-    public void createGui(Gui gui, Vector2i size, String title) {
-        GuiFactory.gui=gui;
+    public void createGui(String title) {
         System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
         System.setProperty("java.awt.headless", Boolean.TRUE.toString());
         if (!glfwInit()) {
             throw new RuntimeException("Can't initialize GLFW");
         }
-        int width=size.x;
-        int height=size.y;
-        long window = glfwCreateWindow(width, height, "CubicWorldSimulator", NULL, NULL);
+
+        long window = glfwCreateWindow(100, 100, "CubicWorldSimulator", NULL, NULL);
+        glfwMaximizeWindow(window);
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); // the window won't be resizable
+        this.gui = new LauncherGui();
         gui.setWindow(window);
         glfwShowWindow(window);
         glfwMakeContextCurrent(window);
+
         GL.createCapabilities();
         glfwSwapInterval(0);
         PointerBuffer pointerBuffer = glfwGetMonitors();
         int remaining = pointerBuffer.remaining();
-        monitors = new long[remaining];
-        for (int i = 0; i < remaining; i++) {
-            monitors[i] = pointerBuffer.get(i);
-        }
+
+
+        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        assert vidmode != null;
+        this.width=vidmode.width();
+        this.height=vidmode.height();
+        this.refreshRate=vidmode.refreshRate();
 
         // Firstly we need to create frame component for window.
-        Frame frame = new Frame(width, height);// new Frame(WIDTH, HEIGHT);
-        createGuiElements(frame, width, height);
+        Frame frame = new Frame(this.width, this.height);// new Frame(WIDTH, HEIGHT);
+        createGuiElements(frame);
         // We need to create legui instance one for window
         // which hold all necessary library components
         // or if you want some customizations you can do it by yourself.
@@ -109,8 +117,7 @@ public class GuiFactory{
                 if (fullscreen) {
                     glfwSetWindowMonitor(window, NULL, 100, 100, width, height, GLFW_DONT_CARE);
                 } else {
-                    GLFWVidMode glfwVidMode = glfwGetVideoMode(monitors[0]);
-                    glfwSetWindowMonitor(window, monitors[0], 0, 0, glfwVidMode.width(), glfwVidMode.height(), glfwVidMode.refreshRate());
+                    glfwSetWindowMonitor(window, monitors[0], 0, 0, this.width, this.height, this.refreshRate);
                 }
                 fullscreen = !fullscreen;
                 toggleFullscreen = false;
@@ -129,8 +136,8 @@ public class GuiFactory{
         glfwTerminate();
     }
 
-    static void createGuiElements(Frame frame, int w, int h) {
-        gui.setFocusable(false);
+    void createGuiElements(Frame frame) {
+        this.gui.setFocusable(false);
         gui.getListenerMap().addListener(WindowSizeEvent.class, (WindowSizeEventListener) event -> gui.setSize(event.getWidth(), event.getHeight()));
         frame.getContainer().add(gui);
         frame.getContainer().setFocusable(false);
