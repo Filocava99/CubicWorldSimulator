@@ -25,13 +25,13 @@ public class Game implements GameLogic {
     private WorldManager worldManager;
     private World world;
     private Scene scene;
-    private final Map<Mesh, List<GameItem>> meshMap = new HashMap<>();
+    private final Map<Mesh, List<GameItem>> opaqueMeshMap = new HashMap<>();
+    private final Map<Mesh, List<GameItem>> transparentMeshMap = new HashMap<>();
 
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
 
-    //TODO Ha senso il metodo init()? Se ha senso conviene chiamarlo a parte oppure direttamente dal costruttore?
     public Game() {
         renderer = new RendererImpl();
         camera = new Camera();
@@ -46,14 +46,20 @@ public class Game implements GameLogic {
         initShaderPrograms();
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
-            scene = new Scene(meshMap, shaderProgram, skyBox, camera);
+            //TODO Creare una copia della instanza opaqueMeshMap
+            scene = new Scene(opaqueMeshMap, transparentMeshMap,shaderProgram, skyBox, camera);
             worldManager.updateActiveChunksSync(new Vector3i(0,0,0));
             while(commandsQueue.hasLoadCommand()){
                 GameItem[] chunks = commandsQueue.runLoadCommand();
                 if(chunks != null){
                     logger.trace("Adding chunk mesh");
-                    for(GameItem gameItem : chunks){
-                        meshMap.put(gameItem.getMesh(), List.of(gameItem));
+                    if(chunks[0] != null){
+                        GameItem gameItem = chunks[0];
+                        opaqueMeshMap.put(gameItem.getMesh(), List.of(gameItem));
+                    }
+                    if(chunks[1] != null){
+                        GameItem gameItem = chunks[1];
+                        transparentMeshMap.put(gameItem.getMesh(), List.of(gameItem));
                     }
                 }
             }
@@ -103,17 +109,24 @@ public class Game implements GameLogic {
         for(int i = 0; i < 1; i++){
             GameItem[] chunks = commandsQueue.runLoadCommand();
             if(chunks != null){
-                logger.trace("Adding chunk mesh");
-                for(GameItem gameItem : chunks){
-                    meshMap.put(gameItem.getMesh(), List.of(gameItem));
+                if(chunks[0] != null){
+                    GameItem gameItem = chunks[0];
+                    opaqueMeshMap.put(gameItem.getMesh(), List.of(gameItem));
+                }
+                if(chunks[1] != null){
+                    GameItem gameItem = chunks[1];
+                    transparentMeshMap.put(gameItem.getMesh(), List.of(gameItem));
                 }
             }
             chunks = commandsQueue.runUnloadCommand();
             if(chunks != null){
-                logger.trace("Removing chunk mesh");
-                //logger.debug(chunk.getMesh() == null);
-                for(GameItem gameItem : chunks){
-                    meshMap.remove(gameItem.getMesh());
+                if(chunks[0] != null){
+                    GameItem gameItem = chunks[0];
+                    opaqueMeshMap.remove(gameItem.getMesh());
+                }
+                if(chunks[1] != null){
+                    GameItem gameItem = chunks[1];
+                    transparentMeshMap.remove(gameItem.getMesh());
                 }
             }
         }

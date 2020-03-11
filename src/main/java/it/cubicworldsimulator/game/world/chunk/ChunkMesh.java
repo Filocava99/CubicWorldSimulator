@@ -49,7 +49,7 @@ public class ChunkMesh implements Serializable {
     }
 
     /**
-     * Delete the mesh instance and its VBOs/VAOs
+     * Delete the meshes instances and its VBOs/VAOs
      */
     public void cleanUp() {
         opaqueMesh.cleanUp();
