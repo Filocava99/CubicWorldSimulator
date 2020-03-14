@@ -38,42 +38,68 @@ public class RendererImpl implements Renderer {
     public void init() {
     }
 
+    /**
+     * Clears the screen
+     */
     public void clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
+    /**
+     * Renders the entire scene (Skybox, Lights, GameItems)
+     * @param scene Scene instance
+     * @param window Main window instance
+     */
     public void render(Scene scene, Window window) {
+        //Clear the screen first
         clear();
+        //If the scene exists we render it
         if (scene != null) {
             // Update projection Matrix
             Matrix4f projectionMatrix = window.updateProjectionMatrix();
+            //If the scene has some GameItems we render them
             if (scene.getMeshMap() != null) {
+                //Update the view matrix
                 Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
+/*<<<<<<< HEAD
                 renderLight(scene, viewMatrix);
+=======*/
+                //Filter the GameItems based on the frustum
+//>>>>>>> master
                 filter.updateFrustum(projectionMatrix, viewMatrix);
                 filter.filter(scene.getMeshMap());
-
+                //Prepare the shader program and the required uniform variables
                 scene.getShaderProgram().bind();
                 scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
                 scene.getShaderProgram().setUniform("texture_sampler", 0);
-
                 // Render each gameItem
                 scene.getMeshMap().forEach((k, v) -> {
-                    renderList(scene.getShaderProgram(), viewMatrix, k, v);
+                    renderListOfGameItems(scene.getShaderProgram(), viewMatrix, k, v);
                 });
+//<<<<<<< HEAD
                 
                 
+//=======
+                //Unbind the shader program
+//>>>>>>> master
                 scene.getShaderProgram().unbind();
             }
+            //If the scene has a skybox we render it
             if (scene.getSkyBox() != null) {
+                //Renders the skybox
                 renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getCamera());
             }
         }
     }
 
+    /**
+     * Renders the skybox
+     * @param projectionMatrix
+     * @param skyBox
+     * @param camera
+     */
     private void renderSkyBox(Matrix4f projectionMatrix, SkyBox skyBox, Camera camera) {
         skyBox.getShaderProgram().bind();
-        skyBox.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
         skyBox.getShaderProgram().setUniform("texture_sampler", 0);
         Matrix4f viewMatrix = camera.getViewMatrix();
         viewMatrix.m30(0);
@@ -81,11 +107,15 @@ public class RendererImpl implements Renderer {
         viewMatrix.m32(0);
         Matrix4f modelViewMatrix = transformation.getModelViewMatrix(skyBox, viewMatrix);
         skyBox.getShaderProgram().setUniform("modelViewMatrix", modelViewMatrix);
-        render(skyBox);
+        renderSingleGameItem(skyBox);
         skyBox.getShaderProgram().unbind();
     }
 
-    private void render(GameItem gameItem) {
+    /**
+     * Renders a single game item
+     * @param gameItem GameItem to be rendered
+     */
+    private void renderSingleGameItem(GameItem gameItem) {
         initRender(gameItem.getMesh());
         logger.trace("GameItem name: " + gameItem.toString());
         logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
@@ -93,7 +123,14 @@ public class RendererImpl implements Renderer {
         endRender();
     }
 
-    private void renderList(ShaderProgram shaderProgram, Matrix4f viewMatrix, Mesh mesh, List<GameItem> gameItems) {
+    /**
+     * Renders a list of game items
+     * @param shaderProgram Shader program to be used for the rendering process
+     * @param viewMatrix view matrix
+     * @param mesh mesh of the game items
+     * @param gameItems list of the game items
+     */
+    private void renderListOfGameItems(ShaderProgram shaderProgram, Matrix4f viewMatrix, Mesh mesh, List<GameItem> gameItems) {
         initRender(mesh);
         gameItems.forEach(gameItem -> {
             if(gameItem.isInsideFrustum()){
@@ -151,6 +188,10 @@ public class RendererImpl implements Renderer {
     	scene.getShaderProgram().setUniform("directionalLight", currDirLight);
     }
 
+    /**
+     * Prepares the rendering process
+     * @param mesh
+     */
     private void initRender(Mesh mesh) {
         Texture texture = mesh.getMeshMaterial().getTexture();
         if (texture != null) {
@@ -163,6 +204,9 @@ public class RendererImpl implements Renderer {
         glBindVertexArray(mesh.getVaoId());
     }
 
+    /**
+     * Ends the rendering process
+     */
     private void endRender() {
         // Restore state
         glBindVertexArray(0);

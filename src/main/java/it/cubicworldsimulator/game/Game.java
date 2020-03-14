@@ -56,13 +56,12 @@ public class Game implements GameLogic {
             while(commandsQueue.hasLoadCommand()){
                 GameItem chunk = commandsQueue.runLoadCommand();
                 if(chunk != null){
-                    logger.debug("Adding chunk mesh");
+                    logger.trace("Adding chunk mesh");
                     meshMap.put(chunk.getMesh(), List.of(chunk));
                 }
             }
         }catch (Exception e){
             logger.error(e.getMessage());
-            logger.error(e.getStackTrace().toString());
             System.exit(2);
         }
         
@@ -124,12 +123,12 @@ public class Game implements GameLogic {
         for(int i = 0; i < 1; i++){
             GameItem chunk = commandsQueue.runLoadCommand();
             if(chunk != null){
-                logger.debug("Adding chunk mesh");
+                logger.trace("Adding chunk mesh");
                 meshMap.put(chunk.getMesh(), List.of(chunk));
             }
             chunk = commandsQueue.runUnloadCommand();
             if(chunk != null){
-                //logger.debug("Removing chunk mesh");
+                logger.trace("Removing chunk mesh");
                 //logger.debug(chunk.getMesh() == null);
                 var list = meshMap.remove(chunk.getMesh());
                 //logger.debug(list == null);
