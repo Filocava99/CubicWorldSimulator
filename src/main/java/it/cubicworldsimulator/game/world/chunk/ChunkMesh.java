@@ -378,7 +378,7 @@ public class ChunkMesh implements Serializable {
          */
         public void cleanUp() {
             if (mesh != null) {
-                //TODO MESH CLEANUP;
+                loader.cleanMesh(mesh);
                 meshReady = false;
             }
         }

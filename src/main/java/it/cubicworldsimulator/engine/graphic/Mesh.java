@@ -33,10 +33,6 @@ public class Mesh {
         return boundingRadius;
     }
 
-    public void cleanUp() {
-
-    }
-
     public MeshMaterial getMeshMaterial() {
         return material;
     }
