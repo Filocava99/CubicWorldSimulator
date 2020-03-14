@@ -2,17 +2,12 @@ package it.cubicworldsimulator.engine.renderer;
 
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.Camera;
-import it.cubicworldsimulator.engine.graphic.DirectionalLight;
 import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.PointLight;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
-import it.cubicworldsimulator.engine.graphic.SpotLight;
 import it.cubicworldsimulator.engine.graphic.Texture;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.util.List;
 
@@ -26,18 +21,21 @@ public class RendererImpl implements Renderer {
     private static final Logger logger = LogManager.getLogger(RendererImpl.class);
 
 //<<<<<<< HEAD
+//<<<<<<< HEAD
 //    private final Transformation transformation; //TODO Da discutere
+//=======
+  //  private final Transformation transformation;
+
+//>>>>>>> cava
 //=======
     private final Transformation transformation;
 
 //>>>>>>> cava
     private final FrustumCullingFilter filter;
-    private final float specularPower;
 
     public RendererImpl() {
         transformation = new Transformation();
         filter = new FrustumCullingFilter();
-        this.specularPower = 10f;
     }
 
     public void init() {
@@ -67,14 +65,20 @@ public class RendererImpl implements Renderer {
                 //Update the view matrix
                 Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
 //<<<<<<< HEAD
+//<<<<<<< HEAD
 
                 //renderLight(scene, viewMatrix);
 
 //=======
+//======
+//>>>>>>> cava
                 //TODO Metodo a parte per il frustum
 //>>>>>>> cava
                 //Filter the GameItems based on the frustum
+//<<<<<<< HEAD
 
+//=======
+//>>>>>>> cava
                 filter.updateFrustum(projectionMatrix, viewMatrix);
                 filter.filter(scene.getOpaqueMeshMap());
                 //Prepare the shader program and the required uniform variables
@@ -165,53 +169,9 @@ public class RendererImpl implements Renderer {
                 logger.trace("GameItem name: " + gameItem.toString());
                 logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
                 glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
-                shaderProgram.setUniform("material", mesh.getMeshMaterial());
             }
         });
         endRender();
-    }
-    
-    private void renderLight(Scene scene, Matrix4f viewMatrix) {
-    	
-    	SceneLight sceneLight = scene.getSceneLight();
-    	
-    	scene.getShaderProgram().setUniform("ambientLight", sceneLight.getAmbientLight());
-    	scene.getShaderProgram().setUniform("specularPower", specularPower);
-    	
-    	//PointLights
-    	PointLight[] pointLightList = sceneLight.getPointLights();
-    	int numPointLights = pointLightList != null ? pointLightList.length : 0;
-    	for (int i = 0; i < numPointLights; i++) {
-    		PointLight currPointLight = new PointLight(pointLightList[i]);
-    		Vector3f lightPos = currPointLight.getPosition();
-    		Vector4f aux = new Vector4f(lightPos, 1);
-    		aux.mul(viewMatrix);
-    		lightPos.x = aux.x;
-    		lightPos.y = aux.y;
-    		lightPos.z = aux.z;
-    		scene.getShaderProgram().setUniform("pointLights", currPointLight, i);
-    	}
-    	
-    	//SpotLight
-    	SpotLight[] spotLightList = sceneLight.getSpotLights();
-    	int numSpotLights = spotLightList != null ? spotLightList.length : 0;
-    	for (int i = 0; i < numSpotLights; i++) {
-    		SpotLight currSpotLight = new SpotLight(spotLightList[i]);
-    		Vector3f lightPos = currSpotLight.getConeDirection();
-    		Vector4f aux = new Vector4f(lightPos, 1);
-    		aux.mul(viewMatrix);
-    		lightPos.x = aux.x;
-    		lightPos.y = aux.y;
-    		lightPos.z = aux.z;
-    		scene.getShaderProgram().setUniform("spotLights", currSpotLight, i);
-    	}
-    	
-    	//DirectionalLight
-    	DirectionalLight currDirLight = new DirectionalLight(sceneLight.getDirectionalLight());
-    	Vector4f dir = new Vector4f(currDirLight.getDirection(),0);
-    	dir.mul(viewMatrix);
-    	currDirLight.setDirection(new Vector3f(dir.x, dir.y, dir.z));
-    	scene.getShaderProgram().setUniform("directionalLight", currDirLight);
     }
 
     /**

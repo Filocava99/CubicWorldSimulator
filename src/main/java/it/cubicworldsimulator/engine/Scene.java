@@ -13,17 +13,23 @@ public class Scene {
     private final ShaderProgram shaderProgram;
     private final SkyBox skyBox;
     private final Camera camera;
-    private SceneLight sceneLight;
+//<<<<<<< HEAD
+  //  private SceneLight sceneLight;
 //<<<<<<< HEAD
   //  private SceneLight sceneLight;
     
     //public Scene(Map<Mesh, List<GameItem>> meshMap, ShaderProgram shaderProgram, SkyBox skyBox, Camera camera) {
       //  this.meshMap = meshMap;
 //=======
+//=======
+//>>>>>>> cava
 
     public Scene(Map<Mesh, List<GameItem>> opaqueMeshMap, Map<Mesh, List<GameItem>> transparentMeshMap, ShaderProgram shaderProgram, SkyBox skyBox, Camera camera) {
         this.opaqueMeshMap = opaqueMeshMap;
         this.transparentMeshMap = transparentMeshMap;
+//<<<<<<< HEAD
+//>>>>>>> cava
+//=======
 //>>>>>>> cava
         this.shaderProgram = shaderProgram;
         this.skyBox = skyBox;
@@ -71,14 +77,6 @@ public class Scene {
 
     public ShaderProgram getShaderProgram() {
         return shaderProgram;
-    }
-    
-    public SceneLight getSceneLight() {
-    	return this.sceneLight;
-    }
-    
-    public void setSceneLight(SceneLight sceneLight) {
-    	this.sceneLight = sceneLight;
     }
 
     public Map<Mesh, List<GameItem>> getOpaqueMeshMap() {
