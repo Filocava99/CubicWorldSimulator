@@ -2,6 +2,7 @@ package it.cubicworldsimulator.game.world.chunk;
 
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.MeshMaterial;
+import it.cubicworldsimulator.engine.loader.Loader;
 import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
@@ -344,6 +345,8 @@ public class ChunkMesh implements Serializable {
         private final transient MeshMaterial meshMaterial;
         private final transient Map<Object, Material> blocksTypes;
 
+        private final Loader loader = new Loader();//TODO DA RIMUOVERE
+
         public VBOContainer(MeshMaterial meshMaterial, Map<Object, Material> blocksTypes) {
             this.meshMaterial = meshMaterial;
             this.blocksTypes = blocksTypes;
@@ -364,8 +367,9 @@ public class ChunkMesh implements Serializable {
             }
             if (!areVBOsArraysEmpty()) {
                 try {
-                	
-                    mesh = new Mesh(verticesArray, uvsArray, indicesArray, meshMaterial, Constants.chunkAxisSize);
+
+                    mesh = loader.createMesh(verticesArray, uvsArray, indicesArray, normalsArray, meshMaterial,     Constants.chunkAxisSize);
+
                     meshReady = true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -378,7 +382,7 @@ public class ChunkMesh implements Serializable {
          */
         public void cleanUp() {
             if (mesh != null) {
-                mesh.cleanUp();
+                loader.cleanMesh(mesh);
                 meshReady = false;
             }
         }

@@ -1,6 +1,8 @@
 package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.Utils;
+import it.cubicworldsimulator.engine.loader.Loader;
+import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
@@ -93,8 +95,10 @@ public class OBJLoader {
         logger.debug("Vertices: " + posArr.length);
         logger.debug("UVs: " + textCoordArr.length);
         logger.debug("Indices: " + indicesArr.length);
-        //return new Mesh(posArr, textCoordArr, normArr, indicesArr, this.textureFileName);
-        return new Mesh(posArr, textCoordArr, indicesArr, this.textureFileName);
+
+        return new Loader().createMesh(posArr, textCoordArr, indicesArr, normArr,
+                new MeshMaterial(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
+
     }
 
     private void processFaceVertex(final IdxGroup indices, final List<Vector2f> textCoordList,

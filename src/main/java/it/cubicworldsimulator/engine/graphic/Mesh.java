@@ -1,56 +1,25 @@
 package it.cubicworldsimulator.engine.graphic;
 
-import it.cubicworldsimulator.engine.loader.Loader;
-import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Mesh {
+
+    private int vaoId;
+    private final List<Integer> vboList;
+    private final List<Integer> textureVboList;
     private final int vertexCount;
     private final MeshMaterial material;
     private final float boundingRadius;
-    private int vaoId;
-    private final List<Integer> vboList = new ArrayList<>();
-    private final List<Integer> textureVboList = new ArrayList<>();
-    private final Loader loader = new Loader();
 
-    public Mesh (float[] positions, float[] textCoords, int[] indices, String textureFileName) {
-        this(positions, textCoords, indices, new MeshMaterial(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
-    }
 
-    public Mesh(float[] positions, float[] textCoords, int[] indices, MeshMaterial texture, float boundingRadius) {
-
+    public Mesh(MeshMaterial texture, float boundingRadius, int vertexCount, int vaoId,
+                List<Integer> vboList, List<Integer> textureVboList) {
         this.material = texture;
         this.boundingRadius = boundingRadius;
-        this.vertexCount = indices.length;
-        createMesh(positions, textCoords, indices);
-    }
-
-    private void createMesh(float[] positions, float[] textCoords, int[] indices) {
-       try {
-           //Create Vao
-           this.vaoId=loader.createVao();
-
-           // Position VBO
-           this.vboList.add(loader.createVbo());
-           loader.insertPositionIntoVbo(positions, this.vboList.get(vboList.size()-1));
-
-           // Index VBO
-           this.vboList.add(loader.createVbo());
-           loader.insertIndicesIntoVbo(indices, this.vboList.get(vboList.size()-1));
-
-           //Texture VBO
-           this.textureVboList.add(loader.createVbo());
-           loader.insertTextureIntoVbo(textCoords, this.textureVboList.get(textureVboList.size()-1));
-
-       } finally {
-           loader.cleanBuffers();
-       }
-   }
-
-    public void cleanUp() {
-       loader.cleanVaoAndVbos();
+        this.vertexCount = vertexCount;
+        this.vaoId = vaoId;
+        this.vboList = vboList;
+        this.textureVboList = textureVboList;
     }
 
     public int getVertexCount() {
@@ -67,5 +36,13 @@ public class Mesh {
 
     public MeshMaterial getMeshMaterial() {
         return material;
+    }
+
+    public List<Integer> getVboList() {
+        return vboList;
+    }
+
+    public List<Integer> getTextureVboList() {
+        return textureVboList;
     }
 }
