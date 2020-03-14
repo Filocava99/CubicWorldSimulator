@@ -42,7 +42,8 @@ public class Mesh {
     public Mesh (float[] positions, float[] textCoords,float[] normals, int[] indices, String textureFileName) throws Exception {
 		this(positions, textCoords, normals, indices, new MeshMaterial(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
     }
-
+    
+  
     public Mesh(float[] positions, float[] textCoords,float[] normals, int[] indices , MeshMaterial texture, float boundingRadius) {
 		FloatBuffer posBuffer = null;
         IntBuffer indicesBuffer = null;
