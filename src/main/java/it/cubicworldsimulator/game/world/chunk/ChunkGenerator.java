@@ -65,28 +65,21 @@ public class ChunkGenerator {
         for (int i = 0; i < 5; i++) {
             int x = Math.abs(random.nextInt() % 12) + 2;
             int z = Math.abs(random.nextInt() % 12) + 2;
-            int y = getHeight(new Vector2i(x,z), chunkColumn);
+            int y = chunkColumn.getHeight(new Vector2i(x, z), worldManager.getBlockTypes().get("air").getId());
             Vector3i treePos = new Vector3i(x, y, z);
-            int height = random.nextInt()%2+4;
-            if(isSpaceAvailableForTree(chunkColumn,treePos, height)){
+            int height = random.nextInt() % 2 + 4;
+            if (isSpaceAvailableForTree(chunkColumn, treePos, height)) {
                 growTree(chunkColumn, treePos, height);
             }
         }
     }
 
-    private int getHeight(Vector2i coord, ChunkColumn chunkColumn){
-        for(int i = 1; i < 256; i++){
-            byte blockId = chunkColumn.getBlock(new Vector3i(coord.x, i, coord.y));
-            if(blockId == worldManager.getBlockTypes().get("air").getId()){
-                return Math.max(0,i);
-            }
-        }
-        return 255;
-    }
 
-    private boolean isSpaceAvailableForTree(ChunkColumn chunkColumn, Vector3i coord, int height){
-        if(coord.y>0){
-            if(chunkColumn.getBlock(new Vector3i(coord.x, coord.y-1, coord.z)) == worldManager.getBlockTypes().get("water").getId()){
+
+    private boolean isSpaceAvailableForTree(ChunkColumn chunkColumn, Vector3i coord, int height) {
+        if (coord.y > 0) {
+            byte block = chunkColumn.getBlock(new Vector3i(coord.x, coord.y - 1, coord.z));
+            if (block == worldManager.getBlockTypes().get("water").getId() || block == worldManager.getBlockTypes().get("log").getId()) {
                 return false;
             }
         }
@@ -112,35 +105,48 @@ public class ChunkGenerator {
         byte logId = worldManager.getBlockTypes().get("log").getId();
         byte leafId = worldManager.getBlockTypes().get("leaf").getId();
         //Max layer
-       // if (height + pos.y)
+        // if (height + pos.y)
 
-        for(int i = 0; i <= height; i++){
+        for (int i = 0; i <= height; i++) {
             //tronco
             chunk.setBlock(new Vector3i(pos.x, pos.y + i, pos.z), logId);
-            if(i>height-3){
-                chunk.setBlock(new Vector3i(pos.x-1, pos.y + i, pos.z), leafId);
-                chunk.setBlock(new Vector3i(pos.x+1, pos.y + i, pos.z), leafId);
-                chunk.setBlock(new Vector3i(pos.x, pos.y + i, pos.z-1), leafId);
-                chunk.setBlock(new Vector3i(pos.x, pos.y + i, pos.z+1), leafId);
+            if (i > height - 3) {
+                chunk.setBlock(new Vector3i(pos.x - 1, pos.y + i, pos.z), leafId);
+                chunk.setBlock(new Vector3i(pos.x + 1, pos.y + i, pos.z), leafId);
+                chunk.setBlock(new Vector3i(pos.x, pos.y + i, pos.z - 1), leafId);
+                chunk.setBlock(new Vector3i(pos.x, pos.y + i, pos.z + 1), leafId);
             }
         }
         //max
         chunk.setBlock(new Vector3i(pos.x, pos.y + height, pos.z), leafId);
 
-        //max-1
+        //max-2
+        chunk.setBlock(new Vector3i(pos.x - 1, pos.y + height - 1, pos.z - 1), leafId);
+        chunk.setBlock(new Vector3i(pos.x - 1, pos.y + height - 1, pos.z + 1), leafId);
+        chunk.setBlock(new Vector3i(pos.x + 1, pos.y + height - 1, pos.z - 1), leafId);
+        chunk.setBlock(new Vector3i(pos.x + 1, pos.y + height - 1, pos.z + 1), leafId);
 
-        Random random = new Random();
-        if(random.nextBoolean()){
-            chunk.setBlock(new Vector3i(pos.x-1, pos.y + height, pos.z-1), leafId);
-        }
-        if(random.nextBoolean()){
-            chunk.setBlock(new Vector3i(pos.x-1, pos.y + height, pos.z+1), leafId);
-        }
-        if(random.nextBoolean()){
-            chunk.setBlock(new Vector3i(pos.x+1, pos.y + height, pos.z-1), leafId);
-        }
-        if(random.nextBoolean()){
-            chunk.setBlock(new Vector3i(pos.x+1, pos.y + height, pos.z+1), leafId);
-        }
+        chunk.setBlock(new Vector3i(pos.x - 2, pos.y + height - 1, pos.z - 1), leafId);
+        chunk.setBlock(new Vector3i(pos.x - 2, pos.y + height - 1, pos.z), leafId);
+        chunk.setBlock(new Vector3i(pos.x - 2, pos.y + height - 1, pos.z + 1), leafId);
+
+        chunk.setBlock(new Vector3i(pos.x + 2, pos.y + height - 1, pos.z - 1), leafId);
+        chunk.setBlock(new Vector3i(pos.x + 2, pos.y + height - 1, pos.z), leafId);
+        chunk.setBlock(new Vector3i(pos.x + 2, pos.y + height - 1, pos.z + 1), leafId);
+
+        chunk.setBlock(new Vector3i(pos.x - 1, pos.y + height - 1, pos.z - 2), leafId);
+        chunk.setBlock(new Vector3i(pos.x, pos.y + height - 1, pos.z - 2), leafId);
+        chunk.setBlock(new Vector3i(pos.x +1, pos.y + height - 1, pos.z - 2), leafId);
+
+        chunk.setBlock(new Vector3i(pos.x - 1, pos.y + height - 1, pos.z + 2), leafId);
+        chunk.setBlock(new Vector3i(pos.x, pos.y + height - 1, pos.z + 2), leafId);
+        chunk.setBlock(new Vector3i(pos.x +1, pos.y + height - 1, pos.z + 2), leafId);
+
+
+        chunk.setBlock(new Vector3i(pos.x - 1, pos.y + height - 2, pos.z - 1), leafId);
+        chunk.setBlock(new Vector3i(pos.x - 1, pos.y + height - 2, pos.z + 1), leafId);
+        chunk.setBlock(new Vector3i(pos.x + 1, pos.y + height - 2, pos.z - 1), leafId);
+        chunk.setBlock(new Vector3i(pos.x + 1, pos.y + height - 2, pos.z + 1), leafId);
+
     }
 }

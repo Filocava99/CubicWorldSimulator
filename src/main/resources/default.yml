@@ -4,8 +4,10 @@ blocks:
   air:
     test: "ciao"
     id: 0
+    transparent: true
   dirt:
     id: 1
+    transparent: false
     textures:
       top:
         x: 1
@@ -27,6 +29,7 @@ blocks:
         y: 0
   stone:
     id: 2
+    transparent: false
     textures:
       top:
         x: 0
@@ -48,6 +51,7 @@ blocks:
         y: 0
   grass:
     id: 3
+    transparent: false
     textures:
       top:
         x: 3
@@ -69,6 +73,7 @@ blocks:
         y: 0
   water:
     id: 4
+    transparent: false
     textures:
       top:
         x: 4
@@ -90,6 +95,7 @@ blocks:
         y: 0
   log:
     id: 5
+    transparent: false
     textures:
       top:
         x: 6
@@ -111,6 +117,7 @@ blocks:
         y: 0
   leaf:
     id: 6
+    transparent: true
     textures:
       top:
         x: 9

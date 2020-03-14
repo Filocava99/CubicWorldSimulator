@@ -2,6 +2,7 @@ package it.cubicworldsimulator.game.world.chunk;
 
 import it.cubicworldsimulator.game.utility.Constants;
 import org.joml.Vector2f;
+import org.joml.Vector2i;
 import org.joml.Vector3i;
 
 import java.io.Serializable;
@@ -24,6 +25,16 @@ public class ChunkColumn implements Serializable {
         Chunk chunk = chunks[coord.y/16]; //sarebbe diviso 16
         int blockY = coord.y-chunkY*16;
         chunk.setBlock(new Vector3i(coord.x, blockY, coord.z), blockId);
+    }
+
+    public int getHeight(Vector2i coord, byte airId) {
+        for (int i = Constants.minHeight; i < Constants.maxHeight; i++) {
+            byte blockId = getBlock(new Vector3i(coord.x, i, coord.y));
+            if (blockId == airId) {
+                return Math.max(0, i);
+            }
+        }
+        return Constants.maxHeight-1; //Dovrebbe essere 255 di default
     }
 
     public byte getBlock(Vector3i coord){
