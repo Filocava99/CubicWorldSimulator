@@ -4,6 +4,8 @@ import org.joml.Vector2f;
 
 public class BlockTexture {
 
+    private final static int CUBE_FACES = 6;
+
     private final FaceTexture topFace;
     private final FaceTexture botFace;
     private final FaceTexture leftFace;
@@ -18,8 +20,7 @@ public class BlockTexture {
      * @param coords 0 -> top | 1 -> bot | 2 -> left | 3 -> right | 4 -> front | 5 -> back
      */
     public BlockTexture(float step, Vector2f[] coords) {
-        //TODO E' un magic number ma allo stesso tempo un cubo avra' sempre sei facce. Devo per forza farlo in una costante? Non spreco memoria?
-        if(coords.length != 6){
+        if(coords.length != CUBE_FACES){
             throw new IllegalArgumentException("Coords array must be of exactly 6 elements!");
         }
         this.step = step;

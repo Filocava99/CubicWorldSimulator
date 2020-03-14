@@ -138,6 +138,7 @@ public class WorldManager {
             String blockName = entry.getKey();
             YAMLComponent blockInfo = new YAMLComponent(entry.getValue());
             byte blockId = blockInfo.getByte("id");
+            boolean transparency = blockInfo.getBoolean("transparent");
             YAMLComponent blockTextureInfo = blockInfo.getYAMLComponent("textures");
             Material material = null;
             if (blockTextureInfo != null) {
@@ -155,10 +156,10 @@ public class WorldManager {
                     coords[i] = new Vector2f(x, y);
                     i++;
                 }
-                material = new Material(blockId, blockName, new BlockTexture(textureStep, coords));
+                material = new Material(blockId, blockName, new BlockTexture(textureStep, coords), transparency);
             }
             if (material == null) {
-                material = new Material(blockId, blockName, null);
+                material = new Material(blockId, blockName, null, transparency);
             }
             blockTypes.put(blockName, material);
             blockTypes.put(blockId, material);
