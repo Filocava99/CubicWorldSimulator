@@ -15,8 +15,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL15C.*;
 import static org.lwjgl.opengl.GL20C.*;
-import static org.lwjgl.opengl.GL30C.glBindVertexArray;
-import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
+import static org.lwjgl.opengl.GL30C.*;
 
 public class Loader {
     private final List<Integer> vaoList;
@@ -115,17 +114,20 @@ public class Loader {
         insertIntoVbo(normalsBuffer, vboId, 3, 2);
     }
 
-    //TODO CAVA DEVI CHIAMARE QUESTO PER PULIRE I VAO E VBO
-    public void cleanVaoAndVbos() {
+    public void cleanMesh(Mesh mesh) {
         glDisableVertexAttribArray(0);
 
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        this.vboList.forEach(GL15::glDeleteBuffers);
+        mesh.getVboList().forEach(GL15::glDeleteBuffers);
+
+        // Delete the texture VBO
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        mesh.getTextureVboList().forEach(GL15::glDeleteBuffers);
 
         // Delete the VAOs
         glBindVertexArray(0);
-        this.vaoList.forEach(GL30::glDeleteVertexArrays);
+        glDeleteVertexArrays(mesh.getVaoId());
     }
 
     public void cleanBuffers() {
