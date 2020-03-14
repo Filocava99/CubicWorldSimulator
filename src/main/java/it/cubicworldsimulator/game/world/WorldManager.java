@@ -1,13 +1,13 @@
 package it.cubicworldsimulator.game.world;
 
-import it.cubicworldsimulator.engine.GameItem;
-import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.MeshMaterial;
 import it.cubicworldsimulator.engine.loader.TextureLoader;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
 import it.cubicworldsimulator.game.CommandsQueue;
 import it.cubicworldsimulator.game.openglcommands.OpenGLLoadChunkCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
+import it.cubicworldsimulator.game.utility.yaml.YAMLComponent;
+import it.cubicworldsimulator.game.utility.yaml.YAMLLoader;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.Material;
 import it.cubicworldsimulator.game.world.chunk.*;
@@ -16,12 +16,8 @@ import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -37,24 +33,25 @@ public class WorldManager {
     private final ChunkLoader chunkLoader;
     private final Map<Object, Material> blockTypes = new HashMap<>();
     private final Set<Vector2f> alreadyGeneratedChunksColumns;
-
-    private String textureFile;
-    private MeshMaterial worldTexture;
-
     private final ConcurrentHashMap<Vector3f, ChunkMesh> chunkMeshes = new ConcurrentHashMap<>();
 
+    private String textureFile;
+    private float textureStep;
+    private MeshMaterial worldTexture;
+
     public WorldManager(World world, CommandsQueue commandsQueue) {
-        loadBlockTypes();
         this.world = world;
         this.commandsQueue = commandsQueue;
+        this.chunkGenerator = new ChunkGenerator(world.getSeed(), this);
+        this.chunkLoader = new ChunkLoader(world.getName());
+        this.alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
         TextureLoader loader = new TextureLoaderImpl();
-        chunkGenerator = new ChunkGenerator(world.getSeed(), this);
-        chunkLoader = new ChunkLoader(world.getName());
-        alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
         try {
+            loadConfig("src/main/resources/default.yml");
             worldTexture = new MeshMaterial(loader.loadTexture(textureFile));
         } catch (Exception e) {
             logger.error(e.getMessage());
+            e.printStackTrace();
             System.exit(1);
         }
     }
@@ -62,8 +59,7 @@ public class WorldManager {
     //TODO Controllare le perfomances, non vorrei che si inchiodasse se un giocatore fa avanti e indietro fra due chunk
     public void updateActiveChunksAsync(Vector3i chunkPosition) {
         new Thread(() -> {
-            unloadOldChunks(chunkPosition);
-            loadNewChunks(chunkPosition);
+            updateActiveChunksSync(chunkPosition);
         }).start();
     }
 
@@ -100,6 +96,7 @@ public class WorldManager {
                 Vector2f newChunkCoord = new Vector2f(x, z);
                 if (!activeChunks.containsKey(newChunkCoord)) {
                     ChunkColumn chunkColumn = loadChunkColumn(newChunkCoord);
+                    alreadyGeneratedChunksColumns.add(newChunkCoord);
                     for (int i = 15; i >= 0; i--) {
                         Chunk chunk = chunkColumn.getChunks()[i];
                         ChunkMesh chunkMesh = new ChunkMesh(chunk, blockTypes, worldTexture);
@@ -123,38 +120,38 @@ public class WorldManager {
         return chunkColumn;
     }
 
-    //TODO YAML loader class
-    private void loadBlockTypes() {
-        InputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream("src/main/resources/default.yml");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        Load load = new Load(new LoadSettingsBuilder().setLabel("test").build());
-        Map<String, Object> textureConfig = (Map<String, Object>) load.loadFromInputStream(inputStream);
-        textureFile = textureConfig.get("file").toString();
-        float textureStep = Float.parseFloat(textureConfig.get("step").toString());
-        logger.debug(textureStep);
-        Map<String, Object> blocksList = (Map<String, Object>) textureConfig.get("blocks");
-        blocksList.entrySet().stream().forEach(entry -> {
+    private void loadConfig(String configFileName) throws FileNotFoundException {
+        YAMLLoader yamlLoader = new YAMLLoader();
+        YAMLComponent root = yamlLoader.loadFile(configFileName);
+        loadTextureConfig(root);
+        loadBlockTypes(root);
+    }
+
+    private void loadTextureConfig(YAMLComponent root){
+        textureFile = root.getString("file");
+        textureStep = root.getFloat("step");
+    }
+
+    private void loadBlockTypes(YAMLComponent root)  {
+        YAMLComponent blocksList = root.getYAMLComponent("blocks");
+        blocksList.getEntrySet().forEach(entry -> {
             String blockName = entry.getKey();
-            Map<String, Object> blockInfo = (Map<String, Object>) entry.getValue();
-            byte blockId = Byte.parseByte(blockInfo.get("id").toString());
-            Map<String, Object> blockTextureInfo = (Map<String, Object>) blockInfo.get("textures");
+            YAMLComponent blockInfo = new YAMLComponent(entry.getValue());
+            byte blockId = blockInfo.getByte("id");
+            YAMLComponent blockTextureInfo = blockInfo.getYAMLComponent("textures");
             Material material = null;
             if (blockTextureInfo != null) {
                 Vector2f[] coords = new Vector2f[6];
-                var iterator = blockTextureInfo.entrySet().iterator();
+                var iterator = blockTextureInfo.getEntrySet().iterator();
                 int i = 0;
                 while (iterator.hasNext()) {
                     if (i == 6) {
                         logger.warn("Found more than six coordinates for block '" + blockName + "' !");
                         break;
                     }
-                    Map<String, Object> faceInfo = (Map<String, Object>) iterator.next().getValue();
-                    float x = Float.parseFloat(faceInfo.get("x").toString());
-                    float y = Float.parseFloat(faceInfo.get("y").toString());
+                    YAMLComponent faceInfo = new YAMLComponent(iterator.next().getValue());
+                    float x = faceInfo.getFloat("x");
+                    float y = faceInfo.getFloat("y");
                     coords[i] = new Vector2f(x, y);
                     i++;
                 }

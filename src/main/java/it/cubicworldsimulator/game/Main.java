@@ -4,7 +4,15 @@ import it.cubicworldsimulator.game.gui.GuiFactory;
 import it.cubicworldsimulator.game.gui.LauncherGui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joml.Vector2d;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
+import org.lwjgl.glfw.GLFWVidMode;
+
+import java.awt.*;
+
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
+import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 
 public class Main {
 
@@ -12,14 +20,10 @@ public class Main {
     private static final GuiFactory guiFactory = new GuiFactory();
 
     public static void main(String[] args) {
-        final int width = 800;
-        final int height = 800;
-
         try {
             logger.debug("Platform: " + System.getProperty("os.name"));
             logger.trace("Game launcher started...");
-            final var size = new Vector2i(width, height);
-            guiFactory.createGui(new LauncherGui(size), size, "CubicWorldSimulator Launcher");
+            guiFactory.createGui("CubicWorldSimulator Launcher");
         } catch (Exception e) {
             logger.error(e.getMessage());
             e.printStackTrace();

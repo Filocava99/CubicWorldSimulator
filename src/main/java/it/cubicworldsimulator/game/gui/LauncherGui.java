@@ -2,8 +2,10 @@ package it.cubicworldsimulator.game.gui;
 
 import it.cubicworldsimulator.engine.GameEngine;
 import it.cubicworldsimulator.game.Game;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.liquidengine.legui.component.*;
@@ -13,7 +15,9 @@ import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
 import org.liquidengine.legui.theme.Themes;
 import org.liquidengine.legui.theme.colored.FlatColoredTheme;
+import org.lwjgl.glfw.GLFWVidMode;
 
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLICK;
 import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
 import static org.lwjgl.glfw.GLFW.*;
@@ -41,13 +45,19 @@ public class LauncherGui extends Gui {
     private TextInput worldStringInput;
     private Button launchGame;
 
-    public LauncherGui(Vector2i size) {
-        super(0,0,size.x,size.y);
-        this.createGui(size);
+    //Size
+    private int width;
+    private int height;
+
+    public LauncherGui() {
+        super(0, 0, glfwGetVideoMode(glfwGetPrimaryMonitor()).width(), glfwGetVideoMode(glfwGetPrimaryMonitor()).height());
+        this.width=glfwGetVideoMode(glfwGetPrimaryMonitor()).width();
+        this.height=glfwGetVideoMode(glfwGetPrimaryMonitor()).height();
+        this.createGui();
     }
 
-    private void createGui(Vector2i size) {
-        Panel settings = new Panel(0, 200, size.x, 450);
+    private void createGui() {
+        Panel settings = new Panel(0, 200, (float) this.width, this.height);
         Label settingsLabel = this.createOptionLabel("Settings", settings);
 
         Label vSync = this.createOptionLabel("vSync", settings);
@@ -161,7 +171,7 @@ public class LauncherGui extends Gui {
             }
         });
 
-        launchGame = this.createButton("Start game", new Vector2f(290, 50), new Vector2f(120, 90));
+        launchGame = this.createButton("Start game", new Vector2f(290, 50), new Vector2f(80, 50));
         startGame();
         add(launchGame);
         add(settings);
@@ -169,7 +179,6 @@ public class LauncherGui extends Gui {
         Themes.getDefaultTheme().applyAll(this);
         //Set others style options AFTER theme has been applied
         settingsLabel.getStyle().setFontSize(40f);
-        launchGame.getStyle().setFontSize(50f);
     }
 
     private void startGame() {
@@ -202,7 +211,7 @@ public class LauncherGui extends Gui {
     }
 
     private boolean checkRenderingDistance (String value) {
-        if (this.isNumeric(value)) {
+        if (isNumeric(value)) {
             return (Integer.parseInt(value))>=1;
         }
         return false;
@@ -217,9 +226,7 @@ public class LauncherGui extends Gui {
                 fromInt(39, 174, 96, 1), // allowColor
                 fromInt(192, 57, 43, 1), // denyColor
                 fromInt(0, 0, 0, 1f),  // shadowColor
-                ColorConstants.white(),
-                FontRegistry.DEFAULT,
-                30f
+                ColorConstants.white()
         ));
     }
 }
