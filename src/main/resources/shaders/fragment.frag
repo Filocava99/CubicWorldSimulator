@@ -113,17 +113,17 @@ vec4 calcSpotLight(SpotLight spotLight, vec3 position, vec3 normal){
 	vec3 light_direction = spotLight.pointLight.position - position;
 	vec3 to_light_direction = normalize(light_direction);
 	vec3 from_light_direction = -( to_light_direction );
-	
+
 	//i due vettori sono normalizzati quindi avendo modulo 1 in spot_alfa ci finisce il coseno
 	float spot_alfa = dot(from_light_direction, normalize(spotLight.coneDirection));
-	
+
 	vec4 colour = vec4(0,0,0,0);
-	
+
 	if( spot_alfa > spotLight.cutoffCosine){
 		colour = calcPointLight(spotLight.pointLight, position, normal);
 		colour = colour * ( 1.0 - (1.0 - spot_alfa) / (1.0 - spotLight.cutoffCosine) );
 	}
-	
+
 	return colour;
 }
 

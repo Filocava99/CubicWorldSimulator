@@ -39,28 +39,14 @@ public class ChunkMesh implements Serializable {
         if (chunk.wasModified()) {
             prepareVAOContent();
         }
-//<<<<<<< HEAD
-//<<<<<<< HEAD
-  //      if (!areVBOsArraysEmpty()) {
-    //        try {
-      //          mesh = new Mesh(verticesArray, uvsArray, normalsArray, indicesArray, meshMaterial, Constants.chunkAxisSize);
-        //        meshReady = true;
-          //  } catch (Exception e) {
-            //    e.printStackTrace();
-           // }
-//=======
-//=======
-//>>>>>>> cava
+
         try {
             opaqueMesh.buildMesh();
             transparentMesh.buildMesh();
             meshesReady = true;
         } catch (Exception e) {
             e.printStackTrace();
-//<<<<<<< HEAD
-//>>>>>>> cava
-//=======
-//>>>>>>> cava
+
         }
     }
 

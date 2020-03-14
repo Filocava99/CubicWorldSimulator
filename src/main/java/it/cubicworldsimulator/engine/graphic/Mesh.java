@@ -18,18 +18,9 @@ public class Mesh {
     public Mesh (float[] positions, float[] textCoords, int[] indices, String textureFileName) {
         this(positions, textCoords, indices, new MeshMaterial(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
     }
-/*<<<<<<< HEAD
-    
-  
-    public Mesh(float[] positions, float[] textCoords,float[] normals, int[] indices , MeshMaterial texture, float boundingRadius) {
-		FloatBuffer posBuffer = null;
-        IntBuffer indicesBuffer = null;
-        FloatBuffer textCoordsBuffer = null;
-        FloatBuffer vecNormalsBuffer = null;
-=======
-*/
+
     public Mesh(float[] positions, float[] textCoords, int[] indices, MeshMaterial texture, float boundingRadius) {
-//>>>>>>> cava
+
         this.material = texture;
         this.boundingRadius = boundingRadius;
         this.vertexCount = indices.length;
