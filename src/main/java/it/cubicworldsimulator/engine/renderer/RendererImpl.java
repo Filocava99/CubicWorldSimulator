@@ -61,11 +61,11 @@ public class RendererImpl implements Renderer {
             if (scene.getMeshMap() != null) {
                 //Update the view matrix
                 Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
-/*<<<<<<< HEAD
-                renderLight(scene, viewMatrix);
-=======*/
+
+                //renderLight(scene, viewMatrix);
+
                 //Filter the GameItems based on the frustum
-//>>>>>>> master
+
                 filter.updateFrustum(projectionMatrix, viewMatrix);
                 filter.filter(scene.getMeshMap());
                 //Prepare the shader program and the required uniform variables
@@ -76,12 +76,9 @@ public class RendererImpl implements Renderer {
                 scene.getMeshMap().forEach((k, v) -> {
                     renderListOfGameItems(scene.getShaderProgram(), viewMatrix, k, v);
                 });
-//<<<<<<< HEAD
-                
-                
-//=======
+
                 //Unbind the shader program
-//>>>>>>> master
+
                 scene.getShaderProgram().unbind();
             }
             //If the scene has a skybox we render it
