@@ -65,7 +65,7 @@ public class ChunkGenerator {
         for (int i = 0; i < 5; i++) {
             int x = Math.abs(random.nextInt() % 12) + 2;
             int z = Math.abs(random.nextInt() % 12) + 2;
-            int y = getHeight(new Vector2i(x, z), chunkColumn);
+            int y = chunkColumn.getHeight(new Vector2i(x, z), worldManager.getBlockTypes().get("air").getId());
             Vector3i treePos = new Vector3i(x, y, z);
             int height = random.nextInt() % 2 + 4;
             if (isSpaceAvailableForTree(chunkColumn, treePos, height)) {
@@ -74,15 +74,7 @@ public class ChunkGenerator {
         }
     }
 
-    private int getHeight(Vector2i coord, ChunkColumn chunkColumn) {
-        for (int i = 1; i < 256; i++) {
-            byte blockId = chunkColumn.getBlock(new Vector3i(coord.x, i, coord.y));
-            if (blockId == worldManager.getBlockTypes().get("air").getId()) {
-                return Math.max(0, i);
-            }
-        }
-        return 255;
-    }
+
 
     private boolean isSpaceAvailableForTree(ChunkColumn chunkColumn, Vector3i coord, int height) {
         if (coord.y > 0) {

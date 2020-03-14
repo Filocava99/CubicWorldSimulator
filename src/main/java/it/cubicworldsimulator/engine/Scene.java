@@ -3,6 +3,7 @@ package it.cubicworldsimulator.engine;
 import it.cubicworldsimulator.engine.graphic.Camera;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
+import it.cubicworldsimulator.engine.loader.Loader;
 
 import java.util.*;
 
@@ -53,9 +54,9 @@ public class Scene {
     }
 
     public void cleanUp(){
-        opaqueMeshMap.keySet().forEach(Mesh::cleanUp);
+        opaqueMeshMap.keySet().forEach(Loader::cleanMesh);
         shaderProgram.cleanup();
-        skyBox.getMesh().cleanUp();
+        Loader.cleanMesh(skyBox.getMesh());
         skyBox.getShaderProgram().cleanup();
     }
 
