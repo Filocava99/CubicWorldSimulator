@@ -114,7 +114,7 @@ public class Loader {
         insertIntoVbo(normalsBuffer, vboId, 3, 2);
     }
 
-    public void cleanMesh(Mesh mesh) {
+    public static void cleanMesh(Mesh mesh) {
         glDisableVertexAttribArray(0);
 
         // Delete the VBOs
