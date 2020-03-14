@@ -51,9 +51,10 @@ public class Scene {
     }
 
     public void cleanUp(){
-        opaqueMeshMap.keySet().forEach(Mesh::cleanUp);
+        //TODO Clean up
+        //opaqueMeshMap.keySet().forEach(Mesh::cleanUp);
         shaderProgram.cleanup();
-        skyBox.getMesh().cleanUp();
+        //skyBox.getMesh().cleanUp();
         skyBox.getShaderProgram().cleanup();
     }
 

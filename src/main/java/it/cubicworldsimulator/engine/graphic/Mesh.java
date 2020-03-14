@@ -1,9 +1,5 @@
 package it.cubicworldsimulator.engine.graphic;
 
-import it.cubicworldsimulator.engine.loader.Loader;
-import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Mesh {
