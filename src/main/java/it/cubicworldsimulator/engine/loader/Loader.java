@@ -1,5 +1,7 @@
 package it.cubicworldsimulator.engine.loader;
 
+import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.MeshMaterial;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
@@ -17,16 +19,50 @@ import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
 
 public class Loader {
-    List<Integer> vaoList;
-    List<Integer> vboList;
-    List<FloatBuffer> floatBufferList;
-    List<IntBuffer> intBufferlist;
+    private final List<Integer> vaoList;
+    private final List<Integer> vboList;
+    private final List<Integer> textureVboList;
+    private final List<Integer> normalsVboList;
+    private final List<FloatBuffer> floatBufferList;
+    private final List<IntBuffer> intBufferlist;
 
     public Loader() {
         this.vaoList = new ArrayList<>();
         this.vboList = new ArrayList<>();
+        this.textureVboList = new ArrayList<>();
         this.floatBufferList = new ArrayList<>();
         this.intBufferlist = new ArrayList<>();
+        this.normalsVboList = new ArrayList<>();
+    }
+
+    public Mesh createMesh (float[] positions, float[] textCoords, int[] indices, float[] normals, MeshMaterial texture,
+                            float boundingRadius) {
+        int vaoId;
+        try {
+            //Create Vao
+            vaoId = createVao();
+            vaoList.add(vaoId);
+
+            // Position VBO
+            this.vboList.add(createVbo());
+            insertPositionIntoVbo(positions, this.vboList.get(vboList.size()-1));
+
+            // Index VBO
+            this.vboList.add(createVbo());
+            insertIndicesIntoVbo(indices, this.vboList.get(vboList.size()-1));
+
+            //Texture VBO
+            this.textureVboList.add(createVbo());
+            insertTextureIntoVbo(textCoords, this.textureVboList.get(textureVboList.size()-1));
+
+            //Normals
+            this.normalsVboList.add(createVbo());
+            insertNormalsIntoVbo(normals, this.normalsVboList.get(normalsVboList.size()-1));
+
+        } finally {
+            cleanBuffers();
+        }
+        return new Mesh(texture, boundingRadius, indices.length, vaoId, vboList, textureVboList);
     }
 
     public int createVao(){
@@ -70,6 +106,16 @@ public class Loader {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
     }
 
+    public void insertNormalsIntoVbo(float[] normals, int vboId) {
+        FloatBuffer normalsBuffer = MemoryUtil.memAllocFloat(normals.length);
+        for (Float normal : normals) {
+            normalsBuffer.put(normal);
+        }
+        normalsBuffer.flip();
+        insertIntoVbo(normalsBuffer, vboId, 3, 2);
+    }
+
+    //TODO CAVA DEVI CHIAMARE QUESTO PER PULIRE I VAO E VBO
     public void cleanVaoAndVbos() {
         glDisableVertexAttribArray(0);
 
