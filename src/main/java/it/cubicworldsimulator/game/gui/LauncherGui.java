@@ -17,6 +17,8 @@ import org.liquidengine.legui.theme.Themes;
 import org.liquidengine.legui.theme.colored.FlatColoredTheme;
 import org.lwjgl.glfw.GLFWVidMode;
 
+import java.util.Objects;
+
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLICK;
 import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
@@ -50,9 +52,11 @@ public class LauncherGui extends Gui {
     private int height;
 
     public LauncherGui() {
-        super(0, 0, glfwGetVideoMode(glfwGetPrimaryMonitor()).width(), glfwGetVideoMode(glfwGetPrimaryMonitor()).height());
-        this.width=glfwGetVideoMode(glfwGetPrimaryMonitor()).width();
-        this.height=glfwGetVideoMode(glfwGetPrimaryMonitor()).height();
+        super(0, 0,
+                Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).width(),
+                Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).height());
+        this.width= Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).width();
+        this.height= Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).height();
         this.createGui();
     }
 
