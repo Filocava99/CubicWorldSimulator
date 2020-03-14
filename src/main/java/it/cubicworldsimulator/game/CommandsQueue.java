@@ -1,16 +1,20 @@
 package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.GameItem;
+import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.game.openglcommands.OpenGLCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLLoadChunkCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CommandsQueue {
 
+    //TODO Bidirectional map
     private final ConcurrentLinkedQueue<OpenGLCommand> loadCommands = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<OpenGLCommand> unloadCommands = new ConcurrentLinkedQueue<>();
     private final ConcurrentHashMap<Vector3f, OpenGLCommand> loadCommandsMap = new ConcurrentHashMap<>();
@@ -28,28 +32,36 @@ public class CommandsQueue {
         unloadCommands.remove(command);
     }
 
-    public GameItem runLoadCommand(){
+    public GameItem[] runLoadCommand(){
         OpenGLLoadChunkCommand command = (OpenGLLoadChunkCommand)loadCommands.poll();
         if(command != null) {
             command.run();
             Vector3f coords = inverseLoadCommandsMap.remove(command);
             loadCommandsMap.remove(coords);
-            GameItem gameItem = new GameItem(command.getMesh());
-            gameItem.setPosition((int)coords.x << 4, (int)coords.y << 4, (int)coords.z << 4); //TODO Salvare il 4 come costante nella classe Constants
-            return gameItem;
+            List<GameItem> gameItemList = new ArrayList<>();
+            for(Mesh mesh : command.getMeshes()){
+                GameItem gameItem = new GameItem(mesh);
+                gameItem.setPosition((int)coords.x << 4, (int)coords.y << 4, (int)coords.z << 4); //TODO Salvare il 4 come costante nella classe Constants
+                gameItemList.add(gameItem);
+            }
+            return gameItemList.toArray(GameItem[]::new);
         }
         return null;
     }
 
-    public GameItem runUnloadCommand(){
+    public GameItem[] runUnloadCommand(){
         OpenGLUnloadChunkCommand command = (OpenGLUnloadChunkCommand) unloadCommands.poll();
         if(command != null) {
             command.run();
             Vector3f coords = inverseUnloadCommandsMap.remove(command);
             unloadCommandsMap.remove(coords);
-            GameItem gameItem = new GameItem(command.getMesh());
-            gameItem.setPosition((int)coords.x << 4, (int)coords.y << 4, (int)coords.z << 4); //TODO E' necessario?
-            return gameItem;
+            List<GameItem> gameItemList = new ArrayList<>();
+            for(Mesh mesh : command.getMeshes()){
+                GameItem gameItem = new GameItem(mesh);
+                gameItem.setPosition((int)coords.x << 4, (int)coords.y << 4, (int)coords.z << 4); //TODO Salvare il 4 come costante nella classe Constants
+                gameItemList.add(gameItem);
+            }
+            return gameItemList.toArray(GameItem[]::new);
         }
         return null;
     }

@@ -14,7 +14,7 @@ public class MouseInput {
 	private boolean rightButtonPressed;
 
 	private final Window window;
-	private final float mouseSensitivity = 0.5f; //TODO Magic number
+	private final float mouseSensitivity = 0.5f;
 	
 	public MouseInput(Window window) {
 
