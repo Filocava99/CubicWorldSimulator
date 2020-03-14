@@ -122,7 +122,6 @@ public class Loader {
         mesh.getVboList().forEach(GL15::glDeleteBuffers);
 
         // Delete the texture VBO
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
         mesh.getTextureVboList().forEach(GL15::glDeleteBuffers);
 
         // Delete the VAOs
