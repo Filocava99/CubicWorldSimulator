@@ -1,9 +1,5 @@
 package it.cubicworldsimulator.engine.graphic;
 
-import it.cubicworldsimulator.engine.loader.Loader;
-import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Mesh {
@@ -37,7 +33,19 @@ public class Mesh {
         return boundingRadius;
     }
 
+    public void cleanUp() {
+
+    }
+
     public MeshMaterial getMeshMaterial() {
         return material;
+    }
+
+    public List<Integer> getVboList() {
+        return vboList;
+    }
+
+    public List<Integer> getTextureVboList() {
+        return textureVboList;
     }
 }
