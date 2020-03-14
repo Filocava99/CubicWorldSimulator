@@ -1,129 +1,63 @@
 package it.cubicworldsimulator.engine.graphic;
 
-import it.cubicworldsimulator.engine.GameItem;
+import it.cubicworldsimulator.engine.loader.Loader;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.system.MemoryUtil;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-
-import static org.lwjgl.opengl.GL11C.*;
-import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13C.glActiveTexture;
-import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15C.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15C.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15C.glBindBuffer;
-import static org.lwjgl.opengl.GL15C.glBufferData;
-import static org.lwjgl.opengl.GL15C.glDeleteBuffers;
-import static org.lwjgl.opengl.GL15C.glGenBuffers;
-import static org.lwjgl.opengl.GL20C.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20C.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30C.glBindVertexArray;
-import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
 
 public class Mesh {
-    private final int vaoId;
-    private final int posVboId;
-    private final int idxVboId;
     private final int vertexCount;
-    private final List<Integer> textureVboList = new ArrayList<>();
     private final MeshMaterial material;
     private final float boundingRadius;
+    private int vaoId;
+    private final List<Integer> vboList = new ArrayList<>();
+    private final List<Integer> textureVboList = new ArrayList<>();
+    private final Loader loader = new Loader();
 
-    public Mesh (float[] positions, float[] textCoords, int[] indices, String textureFileName) throws Exception {
+    public Mesh (float[] positions, float[] textCoords, int[] indices, String textureFileName) {
         this(positions, textCoords, indices, new MeshMaterial(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
     }
 
     public Mesh(float[] positions, float[] textCoords, int[] indices, MeshMaterial texture, float boundingRadius) {
-        FloatBuffer posBuffer = null;
-        IntBuffer indicesBuffer = null;
-        FloatBuffer textCoordsBuffer = null;
         this.material = texture;
         this.boundingRadius = boundingRadius;
-
-        try {
-            vertexCount = indices.length;
-            vaoId = glGenVertexArrays();
-            glBindVertexArray(vaoId);
-
-            // Position VBO
-            posVboId = glGenBuffers();
-            posBuffer = MemoryUtil.memAllocFloat(positions.length);
-            for (Float position : positions) {
-                posBuffer.put(position);
-            }
-            posBuffer.flip();
-            glBindBuffer(GL_ARRAY_BUFFER, posVboId);
-            glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-
-            // Index VBO
-            idxVboId = glGenBuffers();
-            indicesBuffer = MemoryUtil.memAllocInt(indices.length);
-            for (Integer index : indices) {
-                indicesBuffer.put(index);
-            }
-            indicesBuffer.flip();
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-
-            //Texture VBO
-            int vboId = glGenBuffers();
-            textureVboList.add(vboId);
-            textCoordsBuffer = MemoryUtil.memAllocFloat(textCoords.length);
-            for (Float textCoord : textCoords) {
-                textCoordsBuffer.put(textCoord);
-            }
-            textCoordsBuffer.flip();
-            glBindBuffer(GL_ARRAY_BUFFER, vboId);
-            glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
-
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-            GL30.glBindVertexArray(0);
-        } finally {
-            if (posBuffer != null) {
-                MemoryUtil.memFree(posBuffer);
-            }
-            if (indicesBuffer != null) {
-                MemoryUtil.memFree(indicesBuffer);
-            }
-            if (textCoordsBuffer != null) {
-                MemoryUtil.memFree(textCoordsBuffer);
-            }
-        }
+        this.vertexCount = indices.length;
+        createMesh(positions, textCoords, indices);
     }
 
-    public int getVaoId() {
-        return vaoId;
+    private void createMesh(float[] positions, float[] textCoords, int[] indices) {
+       try {
+           //Create Vao
+           this.vaoId=loader.createVao();
+
+           // Position VBO
+           this.vboList.add(loader.createVbo());
+           loader.insertPositionIntoVbo(positions, this.vboList.get(vboList.size()-1));
+
+           // Index VBO
+           this.vboList.add(loader.createVbo());
+           loader.insertIndicesIntoVbo(indices, this.vboList.get(vboList.size()-1));
+
+           //Texture VBO
+           this.textureVboList.add(loader.createVbo());
+           loader.insertTextureIntoVbo(textCoords, this.textureVboList.get(textureVboList.size()-1));
+
+       } finally {
+           loader.cleanBuffers();
+       }
+   }
+
+    public void cleanUp() {
+       loader.cleanVaoAndVbos();
     }
 
     public int getVertexCount() {
         return vertexCount;
     }
 
-    public void cleanUp() {
-        glDisableVertexAttribArray(0);
-
-        // Delete the VBOs
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(posVboId);
-        glDeleteBuffers(idxVboId);
-        this.textureVboList.forEach(GL15::glDeleteBuffers);
-
-        // Delete the VAO
-        glBindVertexArray(0);
-        glDeleteVertexArrays(vaoId);
+    public int getVaoId() {
+        return this.vaoId;
     }
 
     public float getBoundingRadius() {
