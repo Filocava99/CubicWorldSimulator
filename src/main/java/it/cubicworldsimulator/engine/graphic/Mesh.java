@@ -33,7 +33,19 @@ public class Mesh {
         return boundingRadius;
     }
 
+    public void cleanUp() {
+
+    }
+
     public MeshMaterial getMeshMaterial() {
         return material;
+    }
+
+    public List<Integer> getVboList() {
+        return vboList;
+    }
+
+    public List<Integer> getTextureVboList() {
+        return textureVboList;
     }
 }
