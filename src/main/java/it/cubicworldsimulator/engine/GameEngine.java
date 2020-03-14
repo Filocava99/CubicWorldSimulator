@@ -28,9 +28,11 @@ public class GameEngine extends Thread {
     public GameEngine(String windowTitle, int width, int height, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
         Vector4f clearColor = new Vector4f(0.0f,0.0f,255.0f,0.0f); //TODO Creare diversi costruttori in modo da passare il clearColor facoltativamente
         window = new Window(windowTitle, width, height, clearColor, vSync, debug);
-        mouseInput = new MouseInput(window);
+        //mouseInput = new MouseInput(window);
         this.gameLogic = gameLogic;
         timer = new Timer();
+        this.mouseInput = new MouseInput(this.window);
+
     }
 
     @Override
@@ -48,8 +50,9 @@ public class GameEngine extends Thread {
     protected void init() throws Exception {
         window.init();
         timer.init();
-        mouseInput.init();
+        mouseInput.init(window);
         gameLogic.init(window);
+        this.mouseInput.init(this.window);
     }
 
     protected void gameLoop() {

@@ -25,13 +25,13 @@ public class Game implements GameLogic {
     private WorldManager worldManager;
     private World world;
     private Scene scene;
-    private final Map<Mesh, List<GameItem>> meshMap = new HashMap<>();
+    private final Map<Mesh, List<GameItem>> opaqueMeshMap = new HashMap<>();
+    private final Map<Mesh, List<GameItem>> transparentMeshMap = new HashMap<>();
 
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
 
-    //TODO Ha senso il metodo init()? Se ha senso conviene chiamarlo a parte oppure direttamente dal costruttore?
     public Game() {
         renderer = new RendererImpl();
         camera = new Camera();
@@ -46,17 +46,26 @@ public class Game implements GameLogic {
         initShaderPrograms();
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
-            scene = new Scene(meshMap, shaderProgram, skyBox, camera);
+            //TODO Creare una copia della instanza opaqueMeshMap
+            scene = new Scene(opaqueMeshMap, transparentMeshMap,shaderProgram, skyBox, camera);
             worldManager.updateActiveChunksSync(new Vector3i(0,0,0));
             while(commandsQueue.hasLoadCommand()){
-                GameItem chunk = commandsQueue.runLoadCommand();
-                if(chunk != null){
+                GameItem[] chunks = commandsQueue.runLoadCommand();
+                if(chunks != null){
                     logger.trace("Adding chunk mesh");
-                    meshMap.put(chunk.getMesh(), List.of(chunk));
+                    if(chunks[0] != null){
+                        GameItem gameItem = chunks[0];
+                        opaqueMeshMap.put(gameItem.getMesh(), List.of(gameItem));
+                    }
+                    if(chunks[1] != null){
+                        GameItem gameItem = chunks[1];
+                        transparentMeshMap.put(gameItem.getMesh(), List.of(gameItem));
+                    }
                 }
             }
         }catch (Exception e){
             logger.error(e.getMessage());
+            e.printStackTrace();
             System.exit(2);
         }
     }
@@ -98,17 +107,27 @@ public class Game implements GameLogic {
             worldManager.updateActiveChunksAsync(player.getChunkPosition());
         }
         for(int i = 0; i < 1; i++){
-            GameItem chunk = commandsQueue.runLoadCommand();
-            if(chunk != null){
-                logger.trace("Adding chunk mesh");
-                meshMap.put(chunk.getMesh(), List.of(chunk));
+            GameItem[] chunks = commandsQueue.runLoadCommand();
+            if(chunks != null){
+                if(chunks[0] != null){
+                    GameItem gameItem = chunks[0];
+                    opaqueMeshMap.put(gameItem.getMesh(), List.of(gameItem));
+                }
+                if(chunks[1] != null){
+                    GameItem gameItem = chunks[1];
+                    transparentMeshMap.put(gameItem.getMesh(), List.of(gameItem));
+                }
             }
-            chunk = commandsQueue.runUnloadCommand();
-            if(chunk != null){
-                logger.trace("Removing chunk mesh");
-                //logger.debug(chunk.getMesh() == null);
-                var list = meshMap.remove(chunk.getMesh());
-                //logger.debug(list == null);
+            chunks = commandsQueue.runUnloadCommand();
+            if(chunks != null){
+                if(chunks[0] != null){
+                    GameItem gameItem = chunks[0];
+                    opaqueMeshMap.remove(gameItem.getMesh());
+                }
+                if(chunks[1] != null){
+                    GameItem gameItem = chunks[1];
+                    transparentMeshMap.remove(gameItem.getMesh());
+                }
             }
         }
     }
