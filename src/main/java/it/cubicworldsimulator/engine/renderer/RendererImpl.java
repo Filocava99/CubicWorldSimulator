@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -51,45 +52,34 @@ public class RendererImpl implements Renderer {
         if (scene != null) {
             // Update projection Matrix
             Matrix4f projectionMatrix = window.updateProjectionMatrix();
+            //Update the view matrix
+            Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
+            //Prepare the shader program and the required uniform variables
+            scene.getShaderProgram().bind();
+            scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
+            scene.getShaderProgram().setUniform("texture_sampler", 0);
+            //Update frustum culling
+            filter.updateFrustum(projectionMatrix, viewMatrix);
             //If the scene has some GameItems we render them
             if (scene.getOpaqueMeshMap() != null) {
-                //Update the view matrix
-                Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
-                //TODO Metodo a parte per il frustum
                 //Filter the GameItems based on the frustum
-                filter.updateFrustum(projectionMatrix, viewMatrix);
                 filter.filter(scene.getOpaqueMeshMap());
-                //Prepare the shader program and the required uniform variables
-                scene.getShaderProgram().bind();
-                scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
-                scene.getShaderProgram().setUniform("texture_sampler", 0);
                 // Render each gameItem
                 scene.getOpaqueMeshMap().forEach((k, v) -> {
                     renderListOfGameItems(scene.getShaderProgram(), viewMatrix, k, v);
                 });
-                //Unbind the shader program
-                scene.getShaderProgram().unbind();
             }
             if(scene.getTransparentMeshMap() != null){
-                //Update the view matrix
-                Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
-                //TODO Metodo a parte per il frustum
-                //Filter the GameItems based on the frustum
-                filter.updateFrustum(projectionMatrix, viewMatrix);
                 filter.filter(scene.getTransparentMeshMap());
-                //Prepare the shader program and the required uniform variables
-                scene.getShaderProgram().bind();
-                scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
-                scene.getShaderProgram().setUniform("texture_sampler", 0);
-                //glDisable(GL_DEPTH_TEST);
+                //glDisable(GL_DEPTH_TEST);d
                 // Render each gameItem
                 scene.getTransparentMeshMap().forEach((k, v) -> {
                     renderListOfGameItems(scene.getShaderProgram(), viewMatrix, k, v);
                 });
-                //Unbind the shader program
-                scene.getShaderProgram().unbind();
                 //glEnable(GL_DEPTH_TEST);
             }
+            //Unbind the shader program
+            scene.getShaderProgram().unbind();
             //If the scene has a skybox we render it
             if (scene.getSkyBox() != null) {
                 //Renders the skybox
@@ -173,5 +163,11 @@ public class RendererImpl implements Renderer {
         // Restore state
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    private void prepareFrustumCulling(Matrix4f projectionMatrix, Matrix4f viewMatrix, Map<Mesh, List<GameItem>> meshMap){
+        //Filter the GameItems based on the frustum
+        filter.updateFrustum(projectionMatrix, viewMatrix);
+        filter.filter(meshMap);
     }
 }
