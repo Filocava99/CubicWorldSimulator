@@ -3,6 +3,7 @@ package it.cubicworldsimulator.game;
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.*;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
+import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
 import org.apache.logging.log4j.LogManager;
@@ -50,15 +51,15 @@ public class Game implements GameLogic {
             scene = new Scene(opaqueMeshMap, transparentMeshMap,shaderProgram, skyBox, camera);
             worldManager.updateActiveChunksSync(new Vector3i(0,0,0));
             while(commandsQueue.hasLoadCommand()){
-                GameItem[] chunks = commandsQueue.runLoadCommand();
-                if(chunks != null){
+                Pair<GameItem,GameItem> pair = commandsQueue.runLoadCommand();
+                if(pair != null){
                     logger.trace("Adding chunk mesh");
-                    if(chunks[0] != null){
-                        GameItem gameItem = chunks[0];
+                    if(pair.hasFirstValue()){
+                        GameItem gameItem = pair.getFirstValue();
                         opaqueMeshMap.put(gameItem.getMesh(), List.of(gameItem));
                     }
-                    if(chunks[1] != null){
-                        GameItem gameItem = chunks[1];
+                    if(pair.hasSecondValue()){
+                        GameItem gameItem = pair.getSecondValue();
                         transparentMeshMap.put(gameItem.getMesh(), List.of(gameItem));
                     }
                 }
@@ -107,25 +108,26 @@ public class Game implements GameLogic {
             worldManager.updateActiveChunksAsync(player.getChunkPosition());
         }
         for(int i = 0; i < 1; i++){
-            GameItem[] chunks = commandsQueue.runLoadCommand();
-            if(chunks != null){
-                if(chunks[0] != null){
-                    GameItem gameItem = chunks[0];
+            Pair<GameItem,GameItem> pair = commandsQueue.runLoadCommand();
+            if(pair != null){
+                logger.trace("Adding chunk mesh");
+                if(pair.hasFirstValue()){
+                    GameItem gameItem = pair.getFirstValue();
                     opaqueMeshMap.put(gameItem.getMesh(), List.of(gameItem));
                 }
-                if(chunks[1] != null){
-                    GameItem gameItem = chunks[1];
+                if(pair.hasSecondValue()){
+                    GameItem gameItem = pair.getSecondValue();
                     transparentMeshMap.put(gameItem.getMesh(), List.of(gameItem));
                 }
             }
-            chunks = commandsQueue.runUnloadCommand();
-            if(chunks != null){
-                if(chunks[0] != null){
-                    GameItem gameItem = chunks[0];
+            pair = commandsQueue.runUnloadCommand();
+            if(pair != null){
+                if(pair.hasFirstValue()){
+                    GameItem gameItem = pair.getFirstValue();
                     opaqueMeshMap.remove(gameItem.getMesh());
                 }
-                if(chunks[1] != null){
-                    GameItem gameItem = chunks[1];
+                if(pair.hasSecondValue()){
+                    GameItem gameItem = pair.getSecondValue();
                     transparentMeshMap.remove(gameItem.getMesh());
                 }
             }
