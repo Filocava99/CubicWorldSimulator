@@ -1,18 +1,24 @@
 package it.cubicworldsimulator.engine.graphic;
 
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
+
+import it.cubicworldsimulator.game.world.WorldManager;
+import it.cubicworldsimulator.game.world.chunk.ChunkColumn;
 
 public class Player {
 
     private Vector3f lastPos;
     private Vector3i lastChunk;
     private final Camera camera;
-
+    private ChunkColumn chunkColumn;
+    
     public Player(Camera camera){
         this.camera = camera;
     }
 
+    //VERONIKA //mi sembra non serva
     public boolean didPlayerMove(){
         final boolean result = camera.getPosition().equals(lastPos);
         if(result){
@@ -36,5 +42,16 @@ public class Player {
 
     public Vector3i getChunkPosition() {
         return lastChunk;
+    }
+    
+    //VERONIKA
+    public boolean canPlayerMove(byte airId) {
+    	int heightChunk = chunkColumn.getHeight(new Vector2i(lastChunk.x,lastChunk.y), airId);
+    	if(camera.getPosition().y <= heightChunk) {
+    		return false;
+    	}
+    	else {
+    		return true;
+    	}
     }
 }
