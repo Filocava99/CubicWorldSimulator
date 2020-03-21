@@ -8,6 +8,7 @@ import it.cubicworldsimulator.game.world.WorldManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public class Game implements GameLogic {
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
-
+    
     public Game() {
         renderer = new RendererImpl();
         camera = new Camera();
@@ -94,41 +95,50 @@ public class Game implements GameLogic {
     public void update(float interval, MouseInput mouseInput) {
         logger.trace("Updating");
         // Update camera position
+        Vector3f prevCameraPos = camera.getPosition(); //VERONIKA
         camera.movePosition(camera.getCameraMovement().x * camera.getCameraStep(),
                 camera.getCameraMovement().y * camera.getCameraStep(),
                 camera.getCameraMovement().z * camera.getCameraStep());
-
+        
         // Update camera based on mouse
         if (mouseInput.isRightButtonPressed()) {
             Vector2f rotVec = mouseInput.getDisplacementVector();
             camera.moveRotation(rotVec.x * mouseInput.getMouseSensitivity(), rotVec.y * mouseInput.getMouseSensitivity(), 0);
         }
-        if(player.didPlayerChangedChunk()){
-            worldManager.updateActiveChunksAsync(player.getChunkPosition());
+        
+        //VERONIKA
+        byte airId = worldManager.getBlockTypes().get("air").getId();
+        if(player.canPlayerMove(airId)) {
+        	if(player.didPlayerChangedChunk()){
+                worldManager.updateActiveChunksAsync(player.getChunkPosition());
+            }
+            for(int i = 0; i < 1; i++){
+                GameItem[] chunks = commandsQueue.runLoadCommand();
+                if(chunks != null){
+                    if(chunks[0] != null){
+                        GameItem gameItem = chunks[0];
+                        opaqueMeshMap.put(gameItem.getMesh(), List.of(gameItem));
+                    }
+                    if(chunks[1] != null){
+                        GameItem gameItem = chunks[1];
+                        transparentMeshMap.put(gameItem.getMesh(), List.of(gameItem));
+                    }
+                }
+                chunks = commandsQueue.runUnloadCommand();
+                if(chunks != null){
+                    if(chunks[0] != null){
+                        GameItem gameItem = chunks[0];
+                        opaqueMeshMap.remove(gameItem.getMesh());
+                    }
+                    if(chunks[1] != null){
+                        GameItem gameItem = chunks[1];
+                        transparentMeshMap.remove(gameItem.getMesh());
+                    }
+                }
+            }
         }
-        for(int i = 0; i < 1; i++){
-            GameItem[] chunks = commandsQueue.runLoadCommand();
-            if(chunks != null){
-                if(chunks[0] != null){
-                    GameItem gameItem = chunks[0];
-                    opaqueMeshMap.put(gameItem.getMesh(), List.of(gameItem));
-                }
-                if(chunks[1] != null){
-                    GameItem gameItem = chunks[1];
-                    transparentMeshMap.put(gameItem.getMesh(), List.of(gameItem));
-                }
-            }
-            chunks = commandsQueue.runUnloadCommand();
-            if(chunks != null){
-                if(chunks[0] != null){
-                    GameItem gameItem = chunks[0];
-                    opaqueMeshMap.remove(gameItem.getMesh());
-                }
-                if(chunks[1] != null){
-                    GameItem gameItem = chunks[1];
-                    transparentMeshMap.remove(gameItem.getMesh());
-                }
-            }
+        else {
+        	camera.setPosition(prevCameraPos.x, prevCameraPos.y, prevCameraPos.z);
         }
     }
 
@@ -191,4 +201,7 @@ public class Game implements GameLogic {
             System.exit(4);
         }
     }
+    
+   
 }
+
