@@ -55,8 +55,6 @@ public class ChunkLoader {
         }
     }
 
-    //TODO Creare un metodo per salvare un solo chunk
-
     public Set<Vector2f> getAlreadyGeneratedChunkColumns(String worldName){
         Set<Vector2f> alreadyGeneratedChunkColumns = new HashSet<>();
         File chunkFolder = new File(chunkFolderPath);

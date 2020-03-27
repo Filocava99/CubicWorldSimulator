@@ -56,7 +56,7 @@ public class WorldManager {
         }
     }
 
-    //TODO Controllare le perfomances, non vorrei che si inchiodasse se un giocatore fa avanti e indietro fra due chunk
+    //TODO Dubbio sulle perfomance. Bisogna fare profiling
     public void updateActiveChunksAsync(Vector3i chunkPosition) {
         new Thread(() -> {
             updateActiveChunksSync(chunkPosition);
