@@ -47,7 +47,7 @@ public class Game implements GameLogic {
         initShaderPrograms();
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
-            //TODO Creare una copia della instanza opaqueMeshMap
+            //TODO Creare una copia della instanza opaqueMeshMap?
             scene = new Scene(opaqueMeshMap, transparentMeshMap,shaderProgram, skyBox, camera);
             worldManager.updateActiveChunksSync(new Vector3i(0,0,0));
             while(commandsQueue.hasLoadCommand()){

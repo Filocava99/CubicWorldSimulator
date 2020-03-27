@@ -62,6 +62,7 @@ public class RendererImpl implements Renderer {
             filter.updateFrustum(projectionMatrix, viewMatrix);
             //If the scene has some GameItems we render them
             if (scene.getOpaqueMeshMap() != null) {
+                logger.info("YES");
                 //Filter the GameItems based on the frustum
                 filter.filter(scene.getOpaqueMeshMap());
                 // Render each gameItem

@@ -1,6 +1,6 @@
 package it.cubicworldsimulator.game.utility;
 
-public interface BiMap<X extends Object,T extends Object> {
+public interface BiMap<X,T> {
 
     void put(X key, T value);
 
