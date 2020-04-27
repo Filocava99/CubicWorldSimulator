@@ -70,9 +70,7 @@ public class WorldManager {
 
     private void unloadOldChunks(Vector3i chunkPosition) {
         Queue<Vector2f> dumpQueue = new LinkedBlockingQueue<>();
-        var iterator = world.getActiveChunks().entrySet().iterator();
-        while (iterator.hasNext()) {
-            var entry = iterator.next();
+        for (Map.Entry<Vector2f, ChunkColumn> entry : world.getActiveChunks().entrySet()) {
             Vector2f chunkColumnPosition = entry.getValue().getPosition();
             if (chunkColumnPosition.x < chunkPosition.x - renderingDistance || chunkColumnPosition.x > chunkPosition.x + renderingDistance || chunkColumnPosition.y < chunkPosition.z - renderingDistance || chunkColumnPosition.y > chunkPosition.z + renderingDistance) {
                 ChunkColumn chunkColumn = entry.getValue();

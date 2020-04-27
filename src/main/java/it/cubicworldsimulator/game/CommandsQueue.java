@@ -10,10 +10,12 @@ import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.utility.Pair;
 import org.joml.Vector3f;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CommandsQueue {
 
+    //TODO Schifosamente costoso. Costa O(n) usare le linkedQueue. Serve usare gli hashset. Usare ConcurrentHashMultiSet
     private final ConcurrentLinkedQueue<OpenGLLoadChunkCommand> loadCommands = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<OpenGLUnloadChunkCommand> unloadCommands = new ConcurrentLinkedQueue<>();
     private final BiMap<Vector3f, OpenGLLoadChunkCommand> loadCommandsMap = new BiConcurrentHashMap<>();
@@ -41,13 +43,13 @@ public class CommandsQueue {
                 Mesh transparentMesh = meshes[1];
                 if(opaqueMesh != null){
                     GameItem gameItem = new GameItem(opaqueMesh);
-                    gameItem.setPosition((int)coords.x << Constants.logBase2ChunkSize, (int)coords.y << Constants.logBase2ChunkSize, (int)coords.z << Constants.logBase2ChunkSize);
+                    gameItem.setPosition((int)coords.x * Constants.chunkAxisSize, (int)coords.y * Constants.chunkAxisSize, (int)coords.z * Constants.chunkAxisSize);
                     pair.setFirstValue(gameItem);
                 }
                 if(transparentMesh != null){
                     GameItem gameItem = new GameItem(transparentMesh);
-                    gameItem.setPosition((int)coords.x << Constants.logBase2ChunkSize, (int)coords.y << Constants.logBase2ChunkSize, (int)coords.z << Constants.logBase2ChunkSize);
-                    pair.setFirstValue(gameItem);
+                    gameItem.setPosition((int)coords.x * Constants.chunkAxisSize, (int)coords.y * Constants.chunkAxisSize, (int)coords.z * Constants.chunkAxisSize);
+                    pair.setSecondValue(gameItem);
                }
                 return pair;
             }
@@ -73,7 +75,7 @@ public class CommandsQueue {
                 if(transparentMesh != null){
                     GameItem gameItem = new GameItem(transparentMesh);
                     gameItem.setPosition((int)coords.x << Constants.logBase2ChunkSize, (int)coords.y << Constants.logBase2ChunkSize, (int)coords.z << Constants.logBase2ChunkSize);
-                    pair.setFirstValue(gameItem);
+                    pair.setSecondValue(gameItem);
                 }
                 return pair;
             }

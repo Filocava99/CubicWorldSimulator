@@ -20,6 +20,9 @@ public class OpenGLLoadChunkCommand implements OpenGLCommand {
     }
 
     public Mesh[] getMeshes() {
-        return List.of(mesh.getOpaqueMesh(), mesh.getTransparentMesh()).toArray(Mesh[]::new);
+        Mesh[] meshes = new Mesh[2];
+        meshes[0] = mesh.getOpaqueMesh();
+        meshes[1] = mesh.getTransparentMesh();
+        return meshes;
     }
 }
