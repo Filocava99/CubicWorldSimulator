@@ -62,7 +62,6 @@ public class RendererImpl implements Renderer {
             filter.updateFrustum(projectionMatrix, viewMatrix);
             //If the scene has some GameItems we render them
             if (scene.getOpaqueMeshMap() != null) {
-                logger.info("YES");
                 //Filter the GameItems based on the frustum
                 filter.filter(scene.getOpaqueMeshMap());
                 // Render each gameItem
@@ -72,12 +71,10 @@ public class RendererImpl implements Renderer {
             }
             if(scene.getTransparentMeshMap() != null){
                 filter.filter(scene.getTransparentMeshMap());
-                //glDisable(GL_DEPTH_TEST);d
                 // Render each gameItem
                 scene.getTransparentMeshMap().forEach((k, v) -> {
                     renderListOfGameItems(scene.getShaderProgram(), viewMatrix, k, v);
                 });
-                //glEnable(GL_DEPTH_TEST);
             }
             //Unbind the shader program
             scene.getShaderProgram().unbind();
