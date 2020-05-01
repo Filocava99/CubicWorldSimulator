@@ -1,5 +1,7 @@
 package it.cubicworldsimulator.game.utility;
 
+import java.util.Optional;
+
 public interface BiMap<X,T> {
 
     void put(X key, T value);
@@ -8,9 +10,9 @@ public interface BiMap<X,T> {
 
     X getByValue(T value);
 
-    T removeByKey(X key);
+    Optional<T> removeByKey(X key);
 
-    X removeByValue(T value);
+    Optional<X> removeByValue(T value);
 
     boolean containsKey(X key);
 

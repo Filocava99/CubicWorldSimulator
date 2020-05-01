@@ -2,6 +2,7 @@ package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.*;
+import it.cubicworldsimulator.engine.loader.Loader;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
