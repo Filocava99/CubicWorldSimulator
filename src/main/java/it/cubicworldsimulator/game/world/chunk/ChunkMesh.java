@@ -343,15 +343,13 @@ public class ChunkMesh implements Serializable {
         private final transient MeshMaterial meshMaterial;
         private final transient Map<Object, Material> blocksTypes;
 
-        private final Loader loader = new Loader();//TODO DA RIMUOVERE
-
         public VBOContainer(MeshMaterial meshMaterial, Map<Object, Material> blocksTypes) {
             this.meshMaterial = meshMaterial;
             this.blocksTypes = blocksTypes;
-            verticesList = new ArrayList<>();
-            indicesList = new ArrayList<>();
-            uvsList = new ArrayList<>();
-            normalsList = new ArrayList<>();
+            this.verticesList = new ArrayList<>();
+            this.indicesList = new ArrayList<>();
+            this.uvsList = new ArrayList<>();
+            this.normalsList = new ArrayList<>();
         }
 
         /**
@@ -365,7 +363,7 @@ public class ChunkMesh implements Serializable {
             }
             if (!areVBOsArraysEmpty()) {
                 try {
-                    mesh = loader.createMesh(verticesArray, uvsArray, indicesArray, normalsArray, meshMaterial,     Constants.chunkAxisSize);
+                    mesh = Loader.createMesh(verticesArray, uvsArray, indicesArray, normalsArray, meshMaterial,     Constants.chunkAxisSize);
                     meshReady = true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -378,7 +376,7 @@ public class ChunkMesh implements Serializable {
          */
         public void cleanUp() {
             if (mesh != null) {
-                loader.cleanMesh(mesh);
+                Loader.cleanMesh(mesh);
                 meshReady = false;
             }
         }

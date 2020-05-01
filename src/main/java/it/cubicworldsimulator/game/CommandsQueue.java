@@ -2,6 +2,7 @@ package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.GameItem;
 import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.game.openglcommands.OpenGLCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLLoadChunkCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
 import it.cubicworldsimulator.game.utility.BiConcurrentHashMap;
@@ -10,12 +11,14 @@ import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.utility.Pair;
 import org.joml.Vector3f;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CommandsQueue {
 
-    //TODO Schifosamente costoso. Costa O(n) usare le linkedQueue. Serve usare gli hashset. Usare ConcurrentHashMultiSet
+    //TODO Schifosamente costoso. Costa O(n) usare le linkedQueue. Serve usare gli hashset. Usare ConcurrentHashMultiSet?
     private final ConcurrentLinkedQueue<OpenGLLoadChunkCommand> loadCommands = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<OpenGLUnloadChunkCommand> unloadCommands = new ConcurrentLinkedQueue<>();
     private final BiMap<Vector3f, OpenGLLoadChunkCommand> loadCommandsMap = new BiConcurrentHashMap<>();
@@ -35,23 +38,26 @@ public class CommandsQueue {
         OpenGLLoadChunkCommand command = loadCommands.poll();
         if(command != null) {
             command.run();
-            Vector3f coords = loadCommandsMap.removeByValue(command);
-            Mesh[] meshes = command.getMeshes();
-            if(meshes.length > 0){
-                Pair<GameItem, GameItem> pair = new Pair<>();
-                Mesh opaqueMesh = meshes[0];
-                Mesh transparentMesh = meshes[1];
-                if(opaqueMesh != null){
-                    GameItem gameItem = new GameItem(opaqueMesh);
-                    gameItem.setPosition((int)coords.x * Constants.chunkAxisSize, (int)coords.y * Constants.chunkAxisSize, (int)coords.z * Constants.chunkAxisSize);
-                    pair.setFirstValue(gameItem);
+            Optional<Vector3f> optionalCoords = loadCommandsMap.removeByValue(command);
+            if(optionalCoords.isPresent()){
+                Vector3f coords = optionalCoords.get();
+                Mesh[] meshes = command.getMeshes();
+                if(meshes.length > 0){
+                    Pair<GameItem, GameItem> pair = new Pair<>();
+                    Mesh opaqueMesh = meshes[0];
+                    Mesh transparentMesh = meshes[1];
+                    if(opaqueMesh != null){
+                        GameItem gameItem = new GameItem(opaqueMesh);
+                        gameItem.setPosition((int)coords.x * Constants.chunkAxisSize, (int)coords.y * Constants.chunkAxisSize, (int)coords.z * Constants.chunkAxisSize);
+                        pair.setFirstValue(gameItem);
+                    }
+                    if(transparentMesh != null){
+                        GameItem gameItem = new GameItem(transparentMesh);
+                        gameItem.setPosition((int)coords.x * Constants.chunkAxisSize, (int)coords.y * Constants.chunkAxisSize, (int)coords.z * Constants.chunkAxisSize);
+                        pair.setSecondValue(gameItem);
+                    }
+                    return pair;
                 }
-                if(transparentMesh != null){
-                    GameItem gameItem = new GameItem(transparentMesh);
-                    gameItem.setPosition((int)coords.x * Constants.chunkAxisSize, (int)coords.y * Constants.chunkAxisSize, (int)coords.z * Constants.chunkAxisSize);
-                    pair.setSecondValue(gameItem);
-               }
-                return pair;
             }
         }
         return null;
@@ -61,23 +67,26 @@ public class CommandsQueue {
         OpenGLUnloadChunkCommand command = unloadCommands.poll();
         if(command != null) {
             command.run();
-            Vector3f coords = unloadCommandsMap.removeByValue(command);
-            Mesh[] meshes = command.getMeshes();
-            if(meshes.length > 0){
-                Pair<GameItem, GameItem> pair = new Pair<>();
-                Mesh opaqueMesh = meshes[0];
-                Mesh transparentMesh = meshes[1];
-                if(opaqueMesh != null){
-                    GameItem gameItem = new GameItem(opaqueMesh);
-                    gameItem.setPosition((int)coords.x << Constants.logBase2ChunkSize, (int)coords.y << Constants.logBase2ChunkSize, (int)coords.z << Constants.logBase2ChunkSize);
-                    pair.setFirstValue(gameItem);
+            Optional<Vector3f> optionalCoords = unloadCommandsMap.removeByValue(command);
+            if(optionalCoords.isPresent()){
+                Vector3f coords = optionalCoords.get();
+                Mesh[] meshes = command.getMeshes();
+                if(meshes.length > 0){
+                    Pair<GameItem, GameItem> pair = new Pair<>();
+                    Mesh opaqueMesh = meshes[0];
+                    Mesh transparentMesh = meshes[1];
+                    if(opaqueMesh != null){
+                        GameItem gameItem = new GameItem(opaqueMesh);
+                        gameItem.setPosition((int)coords.x << Constants.logBase2ChunkSize, (int)coords.y << Constants.logBase2ChunkSize, (int)coords.z << Constants.logBase2ChunkSize);
+                        pair.setFirstValue(gameItem);
+                    }
+                    if(transparentMesh != null){
+                        GameItem gameItem = new GameItem(transparentMesh);
+                        gameItem.setPosition((int)coords.x << Constants.logBase2ChunkSize, (int)coords.y << Constants.logBase2ChunkSize, (int)coords.z << Constants.logBase2ChunkSize);
+                        pair.setSecondValue(gameItem);
+                    }
+                    return pair;
                 }
-                if(transparentMesh != null){
-                    GameItem gameItem = new GameItem(transparentMesh);
-                    gameItem.setPosition((int)coords.x << Constants.logBase2ChunkSize, (int)coords.y << Constants.logBase2ChunkSize, (int)coords.z << Constants.logBase2ChunkSize);
-                    pair.setSecondValue(gameItem);
-                }
-                return pair;
             }
         }
         return null;
@@ -85,7 +94,8 @@ public class CommandsQueue {
 
     public void addLoadCommand(Vector3f coord, OpenGLLoadChunkCommand command){
         if(unloadCommandsMap.containsKey(coord)){
-            unloadCommands.remove(unloadCommandsMap.removeByKey(coord));
+            Optional<OpenGLUnloadChunkCommand> optional = unloadCommandsMap.removeByKey(coord);
+            optional.ifPresent(unloadCommands::remove);
         }else{
             loadCommandsMap.put(coord, command);
             loadCommands.add(command);
@@ -94,7 +104,8 @@ public class CommandsQueue {
 
     public void addUnloadCommand(Vector3f coord, OpenGLUnloadChunkCommand command){
         if(loadCommandsMap.containsKey(coord)){
-            loadCommands.remove(loadCommandsMap.removeByKey(coord));
+            Optional<OpenGLLoadChunkCommand> optional = loadCommandsMap.removeByKey(coord);
+            optional.ifPresent(loadCommands::remove);
         }else{
             unloadCommandsMap.put(coord, command);
             unloadCommands.add(command);
