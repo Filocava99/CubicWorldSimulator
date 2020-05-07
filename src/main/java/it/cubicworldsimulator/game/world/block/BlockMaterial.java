@@ -1,15 +1,13 @@
 package it.cubicworldsimulator.game.world.block;
 
-import it.cubicworldsimulator.engine.graphic.MeshMaterial;
-
-public class Material {
+public class BlockMaterial {
 
     private final byte id;
     private final String name;
     private final BlockTexture blockTexture;
     private final boolean transparent;
 
-    public Material(byte id, String name, BlockTexture blockTexture, boolean transparent) {
+    public BlockMaterial(byte id, String name, BlockTexture blockTexture, boolean transparent) {
         this.id = id;
         this.name = name;
         this.blockTexture = blockTexture;

@@ -25,8 +25,7 @@ public class Main {
             logger.trace("Game launcher started...");
             guiFactory.createGui("CubicWorldSimulator Launcher");
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
+            logger.error(e);
             System.exit(-1);
         }
     }

@@ -66,8 +66,8 @@ public class Game implements GameLogic {
                 }
             }
         }catch (Exception e){
-            logger.error(e.getMessage());
-            e.printStackTrace();
+            logger.error(e);
+
             System.exit(2);
         }
     }
@@ -162,14 +162,21 @@ public class Game implements GameLogic {
             shaderProgram.createFragmentShader(Utils.loadResource("/shaders/fragment.frag"));
             logger.debug("Linking shaders");
             shaderProgram.link();
+            shaderProgram.validateProgram();
             // Create uniforms for world and projection matrices
             logger.debug("Creating uniforms");
             shaderProgram.createUniform("projectionMatrix");
             shaderProgram.createUniform("modelViewMatrix");
             shaderProgram.createUniform("texture_sampler");
+
+            // Create uniform for material
+            shaderProgram.createMaterialUniform("material");
+            // Create lighting related uniforms
+            shaderProgram.createUniform("specularPower");
+            shaderProgram.createUniform("ambientLight");
+            shaderProgram.createPointLightUniform("pointLight");
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            logger.error(e.getStackTrace().toString());
+            logger.error(e);
             System.exit(3);
         }
     }
@@ -184,13 +191,13 @@ public class Game implements GameLogic {
             skyBoxShaderProgram.createFragmentShader(Utils.loadResource("/shaders/skyBox.frag"));
             logger.debug("Linking skybox shaders");
             skyBoxShaderProgram.link();
+            skyBoxShaderProgram.validateProgram();
             logger.debug("Creating skybox uniforms");
             skyBoxShaderProgram.createUniform("projectionMatrix");
             skyBoxShaderProgram.createUniform("modelViewMatrix");
             skyBoxShaderProgram.createUniform("texture_sampler");
         }catch (Exception e){
-            logger.error(e.getMessage());
-            logger.error(e.getStackTrace().toString());
+            logger.error(e);
             System.exit(4);
         }
     }

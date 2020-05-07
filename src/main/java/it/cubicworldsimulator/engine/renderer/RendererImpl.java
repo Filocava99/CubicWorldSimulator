@@ -1,13 +1,12 @@
 package it.cubicworldsimulator.engine.renderer;
 
 import it.cubicworldsimulator.engine.*;
-import it.cubicworldsimulator.engine.graphic.Camera;
-import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.SkyBox;
-import it.cubicworldsimulator.engine.graphic.Texture;
+import it.cubicworldsimulator.engine.graphic.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.List;
 import java.util.Map;
@@ -54,10 +53,30 @@ public class RendererImpl implements Renderer {
             Matrix4f projectionMatrix = window.updateProjectionMatrix();
             //Update the view matrix
             Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
+
+
             //Prepare the shader program and the required uniform variables
             scene.getShaderProgram().bind();
             scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
             scene.getShaderProgram().setUniform("texture_sampler", 0);
+
+
+            // Get a copy of the light object and transform its position to view coordinates
+            Vector3f lightColour = new Vector3f(1, 1, 1);
+            Vector3f lightPosition = new Vector3f(0, 0, 1);
+            float lightIntensity = 1.0f;
+            PointLight currPointLight = new PointLight(lightColour, lightPosition, lightIntensity);;
+            Vector3f lightPos = currPointLight.getPosition();
+            Vector4f aux = new Vector4f(lightPos, 1);
+            aux.mul(viewMatrix);
+            lightPos.x = aux.x;
+            lightPos.y = aux.y;
+            lightPos.z = aux.z;
+            scene.getShaderProgram().setUniform("pointLight", currPointLight);
+            // Update Light Uniforms
+            scene.getShaderProgram().setUniform("ambientLight", new Vector3f(0.3f, 0.3f, 0.3f));
+            scene.getShaderProgram().setUniform("specularPower", 5f);
+
             //Update frustum culling
             filter.updateFrustum(projectionMatrix, viewMatrix);
             //If the scene has some GameItems we render them
@@ -130,6 +149,7 @@ public class RendererImpl implements Renderer {
             if(gameItem.isInsideFrustum()){
                 Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
                 shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                shaderProgram.setUniform("material",mesh.getMeshMaterial());
                 logger.trace("GameItem name: " + gameItem.toString());
                 logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
                 glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
