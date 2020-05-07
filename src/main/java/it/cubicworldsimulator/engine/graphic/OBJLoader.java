@@ -96,7 +96,7 @@ public class OBJLoader {
         logger.debug("UVs: " + textCoordArr.length);
         logger.debug("Indices: " + indicesArr.length);
         return new Loader().createMesh(posArr, textCoordArr, indicesArr, normArr,
-                new MeshMaterial(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
+                new Material(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
     }
 
     private void processFaceVertex(final IdxGroup indices, final List<Vector2f> textCoordList,

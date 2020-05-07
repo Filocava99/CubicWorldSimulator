@@ -33,7 +33,7 @@ public class ChunkLoader {
             }
             chunkColumnOptional = Optional.ofNullable(chunkColumn);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(e);
         }
         return chunkColumnOptional;
     }
@@ -50,8 +50,8 @@ public class ChunkLoader {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(chunkFile));
             objectOutputStream.writeObject(chunkColumn);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
+
+            logger.error(e);
         }
     }
 

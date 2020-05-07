@@ -1,7 +1,5 @@
 package it.cubicworldsimulator.game.utility.yaml;
 
-import org.lwjgl.system.CallbackI;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;

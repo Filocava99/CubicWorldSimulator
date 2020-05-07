@@ -8,10 +8,10 @@ public class Mesh {
     private final List<Integer> vboList;
     private final List<Integer> textureVboList;
     private final int vertexCount;
-    private final MeshMaterial material;
+    private final Material material;
     private final float boundingRadius;
 
-    public Mesh(MeshMaterial texture, float boundingRadius, int vertexCount, int vaoId,
+    public Mesh(Material texture, float boundingRadius, int vertexCount, int vaoId,
                 List<Integer> vboList, List<Integer> textureVboList) {
         this.material = texture;
         this.boundingRadius = boundingRadius;
@@ -33,7 +33,7 @@ public class Mesh {
         return boundingRadius;
     }
 
-    public MeshMaterial getMeshMaterial() {
+    public Material getMeshMaterial() {
         return material;
     }
 

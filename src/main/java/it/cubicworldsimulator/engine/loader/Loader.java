@@ -1,9 +1,8 @@
 package it.cubicworldsimulator.engine.loader;
 
 import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.MeshMaterial;
+import it.cubicworldsimulator.engine.graphic.Material;
 import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.Buffer;
@@ -25,7 +24,7 @@ public class Loader {
     private static final List<FloatBuffer> floatBufferList = new ArrayList<>();
     private static final List<IntBuffer> intBufferlist = new ArrayList<>();
 
-    public static Mesh createMesh(float[] positions, float[] textCoords, int[] indices, float[] normals, MeshMaterial texture,
+    public static Mesh createMesh(float[] positions, float[] textCoords, int[] indices, float[] normals, Material texture,
                                   float boundingRadius) {
         int vaoId;
         try {
