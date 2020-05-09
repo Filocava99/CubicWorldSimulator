@@ -2,6 +2,10 @@ package it.cubicworldsimulator.engine.renderer;
 
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.*;
+import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
+import it.cubicworldsimulator.engine.graphic.light.PointLight;
+import it.cubicworldsimulator.engine.graphic.light.SceneLight;
+import it.cubicworldsimulator.engine.graphic.light.SpotLight;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
@@ -52,7 +56,7 @@ public class RendererImpl implements Renderer {
             // Update projection Matrix
             Matrix4f projectionMatrix = window.updateProjectionMatrix();
             //Update the view matrix
-            Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
+            Matrix4f viewMatrix = scene.getPlayer().updateViewMatrix();
 
 
             //Prepare the shader program and the required uniform variables
@@ -60,22 +64,50 @@ public class RendererImpl implements Renderer {
             scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
             scene.getShaderProgram().setUniform("texture_sampler", 0);
 
+            SceneLight sceneLight = scene.getSceneLight();
+            // Process Point Lights
+            int numLights = sceneLight.getPointLights() != null ? sceneLight.getPointLights().length : 0;
+            for (int i = 0; i < numLights; i++) {
+                // Get a copy of the point light object and transform its position to view coordinates
+                PointLight currPointLight = new PointLight(sceneLight.getPointLights()[i]);
+                Vector3f lightPos = currPointLight.getPosition();
+                Vector4f aux = new Vector4f(lightPos, 1);
+                aux.mul(viewMatrix);
+                lightPos.x = aux.x;
+                lightPos.y = aux.y;
+                lightPos.z = aux.z;
+                scene.getShaderProgram().setUniform("pointLights", currPointLight, i);
+            }
 
-            // Get a copy of the light object and transform its position to view coordinates
-            Vector3f lightColour = new Vector3f(1, 1, 1);
-            Vector3f lightPosition = new Vector3f(0, 0, 1);
-            float lightIntensity = 1.0f;
-            PointLight currPointLight = new PointLight(lightColour, lightPosition, lightIntensity);;
-            Vector3f lightPos = currPointLight.getPosition();
-            Vector4f aux = new Vector4f(lightPos, 1);
-            aux.mul(viewMatrix);
-            lightPos.x = aux.x;
-            lightPos.y = aux.y;
-            lightPos.z = aux.z;
-            scene.getShaderProgram().setUniform("pointLight", currPointLight);
+            // Process Spot Ligths
+            numLights = sceneLight.getSpotLights() != null ? sceneLight.getSpotLights().length : 0;
+            for (int i = 0; i < numLights; i++) {
+                // Get a copy of the spot light object and transform its position and cone direction to view coordinates
+                SpotLight currSpotLight = new SpotLight(sceneLight.getSpotLights()[i]);
+                Vector4f dir = new Vector4f(currSpotLight.getConeDirection(), 0);
+                dir.mul(viewMatrix);
+                currSpotLight.setConeDirection(new Vector3f(dir.x, dir.y, dir.z));
+                Vector3f lightPos = currSpotLight.getPointLight().getPosition();
+
+                Vector4f aux = new Vector4f(lightPos, 1);
+                aux.mul(viewMatrix);
+                lightPos.x = aux.x;
+                lightPos.y = aux.y;
+                lightPos.z = aux.z;
+
+                scene.getShaderProgram().setUniform("spotLights", currSpotLight, i);
+            }
             // Update Light Uniforms
-            scene.getShaderProgram().setUniform("ambientLight", new Vector3f(0.3f, 0.3f, 0.3f));
-            scene.getShaderProgram().setUniform("specularPower", 5f);
+            scene.getShaderProgram().setUniform("ambientLight", scene.getSceneLight().getAmbientLight());
+            scene.getShaderProgram().setUniform("specularPower", scene.getSceneLight().getSpecularPower());
+            DirectionalLight currDirLight = new DirectionalLight(scene.getSceneLight().getDirectionalLight());
+            Vector4f dir = new Vector4f(currDirLight.getDirection(), 0);
+            dir.mul(viewMatrix);
+            currDirLight.setDirection(new Vector3f(dir.x, dir.y, dir.z));
+            scene.getShaderProgram().setUniform("directionalLight", currDirLight);
+
+
+
 
             //Update frustum culling
             filter.updateFrustum(projectionMatrix, viewMatrix);
@@ -100,7 +132,7 @@ public class RendererImpl implements Renderer {
             //If the scene has a skybox we render it
             if (scene.getSkyBox() != null) {
                 //Renders the skybox
-                renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getCamera());
+                renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getPlayer());
             }
         }
     }

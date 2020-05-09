@@ -17,7 +17,7 @@ public class OpenGLUnloadChunkCommand implements OpenGLCommand {
 
     @Override
     public void run() {
-        mesh.cleanUp();
+        if (mesh != null) mesh.cleanUp();
     }
 
     public Mesh[] getMeshes() {

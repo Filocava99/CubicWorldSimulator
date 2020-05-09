@@ -1,4 +1,4 @@
-package it.cubicworldsimulator.engine.graphic;
+package it.cubicworldsimulator.engine.graphic.light;
 
 import org.joml.Vector3f;
 
