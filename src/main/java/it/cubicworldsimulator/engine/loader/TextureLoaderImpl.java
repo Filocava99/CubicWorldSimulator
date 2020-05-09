@@ -44,8 +44,8 @@ public class TextureLoaderImpl implements TextureLoader {
             this.clean();
             return new Texture(textureID, this.width, this.height);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
+            logger.error(e);
+
             return null;
         }
     }
