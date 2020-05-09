@@ -19,16 +19,15 @@ public class ChunkColumn implements Serializable {
         this.position = position;
     }
 
-    //TODO Togliere magic numers
     public void setBlock(Vector3i coord, byte blockId){
-        int chunkY = coord.y/16;
-        Chunk chunk = chunks[coord.y/16]; //sarebbe diviso 16
-        int blockY = coord.y-chunkY*16;
+        int chunkY = coord.y/Constants.chunkAxisSize;
+        Chunk chunk = chunks[coord.y/Constants.chunkAxisSize];
+        int blockY = coord.y-chunkY*Constants.chunkAxisSize;
         chunk.setBlock(new Vector3i(coord.x, blockY, coord.z), blockId);
     }
 
     public int getHeight(Vector2i coord, byte airId) {
-        for (int i = Constants.minHeight; i < Constants.maxHeight; i++) {
+        for (int i = Constants.minHeight; i < Constants.maxHeight-1; i++) {
             byte blockId = getBlock(new Vector3i(coord.x, i, coord.y));
             if (blockId == airId) {
                 return Math.max(0, i);
@@ -38,10 +37,10 @@ public class ChunkColumn implements Serializable {
     }
 
     public byte getBlock(Vector3i coord){
-        int chunkY = coord.y/16;
-        Chunk chunk = chunks[coord.y/16]; //sarebbe diviso 16
-        int blockY = coord.y-chunkY*16;
-        return chunk.getBlock(coord.x, blockY, coord.z); //TODO Vector3f vs Vector3i
+        int chunkY = coord.y/Constants.chunkAxisSize;
+        Chunk chunk = chunks[coord.y/Constants.chunkAxisSize];
+        int blockY = coord.y-chunkY*Constants.chunkAxisSize;
+        return chunk.getBlock(coord.x, blockY, coord.z);
     }
 
     public Chunk[] getChunks() {

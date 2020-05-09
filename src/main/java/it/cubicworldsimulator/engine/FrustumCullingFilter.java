@@ -8,7 +8,6 @@ import org.joml.Vector3f;
 import java.util.List;
 import java.util.Map;
 
-//TODO Aggiungere un flag globale e uno ad ogni gameItem per abiltiare/disabilitare il frustumCulling
 public class FrustumCullingFilter {
 
     private final Matrix4f prjViewMatrix;
