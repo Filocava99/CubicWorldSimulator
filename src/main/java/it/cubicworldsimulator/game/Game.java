@@ -79,13 +79,25 @@ public class Game implements GameLogic {
     }
     
     private void setUpLights() {
-    	SceneLight sceneLight = new SceneLight();
+    	/*SceneLight sceneLight = new SceneLight();
     	sceneLight.setAmbientLight(new Vector3f(1.0f, 1.0f, 1.0f));
     	float lightIntensity = 1.0f;
     	Vector3f lightPosition = new Vector3f(-1, 0, 0);
     	Vector3f lightColor = new Vector3f(1, 1, 1);
     	sceneLight.setDirectionalLight(new DirectionalLight(lightColor, lightPosition, lightIntensity));
-    	this.scene.setSceneLight(sceneLight);
+    	this.scene.setSceneLight(sceneLight);*/
+    	
+    	SceneLight sceneLight = new SceneLight();
+        scene.setSceneLight(sceneLight);
+
+        // Ambient Light
+        sceneLight.setAmbientLight(new Vector3f(0.3f, 0.3f, 0.3f));
+        sceneLight.setSkyBoxLight(new Vector3f(1.0f, 1.0f, 1.0f));
+
+        // Directional Light
+        float lightIntensity = 1.0f;
+        Vector3f lightPosition = new Vector3f(1, 1, 0);
+        sceneLight.setDirectionalLight(new DirectionalLight(new Vector3f(1, 1, 1), lightPosition, lightIntensity));
     }
     
     
@@ -183,6 +195,20 @@ public class Game implements GameLogic {
         double angleRadians = Math.toRadians(this.lightAngle);
         directionalLight.getDirection().x = (float) Math.sin(angleRadians);
         directionalLight.getDirection().y = (float) Math.cos(angleRadians);
+       /* this.lightAngle += 1.1f;
+        if (this.lightAngle < 0) {
+            this.lightAngle = 0;
+        } else if (lightAngle > 180) {
+            this.lightAngle = 180;
+        }
+        float zValue = (float) Math.cos(Math.toRadians(lightAngle));
+        float yValue = (float) Math.sin(Math.toRadians(lightAngle));
+        Vector3f lightDirection = sceneLight.getDirectionalLight().getDirection();
+        lightDirection.x = 0;
+        lightDirection.y = yValue;
+        lightDirection.z = zValue;
+        lightDirection.normalize();*/
+        
     }
 
     @Override
@@ -218,13 +244,13 @@ public class Game implements GameLogic {
             shaderProgram.createUniform("modelViewMatrix");
             shaderProgram.createUniform("texture_sampler");
             //AGGIUNTA PELATINI
+            logger.debug("Creating lihts uniforms");
             shaderProgram.createMateriaUniform("material");
             shaderProgram.createUniform("specularPower");
             shaderProgram.createUniform("ambientLight");
-            shaderProgram.createPointLightListUniform("pointLights", MAX_POINT_LIGHTS);
-            shaderProgram.createSpotLightListUniform("spotLights", MAX_SPOT_LIGHTS);
+            //shaderProgram.createPointLightListUniform("pointLights", MAX_POINT_LIGHTS);
+            //shaderProgram.createSpotLightListUniform("spotLights", MAX_SPOT_LIGHTS);
             shaderProgram.createDirectionalLightUnform("directionalLight");
-            
             
         } catch (Exception e) {
             logger.error(e.getMessage());

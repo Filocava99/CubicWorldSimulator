@@ -7,6 +7,8 @@ import it.cubicworldsimulator.engine.graphic.PointLight;
 import it.cubicworldsimulator.engine.graphic.SpotLight;
 
 public class SceneLight {
+
+    private Vector3f skyBoxLight;
 	private Vector3f ambientLight;
 	private PointLight[] pointLights;
 	private SpotLight[] spotLights;
@@ -43,5 +45,13 @@ public class SceneLight {
 	public void setDirectionalLight(DirectionalLight directionalLight) {
 		this.directionalLight = directionalLight;
 	}
+	
+	public Vector3f getSkyBoxLight() {
+        return skyBoxLight;
+    }
+
+    public void setSkyBoxLight(Vector3f skyBoxLight) {
+        this.skyBoxLight = skyBoxLight;
+    }
 	
 }
