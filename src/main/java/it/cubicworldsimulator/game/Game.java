@@ -2,7 +2,10 @@ package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.*;
-import it.cubicworldsimulator.engine.loader.Loader;
+import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
+import it.cubicworldsimulator.engine.graphic.light.PointLight;
+import it.cubicworldsimulator.engine.graphic.light.SceneLight;
+import it.cubicworldsimulator.engine.graphic.light.SpotLight;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
@@ -10,8 +13,10 @@ import it.cubicworldsimulator.game.world.WorldManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +26,6 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Game implements GameLogic {
     private static final Logger logger = LogManager.getLogger(Game.class);
 
-    private final Camera camera; //TODO Va messa nella scene direttamente?
-    private final Player player;
     private final CommandsQueue commandsQueue;
     private WorldManager worldManager;
     private World world;
@@ -36,36 +39,49 @@ public class Game implements GameLogic {
 
     public Game() {
         renderer = new RendererImpl();
-        camera = new Camera();
-        player = new Player(camera);
         commandsQueue = new CommandsQueue();
     }
 
     @Override
-    public void init(Window window){
+    public void init(Window window) {
+        initShaderPrograms();
         world = new World("test", 463456L);
         worldManager = new WorldManager(world, commandsQueue);
-        initShaderPrograms();
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
-            //TODO Creare una copia della instanza opaqueMeshMap?
-            scene = new Scene(opaqueMeshMap, transparentMeshMap,shaderProgram, skyBox, camera);
-            worldManager.updateActiveChunksSync(new Vector3i(0,0,0));
-            while(commandsQueue.hasLoadCommand()){
-                Pair<GameItem,GameItem> pair = commandsQueue.runLoadCommand();
-                if(pair != null){
+            //LIGHTS
+            Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+            Vector3f lightColour = new Vector3f(1, 1, 1);
+            Vector3f lightPosition = new Vector3f(0, 0, 1);
+            float specularPower = 10f;
+            float lightIntensity = 1.0f;
+            PointLight pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
+            PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
+            pointLight.setAttenuation(att);
+
+            lightPosition = new Vector3f(-1, 0, 0);
+            lightColour = new Vector3f(1, 1, 1);
+            DirectionalLight directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
+            SceneLight sceneLight = new SceneLight(directionalLight, new PointLight[0], new SpotLight[0], ambientLight, specularPower);
+
+            scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
+
+            worldManager.updateActiveChunksSync(new Vector3i(0, 0, 0));
+            while (commandsQueue.hasLoadCommand()) {
+                Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
+                if (pair != null) {
                     logger.trace("Adding chunk mesh");
-                    if(pair.hasFirstValue()){
+                    if (pair.hasFirstValue()) {
                         GameItem gameItem = pair.getFirstValue();
                         opaqueMeshMap.put(gameItem.getMesh(), List.of(gameItem));
                     }
-                    if(pair.hasSecondValue()){
+                    if (pair.hasSecondValue()) {
                         GameItem gameItem = pair.getSecondValue();
                         transparentMeshMap.put(gameItem.getMesh(), List.of(gameItem));
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e);
 
             System.exit(2);
@@ -74,21 +90,21 @@ public class Game implements GameLogic {
 
     @Override
     public void input(Window window, MouseInput mouseInput) {
-        camera.getCameraMovement().set(0, 0, 0);
+        scene.getPlayer().getCameraMovement().set(0, 0, 0);
         if (window.isKeyPressed(GLFW_KEY_W)) {
-            camera.getCameraMovement().z = -1;
+            scene.getPlayer().getCameraMovement().z = -1;
         } else if (window.isKeyPressed(GLFW_KEY_S)) {
-            camera.getCameraMovement().z = 1;
+            scene.getPlayer().getCameraMovement().z = 1;
         }
         if (window.isKeyPressed(GLFW_KEY_A)) {
-            camera.getCameraMovement().x = -1;
+            scene.getPlayer().getCameraMovement().x = -1;
         } else if (window.isKeyPressed(GLFW_KEY_D)) {
-            camera.getCameraMovement().x = 1;
+            scene.getPlayer().getCameraMovement().x = 1;
         }
         if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
-            camera.getCameraMovement().y = -1;
+            scene.getPlayer().getCameraMovement().y = -1;
         } else if (window.isKeyPressed(GLFW_KEY_SPACE)) {
-            camera.getCameraMovement().y = 1;
+            scene.getPlayer().getCameraMovement().y = 1;
         }
     }
 
@@ -96,43 +112,46 @@ public class Game implements GameLogic {
     public void update(float interval, MouseInput mouseInput) {
         logger.trace("Updating");
         // Update camera position
-        camera.movePosition(camera.getCameraMovement().x * camera.getCameraStep(),
-                camera.getCameraMovement().y * camera.getCameraStep(),
-                camera.getCameraMovement().z * camera.getCameraStep());
+        scene.getPlayer().movePosition(scene.getPlayer().getCameraMovement().x * scene.getPlayer().getCameraStep(),
+                scene.getPlayer().getCameraMovement().y * scene.getPlayer().getCameraStep(),
+                scene.getPlayer().getCameraMovement().z * scene.getPlayer().getCameraStep());
 
-        // Update camera based on mouse
+        // Update scene.getPlayer()() based on mouse
         if (mouseInput.isRightButtonPressed()) {
             Vector2f rotVec = mouseInput.getDisplacementVector();
-            camera.moveRotation(rotVec.x * mouseInput.getMouseSensitivity(), rotVec.y * mouseInput.getMouseSensitivity(), 0);
+            scene.getPlayer().moveRotation(rotVec.x * mouseInput.getMouseSensitivity(), rotVec.y * mouseInput.getMouseSensitivity(), 0);
         }
-        if(player.didPlayerChangedChunk()){
-            worldManager.updateActiveChunksAsync(player.getChunkPosition());
+        if (scene.getPlayer().didPlayerChangedChunk()) {
+            worldManager.updateActiveChunksAsync(scene.getPlayer().getChunkPosition());
         }
-        for(int i = 0; i < 1; i++){
-            Pair<GameItem,GameItem> pair = commandsQueue.runLoadCommand();
-            if(pair != null){
+        for (int i = 0; i < 1; i++) {
+            Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
+            if (pair != null) {
                 logger.trace("Adding chunk mesh");
-                if(pair.hasFirstValue()){
+                if (pair.hasFirstValue()) {
                     GameItem gameItem = pair.getFirstValue();
                     opaqueMeshMap.put(gameItem.getMesh(), List.of(gameItem));
                 }
-                if(pair.hasSecondValue()){
+                if (pair.hasSecondValue()) {
                     GameItem gameItem = pair.getSecondValue();
                     transparentMeshMap.put(gameItem.getMesh(), List.of(gameItem));
                 }
             }
             pair = commandsQueue.runUnloadCommand();
-            if(pair != null){
-                if(pair.hasFirstValue()){
+            if (pair != null) {
+                if (pair.hasFirstValue()) {
                     GameItem gameItem = pair.getFirstValue();
                     opaqueMeshMap.remove(gameItem.getMesh());
                 }
-                if(pair.hasSecondValue()){
+                if (pair.hasSecondValue()) {
                     GameItem gameItem = pair.getSecondValue();
                     transparentMeshMap.remove(gameItem.getMesh());
                 }
             }
         }
+        // Update directional light direction, intensity and colour
+        DirectionalLight directionalLight = scene.getSceneLight().getDirectionalLight();
+        directionalLight.changeAngle(directionalLight.getAngle() + 1.1f);
     }
 
     @Override
@@ -152,7 +171,7 @@ public class Game implements GameLogic {
         initSkyBoxShaderProgram();
     }
 
-    private void initSceneShaderProgram(){
+    private void initSceneShaderProgram() {
         try {
             logger.debug("Creating scene shader program");
             shaderProgram = new ShaderProgram();
@@ -172,16 +191,21 @@ public class Game implements GameLogic {
             // Create uniform for material
             shaderProgram.createMaterialUniform("material");
             // Create lighting related uniforms
+            shaderProgram.createDirectionalLightUniform("directionalLight");
             shaderProgram.createUniform("specularPower");
             shaderProgram.createUniform("ambientLight");
-            shaderProgram.createPointLightUniform("pointLight");
+//            shaderProgram.createUniform("MAX_POINT_LIGHTS");
+//            shaderProgram.createUniform("MAX_SPOT_LIGHTS");
+            shaderProgram.createPointLightListUniform("pointLights", 0);
+            shaderProgram.createSpotLightListUniform("spotLights", 0);
         } catch (Exception e) {
             logger.error(e);
+            e.printStackTrace();
             System.exit(3);
         }
     }
 
-    private void initSkyBoxShaderProgram(){
+    private void initSkyBoxShaderProgram() {
         try {
             logger.debug("Creating skybox shader program");
             skyBoxShaderProgram = new ShaderProgram();
@@ -196,7 +220,7 @@ public class Game implements GameLogic {
             skyBoxShaderProgram.createUniform("projectionMatrix");
             skyBoxShaderProgram.createUniform("modelViewMatrix");
             skyBoxShaderProgram.createUniform("texture_sampler");
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e);
             System.exit(4);
         }

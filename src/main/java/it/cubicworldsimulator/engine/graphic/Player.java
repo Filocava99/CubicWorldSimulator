@@ -4,26 +4,24 @@ import it.cubicworldsimulator.game.utility.Constants;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-public class Player {
+public class Player extends Camera{
 
     private Vector3f lastPos;
     private Vector3i lastChunk;
-    private final Camera camera;
 
-    public Player(Camera camera){
-        this.camera = camera;
+    public Player(){
     }
 
     public boolean didPlayerMove(){
-        final boolean result = camera.getPosition().equals(lastPos);
+        final boolean result = getPosition().equals(lastPos);
         if(result){
-            lastPos = camera.getPosition();
+            lastPos = getPosition();
         }
         return result;
     }
 
     public boolean didPlayerChangedChunk(){
-        Vector3i chunkCoord = worldCoordToChunkCoord(camera.getPosition());
+        Vector3i chunkCoord = worldCoordToChunkCoord(getPosition());
         final boolean result = !chunkCoord.equals(lastChunk);
         if(result){
             lastChunk = chunkCoord;
