@@ -1,21 +1,11 @@
 package it.cubicworldsimulator.engine.renderer;
 
 import it.cubicworldsimulator.engine.*;
-<<<<<<< HEAD
-import it.cubicworldsimulator.engine.graphic.Camera;
-import it.cubicworldsimulator.engine.graphic.DirectionalLight;
-import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.PointLight;
-import it.cubicworldsimulator.engine.graphic.SkyBox;
-import it.cubicworldsimulator.engine.graphic.SpotLight;
-import it.cubicworldsimulator.engine.graphic.Texture;
-=======
 import it.cubicworldsimulator.engine.graphic.*;
 import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
 import it.cubicworldsimulator.engine.graphic.light.PointLight;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
 import it.cubicworldsimulator.engine.graphic.light.SpotLight;
->>>>>>> master
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
@@ -38,8 +28,6 @@ public class RendererImpl implements Renderer {
 
     private final FrustumCullingFilter filter;
 
-    private final float specularPower = 10f;
-
     public RendererImpl() {
         transformation = new Transformation();
         filter = new FrustumCullingFilter();
@@ -60,28 +48,13 @@ public class RendererImpl implements Renderer {
      * @param scene Scene instance
      * @param window Main window instance
      */
-   /* public void render(Scene scene, Window window) {
+    public void render(Scene scene, Window window) {
         //Clear the screen first
         clear();
         //If the scene exists we render it
         if (scene != null) {
             // Update projection Matrix
             Matrix4f projectionMatrix = window.updateProjectionMatrix();
-<<<<<<< HEAD
-            
-            //If the scene has some GameItems we render them
-            if (scene.getOpaqueMeshMap() != null) {
-                //Update the view matrix
-                Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
-
-                filter.updateFrustum(projectionMatrix, viewMatrix);
-                filter.filter(scene.getOpaqueMeshMap());
-                //Prepare the shader program and the required uniform variables
-                scene.getShaderProgram().bind();
-                scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
-                scene.getShaderProgram().setUniform("texture_sampler", 0);
-                renderLight(scene, viewMatrix);
-=======
             //Update the view matrix
             Matrix4f viewMatrix = scene.getPlayer().updateViewMatrix();
 
@@ -142,30 +115,13 @@ public class RendererImpl implements Renderer {
             if (scene.getOpaqueMeshMap() != null) {
                 //Filter the GameItems based on the frustum
                 filter.filter(scene.getOpaqueMeshMap());
->>>>>>> master
                 // Render each gameItem
                 scene.getOpaqueMeshMap().forEach((k, v) -> {
                     renderListOfGameItems(scene.getShaderProgram(), viewMatrix, k, v);
                 });
-<<<<<<< HEAD
-
-                //Unbind the shader program
-
-                scene.getShaderProgram().unbind();
-=======
->>>>>>> master
             }
             if(scene.getTransparentMeshMap() != null){
                 filter.filter(scene.getTransparentMeshMap());
-<<<<<<< HEAD
-                //Prepare the shader program and the required uniform variables
-                scene.getShaderProgram().bind();
-                scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
-                scene.getShaderProgram().setUniform("texture_sampler", 0);
-                renderLight(scene, viewMatrix);
-                //glDisable(GL_DEPTH_TEST);
-=======
->>>>>>> master
                 // Render each gameItem
                 scene.getTransparentMeshMap().forEach((k, v) -> {
                     renderListOfGameItems(scene.getShaderProgram(), viewMatrix, k, v);
@@ -180,102 +136,7 @@ public class RendererImpl implements Renderer {
             }
         }
     }
-    */
-    public void render(Scene scene, Window window) {
-        //Clear the screen first
-        clear();
-        //If the scene exists we render it
-        if (scene != null) {
-            // Update projection Matrix
-            Matrix4f projectionMatrix = window.updateProjectionMatrix();
-            //Update the view matrix
-            Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
-           
-            
-            //Prepare the shader program and the required uniform variables
-            scene.getShaderProgram().bind();
-            scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
-            scene.getShaderProgram().setUniform("texture_sampler", 0);
-            
-            renderLight(scene, viewMatrix);
-            //Update frustum culling
-            filter.updateFrustum(projectionMatrix, viewMatrix);
-            //If the scene has some GameItems we render them
-            if (scene.getOpaqueMeshMap() != null) {
-                //Filter the GameItems based on the frustum
-                filter.filter(scene.getOpaqueMeshMap());
-                // Render each gameItem
-                scene.getOpaqueMeshMap().forEach((k, v) -> {
-                    renderListOfGameItems(scene.getShaderProgram(), viewMatrix, k, v);
-                });
-            }
-            if(scene.getTransparentMeshMap() != null){
-                filter.filter(scene.getTransparentMeshMap());
-                //glDisable(GL_DEPTH_TEST);d
-                // Render each gameItem
-                scene.getTransparentMeshMap().forEach((k, v) -> {
-                    renderListOfGameItems(scene.getShaderProgram(), viewMatrix, k, v);
-                });
-                //glEnable(GL_DEPTH_TEST);
-            }
-            //Unbind the shader program
-            scene.getShaderProgram().unbind();
-            //If the scene has a skybox we render it
-            
-            //DECOMMENTARE
-           // if (scene.getSkyBox() != null) {
-                //Renders the skybox
-             //   renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getCamera());
-            //}
-        }
-    }
 
-    
-    private void renderLight(Scene scene, Matrix4f viewMatrix) {
-    	
-    	SceneLight sceneLight = scene.getSceneLight();
-    	
-    	scene.getShaderProgram().setUniform("ambientLight", sceneLight.getAmbientLight());
-    	scene.getShaderProgram().setUniform("specularPower", specularPower);
-    	
-    	//PointLights
-    	PointLight[] pointLightList = sceneLight.getPointLights();
-    	int numPointLights = pointLightList != null ? pointLightList.length : 0;
-    	for (int i = 0; i < numPointLights; i++) {
-    		PointLight currPointLight = new PointLight(pointLightList[i]);
-    		Vector3f lightPos = currPointLight.getPosition();
-    		Vector4f aux = new Vector4f(lightPos, 1);
-    		aux.mul(viewMatrix);
-    		lightPos.x = aux.x;
-    		lightPos.y = aux.y;
-    		lightPos.z = aux.z;
-    		scene.getShaderProgram().setUniform("pointLights", currPointLight, i);
-    	}
-    	
-    	//SpotLight
-    	SpotLight[] spotLightList = sceneLight.getSpotLights();
-    	int numSpotLights = spotLightList != null ? spotLightList.length : 0;
-    	for (int i = 0; i < numSpotLights; i++) {
-    		SpotLight currSpotLight = new SpotLight(spotLightList[i]);
-    		Vector3f lightPos = currSpotLight.getConeDirection();
-    		Vector4f aux = new Vector4f(lightPos, 1);
-    		aux.mul(viewMatrix);
-    		lightPos.x = aux.x;
-    		lightPos.y = aux.y;
-    		lightPos.z = aux.z;
-    		scene.getShaderProgram().setUniform("spotLights", currSpotLight, i);
-    	}
-    	
-    	//DirectionalLight
-    	DirectionalLight currDirLight = new DirectionalLight(sceneLight.getDirectionalLight());
-    	Vector4f dir = new Vector4f(currDirLight.getDirection(),0);
-    	dir.mul(viewMatrix);
-    	currDirLight.setDirection(new Vector3f(dir.x, dir.y, dir.z));
-    	scene.getShaderProgram().setUniform("directionalLight", currDirLight);
-    }
-    
-    
-    
     /**
      * Renders the skybox
      * @param projectionMatrix
@@ -316,7 +177,6 @@ public class RendererImpl implements Renderer {
      */
     private void renderListOfGameItems(ShaderProgram shaderProgram, Matrix4f viewMatrix, Mesh mesh, List<GameItem> gameItems) {
         initRender(mesh);
-        shaderProgram.setUniform("material", mesh.getMeshMaterial());
         gameItems.forEach(gameItem -> {
             if(gameItem.isInsideFrustum()){
                 Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
