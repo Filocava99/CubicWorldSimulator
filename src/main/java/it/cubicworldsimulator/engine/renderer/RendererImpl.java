@@ -5,6 +5,7 @@ import it.cubicworldsimulator.engine.graphic.*;
 import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
 import it.cubicworldsimulator.engine.graphic.light.PointLight;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
+import it.cubicworldsimulator.engine.Scene;
 import it.cubicworldsimulator.engine.graphic.light.SpotLight;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
