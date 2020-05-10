@@ -1,11 +1,11 @@
 package it.cubicworldsimulator.game.world.chunk;
 
 import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.MeshMaterial;
+import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.engine.loader.Loader;
 import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
-import it.cubicworldsimulator.game.world.block.Material;
+import it.cubicworldsimulator.game.world.block.BlockMaterial;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
@@ -19,17 +19,17 @@ public class ChunkMesh implements Serializable {
     private static transient final Logger logger = LogManager.getLogger(ChunkMesh.class);
 
     private final transient Chunk chunk;
-    private final transient Map<Object, Material> blocksTypes;
+    private final transient Map<Object, BlockMaterial> blocksTypes;
 
     private VBOContainer opaqueMesh;
     private VBOContainer transparentMesh;
     private transient boolean meshesReady = false;
 
-    public ChunkMesh(final Chunk chunk, Map<Object, Material> blocksTypes, MeshMaterial meshMaterial) {
+    public ChunkMesh(final Chunk chunk, Map<Object, BlockMaterial> blocksTypes, Material material) {
         this.chunk = chunk;
         this.blocksTypes = blocksTypes;
-        this.opaqueMesh = new VBOContainer(meshMaterial, blocksTypes);
-        this.transparentMesh = new VBOContainer(meshMaterial, blocksTypes);
+        this.opaqueMesh = new VBOContainer(material, blocksTypes);
+        this.transparentMesh = new VBOContainer(material, blocksTypes);
     }
 
     /**
@@ -46,7 +46,7 @@ public class ChunkMesh implements Serializable {
             transparentMesh.buildMesh();
             meshesReady = true;
         } catch (Exception e) {
-            e.printStackTrace();
+
 
         }
     }
@@ -342,18 +342,16 @@ public class ChunkMesh implements Serializable {
         private transient Mesh mesh;
         private transient boolean meshReady;
 
-        private final transient MeshMaterial meshMaterial;
-        private final transient Map<Object, Material> blocksTypes;
+        private final transient Material material;
+        private final transient Map<Object, BlockMaterial> blocksTypes;
 
-        private final Loader loader = new Loader();//TODO DA RIMUOVERE
-
-        public VBOContainer(MeshMaterial meshMaterial, Map<Object, Material> blocksTypes) {
-            this.meshMaterial = meshMaterial;
+        public VBOContainer(Material material, Map<Object, BlockMaterial> blocksTypes) {
+            this.material = material;
             this.blocksTypes = blocksTypes;
-            verticesList = new ArrayList<>();
-            indicesList = new ArrayList<>();
-            uvsList = new ArrayList<>();
-            normalsList = new ArrayList<>();
+            this.verticesList = new ArrayList<>();
+            this.indicesList = new ArrayList<>();
+            this.uvsList = new ArrayList<>();
+            this.normalsList = new ArrayList<>();
         }
 
         /**
@@ -367,12 +365,10 @@ public class ChunkMesh implements Serializable {
             }
             if (!areVBOsArraysEmpty()) {
                 try {
-
-                    mesh = loader.createMesh(verticesArray, uvsArray, indicesArray, normalsArray, meshMaterial,     Constants.chunkAxisSize);
-
+                    mesh = Loader.createMesh(verticesArray, uvsArray, indicesArray, normalsArray, material, Constants.chunkAxisSize);
                     meshReady = true;
                 } catch (Exception e) {
-                    e.printStackTrace();
+
                 }
             }
         }
@@ -382,7 +378,7 @@ public class ChunkMesh implements Serializable {
          */
         public void cleanUp() {
             if (mesh != null) {
-                loader.cleanMesh(mesh);
+                Loader.cleanMesh(mesh);
                 meshReady = false;
             }
         }

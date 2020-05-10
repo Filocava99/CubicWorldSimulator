@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.game.world.chunk;
 
+import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.utility.math.OpenSimplexNoise;
 import it.cubicworldsimulator.game.utility.math.SerializableVector3f;
 import it.cubicworldsimulator.game.world.WorldManager;
@@ -50,9 +51,8 @@ public class ChunkGenerator {
                 }
             }
         }
-        //TODO Fix magic numbers | 4096 * 16 = 65536
         for (int i = 0; i < 16; i++) {
-            chunks[i] = new Chunk(Arrays.copyOfRange(blocks, 4096 * i, 4096 * i + 4096), new SerializableVector3f(chunkX, i, chunkZ));
+            chunks[i] = new Chunk(Arrays.copyOfRange(blocks, Constants.chunkTotalBlocks * i, Constants.chunkTotalBlocks * i + Constants.chunkTotalBlocks), new SerializableVector3f(chunkX, i, chunkZ));
         }
         //System.out.println("Fine generazione");
         ChunkColumn chunkColumn = new ChunkColumn(chunks, new Vector2f(chunkX, chunkZ));
@@ -77,13 +77,13 @@ public class ChunkGenerator {
 
 
     private boolean isSpaceAvailableForTree(ChunkColumn chunkColumn, Vector3i coord, int height) {
-        if (coord.y > 0) {
+        if (coord.y > Constants.minHeight) {
             byte block = chunkColumn.getBlock(new Vector3i(coord.x, coord.y - 1, coord.z));
             if (block == worldManager.getBlockTypes().get("water").getId() || block == worldManager.getBlockTypes().get("log").getId()) {
                 return false;
             }
         }
-        return coord.y + height <= 255;
+        return coord.y + height <= Constants.maxHeight;
     }
 
     /*
@@ -100,7 +100,6 @@ public class ChunkGenerator {
     O tree trunk
     % contains leaves 50% of the time
      */
-    //TODO Pattern dell'albero da file o con classe apposita
     private void growTree(ChunkColumn chunk, Vector3i pos, int height) {
         byte logId = worldManager.getBlockTypes().get("log").getId();
         byte leafId = worldManager.getBlockTypes().get("leaf").getId();
