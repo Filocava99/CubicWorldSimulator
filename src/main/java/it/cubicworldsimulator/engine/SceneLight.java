@@ -2,9 +2,9 @@ package it.cubicworldsimulator.engine;
 
 import org.joml.Vector3f;
 
-import it.cubicworldsimulator.engine.graphic.DirectionalLight;
-import it.cubicworldsimulator.engine.graphic.PointLight;
-import it.cubicworldsimulator.engine.graphic.SpotLight;
+import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
+import it.cubicworldsimulator.engine.graphic.light.PointLight;
+import it.cubicworldsimulator.engine.graphic.light.SpotLight;
 
 public class SceneLight {
 

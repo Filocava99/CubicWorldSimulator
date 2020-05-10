@@ -25,23 +25,17 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Game implements GameLogic {
     private static final Logger logger = LogManager.getLogger(Game.class);
-    private static final int MAX_POINT_LIGHTS = 5;
-    private static final int MAX_SPOT_LIGHTS = 5;
 
     private final CommandsQueue commandsQueue;
     private WorldManager worldManager;
     private World world;
     private Scene scene;
-
     private final Map<Mesh, List<GameItem>> opaqueMeshMap = new HashMap<>();
     private final Map<Mesh, List<GameItem>> transparentMeshMap = new HashMap<>();
 
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
-    private float lightAngle;
-    private float spotAngle = 0;
-    private float spotInc = 1;
 
     public Game() {
         renderer = new RendererImpl();
@@ -92,32 +86,8 @@ public class Game implements GameLogic {
 
             System.exit(2);
         }
-        setUpLights();
     }
-    
-    private void setUpLights() {
-    	/*SceneLight sceneLight = new SceneLight();
-    	sceneLight.setAmbientLight(new Vector3f(1.0f, 1.0f, 1.0f));
-    	float lightIntensity = 1.0f;
-    	Vector3f lightPosition = new Vector3f(-1, 0, 0);
-    	Vector3f lightColor = new Vector3f(1, 1, 1);
-    	sceneLight.setDirectionalLight(new DirectionalLight(lightColor, lightPosition, lightIntensity));
-    	this.scene.setSceneLight(sceneLight);*/
-    	
-    	SceneLight sceneLight = new SceneLight();
-        scene.setSceneLight(sceneLight);
 
-        // Ambient Light
-        sceneLight.setAmbientLight(new Vector3f(0.3f, 0.3f, 0.3f));
-        sceneLight.setSkyBoxLight(new Vector3f(1.0f, 1.0f, 1.0f));
-
-        // Directional Light
-        float lightIntensity = 1.0f;
-        Vector3f lightPosition = new Vector3f(1, 1, 0);
-        sceneLight.setDirectionalLight(new DirectionalLight(new Vector3f(1, 1, 1), lightPosition, lightIntensity));
-    }
-    
-    
     @Override
     public void input(Window window, MouseInput mouseInput) {
         scene.getPlayer().getCameraMovement().set(0, 0, 0);
@@ -151,10 +121,8 @@ public class Game implements GameLogic {
             Vector2f rotVec = mouseInput.getDisplacementVector();
             scene.getPlayer().moveRotation(rotVec.x * mouseInput.getMouseSensitivity(), rotVec.y * mouseInput.getMouseSensitivity(), 0);
         }
-
         if (scene.getPlayer().didPlayerChangedChunk()) {
             worldManager.updateActiveChunksAsync(scene.getPlayer().getChunkPosition());
-
         }
         for (int i = 0; i < 1; i++) {
             Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
@@ -184,51 +152,6 @@ public class Game implements GameLogic {
         // Update directional light direction, intensity and colour
         DirectionalLight directionalLight = scene.getSceneLight().getDirectionalLight();
         directionalLight.changeAngle(directionalLight.getAngle() + 1.1f);
-    }
-    
-    private void updateLights() {
-        SceneLight sceneLight = this.scene.getSceneLight();
-        
-        //Update directional light
-        DirectionalLight directionalLight = sceneLight.getDirectionalLight();
-        this.lightAngle = this.lightAngle + 1.1f;
-        if(this.lightAngle > 90) {
-        	directionalLight.setIntensity(0);
-        	if(this.lightAngle >= 360) {
-        		this.lightAngle = -90;
-        	}
-        	sceneLight.getAmbientLight().set(0.3f, 0.3f, 0.3f);
-        }else if( this.lightAngle <= -80 || this.lightAngle >= 80) {
-        	float factor = 1 - (float) (Math.abs(this.lightAngle) - 80) / 10.0f;
-        	sceneLight.getAmbientLight().set(factor, factor, factor);
-        	directionalLight.setIntensity(factor);
-        	directionalLight.getColor().y = Math.max(factor, 0.9f);
-        	directionalLight.getColor().z = Math.max(factor, 0.5f);
-        }else {
-        	sceneLight.getAmbientLight().set(1, 1, 1);
-        	directionalLight.setIntensity(1);
-        	directionalLight.getColor().x = 1;
-        	directionalLight.getColor().y = 1;
-        	directionalLight.getColor().z = 1;
-        }
-        
-        double angleRadians = Math.toRadians(this.lightAngle);
-        directionalLight.getDirection().x = (float) Math.sin(angleRadians);
-        directionalLight.getDirection().y = (float) Math.cos(angleRadians);
-       /* this.lightAngle += 1.1f;
-        if (this.lightAngle < 0) {
-            this.lightAngle = 0;
-        } else if (lightAngle > 180) {
-            this.lightAngle = 180;
-        }
-        float zValue = (float) Math.cos(Math.toRadians(lightAngle));
-        float yValue = (float) Math.sin(Math.toRadians(lightAngle));
-        Vector3f lightDirection = sceneLight.getDirectionalLight().getDirection();
-        lightDirection.x = 0;
-        lightDirection.y = yValue;
-        lightDirection.z = zValue;
-        lightDirection.normalize();*/
-        
     }
 
     @Override
@@ -265,7 +188,6 @@ public class Game implements GameLogic {
             shaderProgram.createUniform("modelViewMatrix");
             shaderProgram.createUniform("texture_sampler");
 
-
             // Create uniform for material
             shaderProgram.createMaterialUniform("material");
             // Create lighting related uniforms
@@ -276,7 +198,6 @@ public class Game implements GameLogic {
 //            shaderProgram.createUniform("MAX_SPOT_LIGHTS");
             shaderProgram.createPointLightListUniform("pointLights", 0);
             shaderProgram.createSpotLightListUniform("spotLights", 0);
-
         } catch (Exception e) {
             logger.error(e);
             e.printStackTrace();
