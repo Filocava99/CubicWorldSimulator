@@ -33,7 +33,7 @@ public class ChunkLoader {
             }
             chunkColumnOptional = Optional.ofNullable(chunkColumn);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(e);
         }
         return chunkColumnOptional;
     }
@@ -50,12 +50,10 @@ public class ChunkLoader {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(chunkFile));
             objectOutputStream.writeObject(chunkColumn);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
+
+            logger.error(e);
         }
     }
-
-    //TODO Creare un metodo per salvare un solo chunk
 
     public Set<Vector2f> getAlreadyGeneratedChunkColumns(String worldName){
         Set<Vector2f> alreadyGeneratedChunkColumns = new HashSet<>();

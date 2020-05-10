@@ -1,28 +1,27 @@
 package it.cubicworldsimulator.engine.graphic;
 
+import it.cubicworldsimulator.game.utility.Constants;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-public class Player {
+public class Player extends Camera{
 
     private Vector3f lastPos;
     private Vector3i lastChunk;
-    private final Camera camera;
 
-    public Player(Camera camera){
-        this.camera = camera;
+    public Player(){
     }
 
     public boolean didPlayerMove(){
-        final boolean result = camera.getPosition().equals(lastPos);
+        final boolean result = getPosition().equals(lastPos);
         if(result){
-            lastPos = camera.getPosition();
+            lastPos = getPosition();
         }
         return result;
     }
 
     public boolean didPlayerChangedChunk(){
-        Vector3i chunkCoord = worldCoordToChunkCoord(camera.getPosition());
+        Vector3i chunkCoord = worldCoordToChunkCoord(getPosition());
         final boolean result = !chunkCoord.equals(lastChunk);
         if(result){
             lastChunk = chunkCoord;
@@ -31,7 +30,7 @@ public class Player {
     }
 
     private Vector3i worldCoordToChunkCoord(Vector3f position) {
-        return new Vector3i((int) Math.floor(position.x / 16), (int) Math.floor(position.y / 16), (int) Math.floor(position.z / 16)); //TODO Ottimizzare con gli shift <<
+        return new Vector3i((int) Math.floor(position.x / Constants.chunkAxisSize), (int) Math.floor(position.y / Constants.chunkAxisSize), (int) Math.floor(position.z / Constants.chunkAxisSize));
     }
 
     public Vector3i getChunkPosition() {

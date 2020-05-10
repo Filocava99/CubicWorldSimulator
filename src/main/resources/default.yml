@@ -117,7 +117,7 @@ blocks:
         y: 0
   leaf:
     id: 6
-    transparent: true
+    transparent: false
     textures:
       top:
         x: 9

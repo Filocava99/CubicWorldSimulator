@@ -9,10 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class World {
 
-    private final List<Chunk> chunks;
+    private final List<Chunk> chunks; //Serve per future estensioni del gioco, al momento non ha un utilizzo
     private final long seed;
     private final String name;
-    private final ConcurrentHashMap<Vector2f, ChunkColumn> activeChunks = new ConcurrentHashMap<>(); //TODO Non mi piace
+    private final ConcurrentHashMap<Vector2f, ChunkColumn> activeChunks = new ConcurrentHashMap<>();
 
     public World(String name, long seed){
         chunks = new LinkedList<>();

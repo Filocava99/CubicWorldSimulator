@@ -1,9 +1,8 @@
 package it.cubicworldsimulator.engine.loader;
 
 import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.MeshMaterial;
+import it.cubicworldsimulator.engine.graphic.Material;
 import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.Buffer;
@@ -18,24 +17,15 @@ import static org.lwjgl.opengl.GL20C.*;
 import static org.lwjgl.opengl.GL30C.*;
 
 public class Loader {
-    private final List<Integer> vaoList;
-    private final List<Integer> vboList;
-    private final List<Integer> textureVboList;
-    private final List<Integer> normalsVboList;
-    private final List<FloatBuffer> floatBufferList;
-    private final List<IntBuffer> intBufferlist;
+    private static final List<Integer> vaoList = new ArrayList<>();
+    private static final List<Integer> vboList = new ArrayList<>();
+    private static final List<Integer> textureVboList = new ArrayList<>();
+    private static final List<Integer> normalsVboList = new ArrayList<>();
+    private static final List<FloatBuffer> floatBufferList = new ArrayList<>();
+    private static final List<IntBuffer> intBufferlist = new ArrayList<>();
 
-    public Loader() {
-        this.vaoList = new ArrayList<>();
-        this.vboList = new ArrayList<>();
-        this.textureVboList = new ArrayList<>();
-        this.floatBufferList = new ArrayList<>();
-        this.intBufferlist = new ArrayList<>();
-        this.normalsVboList = new ArrayList<>();
-    }
-
-    public Mesh createMesh (float[] positions, float[] textCoords, int[] indices, float[] normals, MeshMaterial texture,
-                            float boundingRadius) {
+    public static Mesh createMesh(float[] positions, float[] textCoords, int[] indices, float[] normals, Material texture,
+                                  float boundingRadius) {
         int vaoId;
         try {
             //Create Vao
@@ -43,20 +33,20 @@ public class Loader {
             vaoList.add(vaoId);
 
             // Position VBO
-            this.vboList.add(createVbo());
-            insertPositionIntoVbo(positions, this.vboList.get(vboList.size()-1));
+            vboList.add(createVbo());
+            insertPositionIntoVbo(positions, vboList.get(vboList.size()-1));
 
             // Index VBO
-            this.vboList.add(createVbo());
-            insertIndicesIntoVbo(indices, this.vboList.get(vboList.size()-1));
+            vboList.add(createVbo());
+            insertIndicesIntoVbo(indices, vboList.get(vboList.size()-1));
 
             //Texture VBO
-            this.textureVboList.add(createVbo());
-            insertTextureIntoVbo(textCoords, this.textureVboList.get(textureVboList.size()-1));
+            textureVboList.add(createVbo());
+            insertTextureIntoVbo(textCoords, textureVboList.get(textureVboList.size()-1));
 
             //Normals
-            this.normalsVboList.add(createVbo());
-            insertNormalsIntoVbo(normals, this.normalsVboList.get(normalsVboList.size()-1));
+            normalsVboList.add(createVbo());
+            insertNormalsIntoVbo(normals, normalsVboList.get(normalsVboList.size()-1));
 
         } finally {
             cleanBuffers();
@@ -64,20 +54,20 @@ public class Loader {
         return new Mesh(texture, boundingRadius, indices.length, vaoId, vboList, textureVboList);
     }
 
-    public int createVao(){
+    public static int createVao(){
         int vaoId = glGenVertexArrays();
         glBindVertexArray(vaoId);
-        this.vaoList.add(vaoId);
+        vaoList.add(vaoId);
         return vaoId;
     }
 
-    public int createVbo(){
+    public static int createVbo(){
         int vboId = glGenBuffers();
-        this.vboList.add(vboId);
+        vboList.add(vboId);
         return vboId;
     }
 
-    public void insertPositionIntoVbo(float[] positions, int vboId) {
+    public static void insertPositionIntoVbo(float[] positions, int vboId) {
         FloatBuffer posBuffer = MemoryUtil.memAllocFloat(positions.length);
         for (Float position : positions) {
             posBuffer.put(position);
@@ -86,7 +76,7 @@ public class Loader {
         insertIntoVbo(posBuffer, vboId, 3, 0);
     }
 
-    public void insertTextureIntoVbo(float[] textCoords, int vboId) {
+    public static void insertTextureIntoVbo(float[] textCoords, int vboId) {
         FloatBuffer textCoordsBuffer = MemoryUtil.memAllocFloat(textCoords.length);
         for (Float textCoord : textCoords) {
             textCoordsBuffer.put(textCoord);
@@ -95,7 +85,7 @@ public class Loader {
         insertIntoVbo(textCoordsBuffer, vboId, 2, 1);
     }
 
-    public void insertIndicesIntoVbo(int[] indices, int vboId) {
+    public static void insertIndicesIntoVbo(int[] indices, int vboId) {
         IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
         for (Integer index : indices) {
             indicesBuffer.put(index);
@@ -105,7 +95,7 @@ public class Loader {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
     }
 
-    public void insertNormalsIntoVbo(float[] normals, int vboId) {
+    public static void insertNormalsIntoVbo(float[] normals, int vboId) {
         FloatBuffer normalsBuffer = MemoryUtil.memAllocFloat(normals.length);
         for (Float normal : normals) {
             normalsBuffer.put(normal);
@@ -129,20 +119,20 @@ public class Loader {
         glDeleteVertexArrays(mesh.getVaoId());
     }
 
-    public void cleanBuffers() {
-        this.floatBufferList.forEach(item -> {
+    public static void cleanBuffers() {
+        floatBufferList.forEach(item -> {
             if (item!=null) {
                 MemoryUtil.memFree(item);
             }
         });
-        this.intBufferlist.forEach(item -> {
+        intBufferlist.forEach(item -> {
             if (item!=null) {
                 MemoryUtil.memFree(item);
             }
         });
     }
 
-    private void insertIntoVbo(Buffer buffer, int vboId, int size, int index) {
+    private static void insertIntoVbo(Buffer buffer, int vboId, int size, int index) {
         glBindBuffer(GL_ARRAY_BUFFER, vboId);
         glBufferData(GL_ARRAY_BUFFER, (FloatBuffer) buffer, GL_STATIC_DRAW);
         glEnableVertexAttribArray(index);

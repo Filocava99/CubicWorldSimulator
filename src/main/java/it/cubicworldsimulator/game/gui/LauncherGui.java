@@ -193,7 +193,7 @@ public class LauncherGui extends Gui {
                     gameEngine = new GameEngine("CubicWorldSimulator",
                             vSync, new Game(), debug);
                 } catch (Exception e) {
-                    e.printStackTrace();
+
                 }
                 gameEngine.run();
             }
