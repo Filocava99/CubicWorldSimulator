@@ -46,6 +46,7 @@ public class Player {
     
     //VERONIKA
     public boolean canPlayerMove(byte airId) {
+    	if(this.lastChunk == null) return false;
     	int heightChunk = chunkColumn.getHeight(new Vector2i(lastChunk.x,lastChunk.y), airId);
     	if(camera.getPosition().y <= heightChunk) {
     		return false;

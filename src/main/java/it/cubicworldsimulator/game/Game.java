@@ -108,7 +108,7 @@ public class Game implements GameLogic {
         
         //VERONIKA
         byte airId = worldManager.getBlockTypes().get("air").getId();
-        if(player.canPlayerMove(airId)) {
+      //  if(player.canPlayerMove(airId)) {
         	if(player.didPlayerChangedChunk()){
                 worldManager.updateActiveChunksAsync(player.getChunkPosition());
             }
@@ -136,10 +136,10 @@ public class Game implements GameLogic {
                     }
                 }
             }
-        }
+     /*   }
         else {
         	camera.setPosition(prevCameraPos.x, prevCameraPos.y, prevCameraPos.z);
-        }
+        }*/
     }
 
     @Override
