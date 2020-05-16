@@ -13,7 +13,8 @@ public class Main {
         try {
             logger.debug("Platform: " + System.getProperty("os.name"));
             logger.trace("Game launcher started...");
-            guiCreator.createGui("CubicWorldSimulator Launcher");
+            guiCreator.createGui("CubicWorldSimulator Launcher",
+                    "it.cubicworldsimulator.game.gui.LauncherGui");
         } catch (Exception e) {
             logger.error(e);
             System.exit(-1);
