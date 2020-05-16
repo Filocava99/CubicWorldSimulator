@@ -1,34 +1,34 @@
 package it.cubicworldsimulator.engine.graphic;
 
+
+import it.cubicworldsimulator.game.utility.Constants;
+import it.cubicworldsimulator.game.world.chunk.ChunkColumn;
+
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import it.cubicworldsimulator.game.world.WorldManager;
-import it.cubicworldsimulator.game.world.chunk.ChunkColumn;
-
-public class Player {
+public class Player extends Camera{
 
     private Vector3f lastPos;
     private Vector3i lastChunk;
-    private final Camera camera;
-    private ChunkColumn chunkColumn;
-    
-    public Player(Camera camera){
-        this.camera = camera;
+	private ChunkColumn chunkColumn;
+
+    public Player(){
+
     }
 
     //VERONIKA //mi sembra non serva
     public boolean didPlayerMove(){
-        final boolean result = camera.getPosition().equals(lastPos);
+        final boolean result = getPosition().equals(lastPos);
         if(result){
-            lastPos = camera.getPosition();
+            lastPos = getPosition();
         }
         return result;
     }
 
     public boolean didPlayerChangedChunk(){
-        Vector3i chunkCoord = worldCoordToChunkCoord(camera.getPosition());
+        Vector3i chunkCoord = worldCoordToChunkCoord(getPosition());
         final boolean result = !chunkCoord.equals(lastChunk);
         if(result){
             lastChunk = chunkCoord;
@@ -37,7 +37,7 @@ public class Player {
     }
 
     private Vector3i worldCoordToChunkCoord(Vector3f position) {
-        return new Vector3i((int) Math.floor(position.x / 16), (int) Math.floor(position.y / 16), (int) Math.floor(position.z / 16)); //TODO Ottimizzare con gli shift <<
+        return new Vector3i((int) Math.floor(position.x / Constants.chunkAxisSize), (int) Math.floor(position.y / Constants.chunkAxisSize), (int) Math.floor(position.z / Constants.chunkAxisSize));
     }
 
     public Vector3i getChunkPosition() {
@@ -48,7 +48,7 @@ public class Player {
     public boolean canPlayerMove(byte airId) {
     	if(this.lastChunk == null) return false;
     	int heightChunk = chunkColumn.getHeight(new Vector2i(lastChunk.x,lastChunk.y), airId);
-    	if(camera.getPosition().y <= heightChunk) {
+    	if(getPosition().y <= heightChunk) {
     		return false;
     	}
     	else {

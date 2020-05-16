@@ -27,7 +27,7 @@ public class Utils {
                 list.add(line);
             }
         } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
+
         }
         return list;
     }

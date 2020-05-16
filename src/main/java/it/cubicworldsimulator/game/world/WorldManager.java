@@ -1,6 +1,6 @@
 package it.cubicworldsimulator.game.world;
 
-import it.cubicworldsimulator.engine.graphic.MeshMaterial;
+import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.engine.loader.TextureLoader;
 import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
 import it.cubicworldsimulator.game.CommandsQueue;
@@ -9,7 +9,7 @@ import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
 import it.cubicworldsimulator.game.utility.yaml.YAMLComponent;
 import it.cubicworldsimulator.game.utility.yaml.YAMLLoader;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
-import it.cubicworldsimulator.game.world.block.Material;
+import it.cubicworldsimulator.game.world.block.BlockMaterial;
 import it.cubicworldsimulator.game.world.chunk.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,13 +31,13 @@ public class WorldManager {
     private final CommandsQueue commandsQueue;
     private final ChunkGenerator chunkGenerator;
     private final ChunkLoader chunkLoader;
-    private final Map<Object, Material> blockTypes = new HashMap<>();
+    private final Map<Object, BlockMaterial> blockTypes = new HashMap<>();
     private final Set<Vector2f> alreadyGeneratedChunksColumns;
     private final ConcurrentHashMap<Vector3f, ChunkMesh> chunkMeshes = new ConcurrentHashMap<>();
 
     private String textureFile;
     private float textureStep;
-    private MeshMaterial worldTexture;
+    private Material worldTexture;
 
     public WorldManager(World world, CommandsQueue commandsQueue) {
         this.world = world;
@@ -48,15 +48,14 @@ public class WorldManager {
         TextureLoader loader = new TextureLoaderImpl();
         try {
             loadConfig("src/main/resources/default.yml");
-            worldTexture = new MeshMaterial(loader.loadTexture(textureFile));
+            worldTexture = new Material(loader.loadTexture(textureFile));
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
+            logger.error(e);
             System.exit(1);
         }
     }
 
-    //TODO Controllare le perfomances, non vorrei che si inchiodasse se un giocatore fa avanti e indietro fra due chunk
+    //TODO Dubbio sulle perfomance. Bisogna fare profiling
     public void updateActiveChunksAsync(Vector3i chunkPosition) {
         new Thread(() -> {
             updateActiveChunksSync(chunkPosition);
@@ -70,9 +69,7 @@ public class WorldManager {
 
     private void unloadOldChunks(Vector3i chunkPosition) {
         Queue<Vector2f> dumpQueue = new LinkedBlockingQueue<>();
-        var iterator = world.getActiveChunks().entrySet().iterator();
-        while (iterator.hasNext()) {
-            var entry = iterator.next();
+        for (Map.Entry<Vector2f, ChunkColumn> entry : world.getActiveChunks().entrySet()) {
             Vector2f chunkColumnPosition = entry.getValue().getPosition();
             if (chunkColumnPosition.x < chunkPosition.x - renderingDistance || chunkColumnPosition.x > chunkPosition.x + renderingDistance || chunkColumnPosition.y < chunkPosition.z - renderingDistance || chunkColumnPosition.y > chunkPosition.z + renderingDistance) {
                 ChunkColumn chunkColumn = entry.getValue();
@@ -140,7 +137,7 @@ public class WorldManager {
             byte blockId = blockInfo.getByte("id");
             boolean transparency = blockInfo.getBoolean("transparent");
             YAMLComponent blockTextureInfo = blockInfo.getYAMLComponent("textures");
-            Material material = null;
+            BlockMaterial material = null;
             if (blockTextureInfo != null) {
                 Vector2f[] coords = new Vector2f[6];
                 var iterator = blockTextureInfo.getEntrySet().iterator();
@@ -156,17 +153,17 @@ public class WorldManager {
                     coords[i] = new Vector2f(x, y);
                     i++;
                 }
-                material = new Material(blockId, blockName, new BlockTexture(textureStep, coords), transparency);
+                material = new BlockMaterial(blockId, blockName, new BlockTexture(textureStep, coords), transparency);
             }
             if (material == null) {
-                material = new Material(blockId, blockName, null, transparency);
+                material = new BlockMaterial(blockId, blockName, null, transparency);
             }
             blockTypes.put(blockName, material);
             blockTypes.put(blockId, material);
         });
     }
 
-    public Map<Object, Material> getBlockTypes() {
+    public Map<Object, BlockMaterial> getBlockTypes() {
         return Collections.unmodifiableMap(blockTypes);
     }
 
