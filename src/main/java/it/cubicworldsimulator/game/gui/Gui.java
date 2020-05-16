@@ -13,6 +13,9 @@ import java.util.Optional;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 
+/**
+ * It rappresents a Gui model. Has to be extended. It has check methods and element creation methods.
+ */
 public abstract class Gui extends Panel {
     protected long window;
     //X position where print label
