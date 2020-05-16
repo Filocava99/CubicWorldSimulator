@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.io.Serializable;
-
+//TODO Magic numbers
 public class Chunk implements Serializable {
     private final byte[] blocks;
     private final SerializableVector3f position;

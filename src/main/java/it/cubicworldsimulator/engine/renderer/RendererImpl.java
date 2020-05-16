@@ -1,15 +1,19 @@
 package it.cubicworldsimulator.engine.renderer;
 
 import it.cubicworldsimulator.engine.*;
-import it.cubicworldsimulator.engine.graphic.Camera;
-import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.SkyBox;
-import it.cubicworldsimulator.engine.graphic.Texture;
+import it.cubicworldsimulator.engine.graphic.*;
+import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
+import it.cubicworldsimulator.engine.graphic.light.PointLight;
+import it.cubicworldsimulator.engine.graphic.light.SceneLight;
+import it.cubicworldsimulator.engine.graphic.light.SpotLight;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -51,49 +55,84 @@ public class RendererImpl implements Renderer {
         if (scene != null) {
             // Update projection Matrix
             Matrix4f projectionMatrix = window.updateProjectionMatrix();
+            //Update the view matrix
+            Matrix4f viewMatrix = scene.getPlayer().updateViewMatrix();
+
+
+            //Prepare the shader program and the required uniform variables
+            scene.getShaderProgram().bind();
+            scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
+            scene.getShaderProgram().setUniform("texture_sampler", 0);
+
+            SceneLight sceneLight = scene.getSceneLight();
+            // Process Point Lights
+            int numLights = sceneLight.getPointLights() != null ? sceneLight.getPointLights().length : 0;
+            for (int i = 0; i < numLights; i++) {
+                // Get a copy of the point light object and transform its position to view coordinates
+                PointLight currPointLight = new PointLight(sceneLight.getPointLights()[i]);
+                Vector3f lightPos = currPointLight.getPosition();
+                Vector4f aux = new Vector4f(lightPos, 1);
+                aux.mul(viewMatrix);
+                lightPos.x = aux.x;
+                lightPos.y = aux.y;
+                lightPos.z = aux.z;
+                scene.getShaderProgram().setUniform("pointLights", currPointLight, i);
+            }
+
+            // Process Spot Ligths
+            numLights = sceneLight.getSpotLights() != null ? sceneLight.getSpotLights().length : 0;
+            for (int i = 0; i < numLights; i++) {
+                // Get a copy of the spot light object and transform its position and cone direction to view coordinates
+                SpotLight currSpotLight = new SpotLight(sceneLight.getSpotLights()[i]);
+                Vector4f dir = new Vector4f(currSpotLight.getConeDirection(), 0);
+                dir.mul(viewMatrix);
+                currSpotLight.setConeDirection(new Vector3f(dir.x, dir.y, dir.z));
+                Vector3f lightPos = currSpotLight.getPointLight().getPosition();
+
+                Vector4f aux = new Vector4f(lightPos, 1);
+                aux.mul(viewMatrix);
+                lightPos.x = aux.x;
+                lightPos.y = aux.y;
+                lightPos.z = aux.z;
+
+                scene.getShaderProgram().setUniform("spotLights", currSpotLight, i);
+            }
+            // Update Light Uniforms
+            scene.getShaderProgram().setUniform("ambientLight", scene.getSceneLight().getAmbientLight());
+            scene.getShaderProgram().setUniform("specularPower", scene.getSceneLight().getSpecularPower());
+            DirectionalLight currDirLight = new DirectionalLight(scene.getSceneLight().getDirectionalLight());
+            Vector4f dir = new Vector4f(currDirLight.getDirection(), 0);
+            dir.mul(viewMatrix);
+            currDirLight.setDirection(new Vector3f(dir.x, dir.y, dir.z));
+            scene.getShaderProgram().setUniform("directionalLight", currDirLight);
+
+
+
+
+            //Update frustum culling
+            filter.updateFrustum(projectionMatrix, viewMatrix);
             //If the scene has some GameItems we render them
             if (scene.getOpaqueMeshMap() != null) {
-                //Update the view matrix
-                Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
-                //TODO Metodo a parte per il frustum
                 //Filter the GameItems based on the frustum
-                filter.updateFrustum(projectionMatrix, viewMatrix);
                 filter.filter(scene.getOpaqueMeshMap());
-                //Prepare the shader program and the required uniform variables
-                scene.getShaderProgram().bind();
-                scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
-                scene.getShaderProgram().setUniform("texture_sampler", 0);
                 // Render each gameItem
                 scene.getOpaqueMeshMap().forEach((k, v) -> {
                     renderListOfGameItems(scene.getShaderProgram(), viewMatrix, k, v);
                 });
-                //Unbind the shader program
-                scene.getShaderProgram().unbind();
             }
             if(scene.getTransparentMeshMap() != null){
-                //Update the view matrix
-                Matrix4f viewMatrix = scene.getCamera().updateViewMatrix();
-                //TODO Metodo a parte per il frustum
-                //Filter the GameItems based on the frustum
-                filter.updateFrustum(projectionMatrix, viewMatrix);
                 filter.filter(scene.getTransparentMeshMap());
-                //Prepare the shader program and the required uniform variables
-                scene.getShaderProgram().bind();
-                scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
-                scene.getShaderProgram().setUniform("texture_sampler", 0);
-                //glDisable(GL_DEPTH_TEST);
                 // Render each gameItem
                 scene.getTransparentMeshMap().forEach((k, v) -> {
                     renderListOfGameItems(scene.getShaderProgram(), viewMatrix, k, v);
                 });
-                //Unbind the shader program
-                scene.getShaderProgram().unbind();
-                //glEnable(GL_DEPTH_TEST);
             }
+            //Unbind the shader program
+            scene.getShaderProgram().unbind();
             //If the scene has a skybox we render it
             if (scene.getSkyBox() != null) {
                 //Renders the skybox
-                renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getCamera());
+                renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getPlayer());
             }
         }
     }
@@ -142,6 +181,7 @@ public class RendererImpl implements Renderer {
             if(gameItem.isInsideFrustum()){
                 Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
                 shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                shaderProgram.setUniform("material",mesh.getMeshMaterial());
                 logger.trace("GameItem name: " + gameItem.toString());
                 logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
                 glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
@@ -173,5 +213,11 @@ public class RendererImpl implements Renderer {
         // Restore state
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    private void prepareFrustumCulling(Matrix4f projectionMatrix, Matrix4f viewMatrix, Map<Mesh, List<GameItem>> meshMap){
+        //Filter the GameItems based on the frustum
+        filter.updateFrustum(projectionMatrix, viewMatrix);
+        filter.filter(meshMap);
     }
 }
