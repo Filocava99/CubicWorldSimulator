@@ -51,12 +51,15 @@ public class LauncherGui extends Gui {
     private int width;
     private int height;
 
+    /**
+     * Constructor gets resolution of primary monitor and invoke the creationGui method
+     */
     public LauncherGui() {
         super(0, 0,
                 Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).width(),
                 Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).height());
-        this.width= Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).width();
-        this.height= Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).height();
+        this.width = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).width();
+        this.height = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).height();
         this.createGui();
     }
 
@@ -174,7 +177,6 @@ public class LauncherGui extends Gui {
                 settings.remove(nameMessage);
             }
         });
-
         launchGame = this.createButton("Start game", new Vector2f(290, 50), new Vector2f(80, 50));
         startGame();
         add(launchGame);
@@ -184,6 +186,7 @@ public class LauncherGui extends Gui {
         //Set others style options AFTER theme has been applied
         settingsLabel.getStyle().setFontSize(40f);
     }
+
 
     private void startGame() {
         launchGame.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
@@ -200,6 +203,10 @@ public class LauncherGui extends Gui {
         });
     }
 
+    /**
+     * Perform all controls to check if game can start with actual parameters.
+     * @return boolean answer to all checks.
+     */
     private boolean checkGameCanStart() {
         String width=widthInput.getTextState().getText();
         String height=heightInput.getTextState().getText();
@@ -214,6 +221,11 @@ public class LauncherGui extends Gui {
                 isFiled(worldName) && isFiled(worldSeed);
     }
 
+    /**
+     * Check if rendering distance is greater or equal to 1. If it's not the camera won't work well.
+     * @param value
+     * @return
+     */
     private boolean checkRenderingDistance (String value) {
         if (isNumeric(value)) {
             return (Integer.parseInt(value))>=1;
@@ -221,6 +233,9 @@ public class LauncherGui extends Gui {
         return false;
     }
 
+    /**
+     * Switch from any theme to the default one.
+     */
     private void switchTheme() {
         Themes.setDefaultTheme(new FlatColoredTheme(
                 fromInt(44, 62, 80, 1), // backgroundColor
