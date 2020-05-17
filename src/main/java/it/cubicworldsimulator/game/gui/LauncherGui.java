@@ -51,6 +51,9 @@ public class LauncherGui extends Gui {
     private int width;
     private int height;
 
+    //Impostazioni
+    private SettingsBuilder mySettingsBuilder;
+
     /**
      * Constructor gets resolution of primary monitor and invoke the creationGui method
      */
@@ -61,6 +64,7 @@ public class LauncherGui extends Gui {
         this.width = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).width();
         this.height = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).height();
         this.createGui();
+        this.mySettingsBuilder = new SettingsBuilder();
     }
 
     private void createGui() {
@@ -75,7 +79,6 @@ public class LauncherGui extends Gui {
 
         Label fullscreenLabel = this.createOptionLabel("Fullscreen", settings);
         fullScreenInput = this.createOptionInput("true", settings);
-
 
         Label widthLabel = this.createOptionLabel("Width", settings);
         widthInput = this.createOptionInput("fs", settings);
@@ -194,7 +197,7 @@ public class LauncherGui extends Gui {
                 glfwHideWindow(window);
                 try {
                     gameEngine = new GameEngine("CubicWorldSimulator",
-                            vSync, new Game(), debug);
+                            vSync, new Game(), debug, mySettingsBuilder.build());
                 } catch (Exception e) {
                 }
                 gameEngine.run();
