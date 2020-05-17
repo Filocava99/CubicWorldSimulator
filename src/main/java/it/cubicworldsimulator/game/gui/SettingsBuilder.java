@@ -56,6 +56,7 @@ public class SettingsBuilder {
     }
 
     public Settings build() {
-        return new Settings();
+        return new Settings(vSync, debug, fullscreen, width, height,
+                renderingDistance, worldSeed, worldName);
     }
 }
