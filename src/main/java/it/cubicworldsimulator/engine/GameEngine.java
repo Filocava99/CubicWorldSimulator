@@ -22,15 +22,15 @@ public class GameEngine extends Thread {
 
     private final GameLogic gameLogic;
 
-    /*public GameEngine(String windowTitle, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
+    /*public GameEngine(String windowTitle, GameLogic gameLogic) throws Exception {
         this(windowTitle, 0, 0, vSync, gameLogic, debug);
     }*/
 
     //TODO ho passato l'oggetto di classe Settings, ora bisogna fare get dei parametri
-    public GameEngine(String windowTitle,  boolean vSync, GameLogic gameLogic, boolean debug, Settings mySettings) throws Exception {
+    //TODO dove bisogna inserire il fullscreen????
+    public GameEngine(String windowTitle,  GameLogic gameLogic, Settings mySettings) throws Exception {
         Vector4f clearColor = new Vector4f(0.0f,0.0f,255.0f,0.0f); //TODO Creare diversi costruttori in modo da passare il clearColor facoltativamente
-        window = new Window(windowTitle, mySettings.getHeight().orElse(Integer.valueOf(1200)),
-                mySettings.getHeight().orElse(Integer.valueOf(720)), clearColor, vSync, debug);
+        window = new Window(windowTitle, mySettings, clearColor);
         //mouseInput = new MouseInput(window);
         this.gameLogic = gameLogic;
         timer = new Timer();
