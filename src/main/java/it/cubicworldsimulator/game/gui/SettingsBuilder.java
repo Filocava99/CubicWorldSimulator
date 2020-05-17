@@ -6,14 +6,14 @@ import java.util.Optional;
  * Build a settings object by using builder design pattern.
  */
 public class SettingsBuilder {
-    Optional<Boolean> vSync = Optional.empty();
-    Optional<Boolean> debug = Optional.empty();
-    Optional<Boolean> fullscreen = Optional.empty();
-    Optional<Integer> width = Optional.empty();
-    Optional<Integer> height = Optional.empty();
-    Optional<Integer> renderingDistance = Optional.empty();
-    Optional<Long> worldSeed = Optional.empty();
-    Optional<String> worldName = Optional.empty();
+    private Optional<Boolean> vSync = Optional.empty();
+    private Optional<Boolean> debug = Optional.empty();
+    private Optional<Boolean> fullscreen = Optional.empty();
+    private Optional<Integer> width = Optional.empty();
+    private Optional<Integer> height = Optional.empty();
+    private Optional<Integer> renderingDistance = Optional.empty();
+    private Optional<Long> worldSeed = Optional.empty();
+    private Optional<String> worldName = Optional.empty();
 
     public SettingsBuilder vSync(boolean vSync){
         this.vSync = Optional.ofNullable(vSync);

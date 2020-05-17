@@ -144,20 +144,15 @@ public class GuiCreator{
                       MonitorProperty myMonitor, String title) {
         long time = System.currentTimeMillis();
         while (running) {
-            // Also we can do it in one line
             context.updateGlfwWindow();
             Vector2i windowSize = context.getFramebufferSize();
             glClearColor(1, 1, 1, 1);
-            // Set viewport size
             glViewport(0, 0, windowSize.x, windowSize.y);
-            // Clear screen
             glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-            // render frame
             renderer.render(frame, context);
             // poll events to callbacks
             glfwPollEvents();
             glfwSwapBuffers(windowId);
-            //animator.runAnimations();
             // Now we need to handle events. Firstly we need to handle system events.
             // And we need to know to which frame they should be passed.
             initializer.getSystemEventProcessor().processEvents(frame, context);

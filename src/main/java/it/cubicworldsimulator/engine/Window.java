@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.engine;
 
+import it.cubicworldsimulator.game.gui.Settings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
@@ -35,19 +36,22 @@ public class Window {
 
     private boolean resized;
 
+    private boolean fullscreen;
+
     private Matrix4f projectionMatrix;
 
     private boolean vSync;
     private final boolean debug;
     private final Vector4f clearColor;
 
-    public Window(String title, int width, int height, Vector4f clearColor, boolean vSync, boolean debug) {
+    public Window(String title, Settings mySettings, Vector4f clearColor) {
         this.title = title;
-        this.width = width;
-        this.height = height;
-        this.vSync = vSync;
+        this.width = mySettings.getWidth().orElse(1920);
+        this.height = mySettings.getHeight().orElse(1080);
+        this.fullscreen = mySettings.getFullscreen().orElse(true);
+        this.vSync = mySettings.getvSync().orElse(true);
+        this.debug = mySettings.getDebug().orElse(false);
         this.resized = false;
-        this.debug = debug;
         this.clearColor = clearColor;
         this.projectionMatrix = new Matrix4f();
     }
