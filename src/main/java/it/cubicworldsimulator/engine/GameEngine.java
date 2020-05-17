@@ -32,7 +32,6 @@ public class GameEngine extends Thread {
         this.gameLogic = gameLogic;
         timer = new Timer();
         this.mouseInput = new MouseInput(this.window);
-
     }
 
     @Override
