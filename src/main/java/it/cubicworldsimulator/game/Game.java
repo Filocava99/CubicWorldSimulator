@@ -7,6 +7,7 @@ import it.cubicworldsimulator.engine.graphic.light.PointLight;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
 import it.cubicworldsimulator.engine.graphic.light.SpotLight;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
+import it.cubicworldsimulator.game.gui.Settings;
 import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
@@ -36,8 +37,9 @@ public class Game implements GameLogic {
     private final RendererImpl renderer;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
+    private Settings mySettings;
 
-    public Game() {
+    public Game(Settings mySettings) {
         renderer = new RendererImpl();
         commandsQueue = new CommandsQueue();
     }
@@ -45,7 +47,8 @@ public class Game implements GameLogic {
     @Override
     public void init(Window window) {
         initShaderPrograms();
-        world = new World("test", 463456L);
+        world = new World(mySettings.getWorldName().orElse("world-1"),
+                mySettings.getWorldSeed().orElse(424243563456L));
         worldManager = new WorldManager(world, commandsQueue);
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
