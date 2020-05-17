@@ -58,54 +58,45 @@ public class LauncherGui extends Gui {
         this.mySettingsBuilder = new SettingsBuilder();
     }
 
+    /**
+     * It creates gui components
+     */
     private void createGui() {
         Panel settings = new Panel(0, 200, (float) widthScreen, heightScreen);
         Label settingsLabel = createOptionLabel("Settings", settings);
-
         createOptionLabel("vSync", settings);
         vSyncInput = createOptionInput("true", settings);
-
         createOptionLabel("Debug", settings);
         debugInput = createOptionInput("false", settings);
-
         createOptionLabel("Fullscreen", settings);
         fullScreenInput = createOptionInput("true", settings);
-
         Label widthLabel = createOptionLabel("Width", settings);
         widthInput = createOptionInput("1920", settings);
-
-        Label heightLabel = createOptionLabel("Height", settings);
-        heightInput = createOptionInput("1080", settings);
-
         createMessage("Default is 1920",
                 new Vector2f(widthInput.getPosition().x + widthInput.getSize().x + 20, widthLabel.getPosition().y));
-
+        Label heightLabel = createOptionLabel("Height", settings);
+        heightInput = createOptionInput("1080", settings);
         createMessage("Default is 1080",
                 new Vector2f(heightInput.getPosition().x + heightInput.getSize().x + 20, heightLabel.getPosition().y));
-
-        Label renderingDistanceLabel = this.createOptionLabel("Rendering distance", settings);
-        renderingDistanceInput = this.createOptionInput("1", settings);
+        Label renderingDistanceLabel = createOptionLabel("Rendering distance", settings);
+        renderingDistanceInput = createOptionInput("1", settings);
         createMessage("Value must be greater or equal to 1",
                 new Vector2f(renderingDistanceInput.getPosition().x + renderingDistanceInput.getSize().x + 20, renderingDistanceLabel.getPosition().y));
-
-        Label worldSeedLabel = this.createOptionLabel("World seed", settings);
-        worldSeedInput = this.createOptionInput("424243563456", settings);
+        Label worldSeedLabel = createOptionLabel("World seed", settings);
+        worldSeedInput = createOptionInput("424243563456", settings);
         createMessage("Value must be numeric",
                 new Vector2f(worldSeedInput.getPosition().x + worldSeedInput.getSize().x + 20, worldSeedLabel.getPosition().y));
-
-
-        Label worldStringLabel = this.createOptionLabel("World name", settings);
-        worldStringInput = this.createOptionInput("world-1", settings);
+        Label worldStringLabel = createOptionLabel("World name", settings);
+        worldStringInput = createOptionInput("world-1", settings);
         createMessage("World name can be whatever you want",
                 new Vector2f(worldStringInput.getPosition().x + worldStringInput.getSize().x + 20, worldStringLabel.getPosition().y));
-
-        launchGame = this.createButton("Start game", new Vector2f(290, 50), new Vector2f(80, 50));
+        launchGame = createButton("Start game", new Vector2f(290, 50), new Vector2f(80, 50));
         startGame();
         add(launchGame);
         add(settings);
         switchTheme();
         Themes.getDefaultTheme().applyAll(this);
-        //Set others style options AFTER theme has been applied
+        //Set other style options AFTER theme has been applied
         settingsLabel.getStyle().setFontSize(40f);
     }
 
@@ -115,11 +106,11 @@ public class LauncherGui extends Gui {
     private void startGame() {
         launchGame.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
             if (CLICK == event.getAction() && checkGameCanStart()) {
-                performSettingsBuilder();
+                final Settings mySettings = performSettingsBuilder();
                 glfwHideWindow(window);
                 try {
                     gameEngine = new GameEngine("CubicWorldSimulator",
-                                 new Game(), mySettingsBuilder.build());
+                                 new Game(mySettings), mySettings);
                 } catch (Exception e) {
                 }
                 gameEngine.run();
@@ -130,14 +121,15 @@ public class LauncherGui extends Gui {
     /**
      * If checks have been passed, the method below will build a settings object by using the Builder
      */
-    private void performSettingsBuilder() {
-        mySettingsBuilder.width(Integer.parseInt(widthInput.getTextState().getText()));
-        mySettingsBuilder.height(Integer.parseInt(heightInput.getTextState().getText()));
-        mySettingsBuilder.worldName(worldStringInput.getTextState().getText());
-        mySettingsBuilder.worldSeed(Long.parseLong(worldSeedInput.getTextState().getText()));
-        mySettingsBuilder.fullscreen(Boolean.parseBoolean(fullScreenInput.getTextState().getText()));
-        mySettingsBuilder.vSync(Boolean.parseBoolean(vSyncInput.getTextState().getText()));
-        mySettingsBuilder.debug(Boolean.parseBoolean(debugInput.getTextState().getText()));
+    private Settings performSettingsBuilder() {
+        return mySettingsBuilder.width(Integer.parseInt(widthInput.getTextState().getText()))
+                         .height(Integer.parseInt(heightInput.getTextState().getText()))
+                         .worldName(worldStringInput.getTextState().getText())
+                         .worldSeed(Long.parseLong(worldSeedInput.getTextState().getText()))
+                         .fullscreen(Boolean.parseBoolean(fullScreenInput.getTextState().getText()))
+                         .vSync(Boolean.parseBoolean(vSyncInput.getTextState().getText()))
+                         .debug(Boolean.parseBoolean(debugInput.getTextState().getText()))
+                         .build();
     }
 
     /**
