@@ -15,7 +15,7 @@ public class Scene {
     private final SkyBox skyBox;
 
     private final SceneLight sceneLight;
-    private final Player player = new Player();
+    private final Player player = new Player("/models/person.obj", "src/main/resources/textures/playerTexture.png");
 
 
     public Scene(Map<Mesh, List<GameItem>> opaqueMeshMap, Map<Mesh, List<GameItem>> transparentMeshMap, ShaderProgram shaderProgram, SkyBox skyBox, SceneLight sceneLight) {

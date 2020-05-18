@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.engine.graphic;
 
+import it.cubicworldsimulator.engine.GameItem;
 import it.cubicworldsimulator.game.utility.Constants;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -8,8 +9,17 @@ public class Player extends Camera{
 
     private Vector3f lastPos;
     private Vector3i lastChunk;
-
-    public Player(){
+    private GameItem playerModel;
+    
+    public Player(String objModel, String textureFile){
+    	OBJLoader objLoader = new OBJLoader();
+		try {
+			Mesh playerMesh = objLoader.loadFromOBJ(objModel, textureFile);
+			this.playerModel = new GameItem(playerMesh);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public boolean didPlayerMove(){
@@ -35,5 +45,9 @@ public class Player extends Camera{
 
     public Vector3i getChunkPosition() {
         return lastChunk;
+    }
+    
+    public GameItem getPlayerModel() {
+    	return this.playerModel;
     }
 }
