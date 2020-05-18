@@ -9,6 +9,8 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
+import java.awt.*;
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -85,6 +87,7 @@ public class Window {
         }
 
         windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
+
         // Create the window
         if (windowHandle == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");

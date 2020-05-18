@@ -119,17 +119,11 @@ public class GuiCreator{
      * @param title -- Title of the window.
      * @param guiType -- Complete package name of a class that extends Gui.
      */
-    public void createGui(String title, String guiType) {
+    public void createGui(String title, GuiType guiType) {
         GlfwHelper glfwHelper = new GlfwHelper();
         final long windowId = glfwHelper.createWindow(title);
         glfwHelper.setWindowProperty(windowId, GL_TRUE, GL_FALSE);
-        Gui myGui = null;
-        try {
-            Class guiTypeClass = Class.forName(guiType);
-            myGui = (Gui) guiTypeClass.getDeclaredConstructor().newInstance();
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        Gui myGui = guiType.instanceNewGui().get();
         myGui.setWindow(windowId);
         var myMonitor = glfwHelper.getMonitorProperty();
         Frame frame = new Frame(myMonitor.getWidth(), myMonitor.getHeight());

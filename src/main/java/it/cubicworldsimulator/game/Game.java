@@ -35,13 +35,15 @@ public class Game implements GameLogic {
     private final Map<Mesh, List<GameItem>> transparentMeshMap = new HashMap<>();
 
     private final RendererImpl renderer;
+    private final Settings mySettings;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
-    private Settings mySettings;
+
 
     public Game(Settings mySettings) {
         renderer = new RendererImpl();
         commandsQueue = new CommandsQueue();
+        this.mySettings = mySettings;
     }
 
     @Override
