@@ -42,7 +42,7 @@ public class LauncherGui extends Gui {
     private final int heightScreen;
 
     //Settings
-    private final SettingsBuilder mySettingsBuilder;
+    private final Settings.Builder mySettingsBuilder;
 
     /**
      * Constructor gets resolution of primary monitor and invoke the creationGui method. It gets invoked
@@ -55,7 +55,7 @@ public class LauncherGui extends Gui {
         widthScreen = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).width();
         heightScreen = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).height();
         createGui();
-        this.mySettingsBuilder = new SettingsBuilder();
+        this.mySettingsBuilder = new Settings.Builder();
     }
 
     /**
@@ -119,7 +119,7 @@ public class LauncherGui extends Gui {
     }
 
     /**
-     * If checks have been passed, the method below will build a settings object by using the Builder
+     * If checks have been passed, the method below will build a Settings object by using the Builder
      */
     private Settings performSettingsBuilder() {
         return mySettingsBuilder.width(Integer.parseInt(widthInput.getTextState().getText()))

@@ -26,7 +26,6 @@ public class GameEngine extends Thread {
         this(windowTitle, 0, 0, vSync, gameLogic, debug);
     }*/
 
-    //TODO ho passato l'oggetto di classe Settings, ora bisogna fare get dei parametri
     //TODO dove bisogna inserire il fullscreen????
     public GameEngine(String windowTitle,  GameLogic gameLogic, Settings mySettings) throws Exception {
         Vector4f clearColor = new Vector4f(0.0f,0.0f,255.0f,0.0f); //TODO Creare diversi costruttori in modo da passare il clearColor facoltativamente

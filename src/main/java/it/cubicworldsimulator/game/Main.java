@@ -1,6 +1,7 @@
 package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.game.gui.GuiCreator;
+import it.cubicworldsimulator.game.gui.MyGuiType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,7 +15,7 @@ public class Main {
             logger.debug("Platform: " + System.getProperty("os.name"));
             logger.trace("Game launcher started...");
             guiCreator.createGui("CubicWorldSimulator Launcher",
-                    "it.cubicworldsimulator.game.gui.LauncherGui");
+                    new MyGuiType("it.cubicworldsimulator.game.gui.LauncherGui"));
         } catch (Exception e) {
             logger.error(e);
             System.exit(-1);
