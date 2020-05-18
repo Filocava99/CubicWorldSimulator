@@ -57,7 +57,7 @@ public class RendererImpl implements Renderer {
             // Update projection Matrix
             Matrix4f projectionMatrix = window.updateProjectionMatrix();
             //Update the view matrix
-            Matrix4f viewMatrix = scene.getPlayer().updateViewMatrix();
+            Matrix4f viewMatrix = scene.getPlayer().getCamera().updateViewMatrix();
 
 
             //Prepare the shader program and the required uniform variables
@@ -133,7 +133,7 @@ public class RendererImpl implements Renderer {
             //If the scene has a skybox we render it
             if (scene.getSkyBox() != null) {
                 //Renders the skybox
-                renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getPlayer());
+                renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getPlayer().getCamera());
             }
         }
     }

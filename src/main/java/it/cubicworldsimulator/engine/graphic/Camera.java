@@ -9,11 +9,8 @@ public class Camera {
     private final Vector3f cameraMovement = new Vector3f();
 
     private final Vector3f position;
-
     private final Vector3f rotation;
-
     private final Transformation transformation;
-
     private Matrix4f viewMatrix;
 
     public Camera() {
