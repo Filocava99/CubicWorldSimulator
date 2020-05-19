@@ -8,12 +8,15 @@ import org.joml.Vector3i;
 public class Player{
 
     private Vector3f lastPos;
+    private Vector3f position;
     private Vector3i lastChunk;
     private GameItem playerModel;
     private Camera camera;
     
+    
     public Player(String objModel, String textureFile){
-    	this.camera = new Camera();
+    	this.position  = new Vector3f(0, 35, 0);
+    	this.camera = new Camera(this.position);
     	OBJLoader objLoader = new OBJLoader();
 		try {
 			Mesh playerMesh = objLoader.loadFromOBJ(objModel, textureFile);
@@ -23,6 +26,13 @@ public class Player{
 		}
     }
 
+    public void movePlayer() {
+    	this.position = this.camera.getPosition();
+    	if(this.camera.getView().equals(View.THIRDPERSON)) {
+    		this.position.y -= Camera.DISTANCE_FROM_PLAYER;
+    	}
+    }
+    
     public boolean didPlayerMove(){
         final boolean result = this.camera.getPosition().equals(lastPos);
         if(result){

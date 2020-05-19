@@ -151,7 +151,7 @@ public class Window {
     public boolean isKeyPressed(int keyCode) {
         return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
     }
-
+    
     public boolean windowShouldClose() {
         return glfwWindowShouldClose(windowHandle);
     }

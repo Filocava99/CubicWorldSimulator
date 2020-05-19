@@ -1,6 +1,6 @@
 package it.cubicworldsimulator.engine.graphic;
 
-public enum view {
+public enum View {
 	FIRSTPERSON,
 	THIRDPERSON
 }
