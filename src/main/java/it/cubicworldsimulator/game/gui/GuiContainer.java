@@ -16,7 +16,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class GuiCreator{
+public class GuiContainer {
 
     private static volatile boolean running = true;
     private long windowId;
@@ -25,7 +25,7 @@ public class GuiCreator{
     private static boolean fullscreen = false;
     private static Context context;
     private GlfwHelper glfwHelper;
-    private final String title;
+    private String title;
 
     /**
      * GLFW commands used to help to create a new window
@@ -114,17 +114,18 @@ public class GuiCreator{
         }
     }
 
-    public GuiCreator(final String title) {
+    public GuiContainer prepareContainer(final String title) {
         this.title = title;
         glfwHelper = new GlfwHelper();
         windowId = glfwHelper.createWindow(title);
         glfwHelper.setWindowProperty(windowId, GL_TRUE, GL_FALSE);
+        return this;
     }
 
     /**
-     * Create a new Gui
+     * Link given Gui to container
      */
-    public void createGui(final GenericGui myGui) {
+    public void linkGuiToContainer(final LeguiGenericGui myGui) {
         myGui.setWindow(windowId);
         var myMonitor = glfwHelper.getMonitorProperty();
         Frame frame = new Frame(myMonitor.getWidth(), myMonitor.getHeight());
@@ -171,10 +172,12 @@ public class GuiCreator{
         }
     }
 
-    private void createGuiElements(Frame frame, GenericGui genericGui) {
-        genericGui.setFocusable(false);
-        genericGui.getListenerMap().addListener(WindowSizeEvent.class, (WindowSizeEventListener) event -> genericGui.setSize(event.getWidth(), event.getHeight()));
-        frame.getContainer().add(genericGui);
+    private void createGuiElements(Frame frame, LeguiGenericGui myGui) {
+        myGui.setFocusable(false);
+        myGui.getListenerMap().addListener(WindowSizeEvent.class, (WindowSizeEventListener) event -> {
+            myGui.setSize(event.getWidth(), event.getHeight());
+        });
+        frame.getContainer().add(myGui);
         frame.getContainer().setFocusable(false);
     }
 }
