@@ -22,8 +22,8 @@ import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLIC
 import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
 import static org.lwjgl.glfw.GLFW.*;
 
-public class LauncherGui extends Gui {
-    private static final Logger logger = LogManager.getLogger(LauncherGui.class);
+public class Launcher extends GenericGui {
+    private static final Logger logger = LogManager.getLogger(Launcher.class);
     private GameEngine gameEngine;
 
     //GuiElement
@@ -48,7 +48,7 @@ public class LauncherGui extends Gui {
      * Constructor gets resolution of primary monitor and invoke the creationGui method. It gets invoked
      * by reflection
      */
-    public LauncherGui() {
+    public Launcher() {
         super(0, 0,
                 Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).width(),
                 Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).height());

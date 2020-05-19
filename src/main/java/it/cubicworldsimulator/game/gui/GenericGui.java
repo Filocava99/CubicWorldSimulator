@@ -8,15 +8,10 @@ import org.liquidengine.legui.component.TextInput;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
 
-import java.util.Optional;
-
-import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
-import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
-
 /**
  * It models a generic Gui. It has check methods and element creation methods.
  */
-public abstract class Gui extends Panel {
+public abstract class GenericGui extends Panel implements GuiUtility {
     protected long window;
     //X position where print label
     protected float X_LABEL = 20;
@@ -37,7 +32,7 @@ public abstract class Gui extends Panel {
     private int height;
     private float aspectRatio;
 
-    protected Gui(int x, int y, float width, float height) {
+    protected GenericGui(int x, int y, float width, float height) {
         super(x, y, width, height);
         this.width=(int)width;
         this.height=(int)height;
@@ -55,21 +50,6 @@ public abstract class Gui extends Panel {
 
     public void setWindow (long window) {
         this.window=window;
-    }
-
-    protected boolean isBoolean (String text) {
-        return text.equalsIgnoreCase("false") || text.equalsIgnoreCase("true");
-    }
-
-    protected boolean isFiled (String text) {
-        return !text.isEmpty();
-    }
-
-    protected Optional<Boolean> parseBoolean (String text) {
-        if (isBoolean(text)) {
-            return Optional.of(Boolean.parseBoolean(text));
-        }
-        return Optional.empty();
     }
 
     protected Button createButton(String text, Vector2f position, Vector2f size) {
