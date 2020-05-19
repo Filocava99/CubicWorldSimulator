@@ -22,7 +22,7 @@ import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLIC
 import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Launcher extends GenericGui {
+public class Launcher extends LeguiGenericGui {
     private static final Logger logger = LogManager.getLogger(Launcher.class);
     private GameEngine gameEngine;
 
@@ -65,30 +65,30 @@ public class Launcher extends GenericGui {
         Panel settings = new Panel(0, 200, (float) widthScreen, heightScreen);
         Label settingsLabel = createOptionLabel("Settings", settings);
         createOptionLabel("vSync", settings);
-        vSyncInput = createOptionInput("true", settings);
+        vSyncInput = createTextInput("true", settings);
         createOptionLabel("Debug", settings);
-        debugInput = createOptionInput("false", settings);
+        debugInput = createTextInput("false", settings);
         createOptionLabel("Fullscreen", settings);
-        fullScreenInput = createOptionInput("true", settings);
+        fullScreenInput = createTextInput("true", settings);
         Label widthLabel = createOptionLabel("Width", settings);
-        widthInput = createOptionInput("1920", settings);
-        createMessage("Default is 1920",
+        widthInput = createTextInput("1920", settings);
+        createLabel("Default is 1920",
                 new Vector2f(widthInput.getPosition().x + widthInput.getSize().x + 20, widthLabel.getPosition().y));
         Label heightLabel = createOptionLabel("Height", settings);
-        heightInput = createOptionInput("1080", settings);
-        createMessage("Default is 1080",
+        heightInput = createTextInput("1080", settings);
+        createLabel("Default is 1080",
                 new Vector2f(heightInput.getPosition().x + heightInput.getSize().x + 20, heightLabel.getPosition().y));
         Label renderingDistanceLabel = createOptionLabel("Rendering distance", settings);
-        renderingDistanceInput = createOptionInput("1", settings);
-        createMessage("Value must be greater or equal to 1",
+        renderingDistanceInput = createTextInput("1", settings);
+        createLabel("Value must be greater or equal to 1",
                 new Vector2f(renderingDistanceInput.getPosition().x + renderingDistanceInput.getSize().x + 20, renderingDistanceLabel.getPosition().y));
         Label worldSeedLabel = createOptionLabel("World seed", settings);
-        worldSeedInput = createOptionInput("424243563456", settings);
-        createMessage("Value must be numeric",
+        worldSeedInput = createTextInput("424243563456", settings);
+        createLabel("Value must be numeric",
                 new Vector2f(worldSeedInput.getPosition().x + worldSeedInput.getSize().x + 20, worldSeedLabel.getPosition().y));
         Label worldStringLabel = createOptionLabel("World name", settings);
-        worldStringInput = createOptionInput("world-1", settings);
-        createMessage("World name can be whatever you want",
+        worldStringInput = createTextInput("world-1", settings);
+        createLabel("World name can be whatever you want",
                 new Vector2f(worldStringInput.getPosition().x + worldStringInput.getSize().x + 20, worldStringLabel.getPosition().y));
         launchGame = createButton("Start game", new Vector2f(290, 50), new Vector2f(80, 50));
         startGame();
@@ -107,7 +107,7 @@ public class Launcher extends GenericGui {
         launchGame.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
             if (CLICK == event.getAction() && checkGameCanStart()) {
                 final Settings mySettings = performSettingsBuilder();
-                glfwHideWindow(window);
+                glfwHideWindow(windowId);
                 try {
                     gameEngine = new GameEngine("CubicWorldSimulator",
                                  new Game(mySettings), mySettings);

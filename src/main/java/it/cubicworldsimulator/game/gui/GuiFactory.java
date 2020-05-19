@@ -7,12 +7,16 @@ import org.liquidengine.legui.component.Panel;
 import org.liquidengine.legui.component.TextInput;
 
 /**
- * It models a generic gui using LEGUI library.
+ * It models a generic Gui factory. Can be used to generate different type of gui
  */
-public interface GenericGui {
+public interface GuiFactory {
+    int getWidth();
+    void setWidth(float width);
+    int getHeight();
+    void setHeight(float height);
     void setAspectRatio();
     Button createButton(String text, Vector2f position, Vector2f size);
     Label createLabel(String messageText, Vector2f position);
-    Label createOptionLabel(String title, Panel panelToAdd);
     TextInput createTextInput(String title, Panel panelToAdd);
+    Label createOptionLabel(String title, Panel panelToAdd);
 }
