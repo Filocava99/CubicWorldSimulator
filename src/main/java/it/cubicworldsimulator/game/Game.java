@@ -106,6 +106,10 @@ public class Game implements GameLogic {
             scene.getPlayer().getCamera().getCameraMovement().y = -1;
         } else if (window.isKeyPressed(GLFW_KEY_SPACE)) {
             scene.getPlayer().getCamera().getCameraMovement().y = 1;
+            System.out.println("PROVA");
+        }
+        if(window.isKeyPressed(GLFW_KEY_F5)) {
+        	scene.getPlayer().getCamera().changeView();
         }
     }
 
@@ -116,7 +120,7 @@ public class Game implements GameLogic {
         scene.getPlayer().getCamera().movePosition(scene.getPlayer().getCamera().getCameraMovement().x * scene.getPlayer().getCamera().getCameraStep(),
                 scene.getPlayer().getCamera().getCameraMovement().y * scene.getPlayer().getCamera().getCameraStep(),
                 scene.getPlayer().getCamera().getCameraMovement().z * scene.getPlayer().getCamera().getCameraStep());
-
+        scene.getPlayer().movePlayer();
         // Update scene.getPlayer()() based on mouse
         if (mouseInput.isRightButtonPressed()) {
             Vector2f rotVec = mouseInput.getDisplacementVector();
@@ -125,6 +129,7 @@ public class Game implements GameLogic {
         if (scene.getPlayer().didPlayerChangedChunk()) {
             worldManager.updateActiveChunksAsync(scene.getPlayer().getChunkPosition());
         }
+        
         for (int i = 0; i < 1; i++) {
             Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
             if (pair != null) {
