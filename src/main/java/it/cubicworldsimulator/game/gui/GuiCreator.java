@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.game.gui;
 
+import it.cubicworldsimulator.game.gui.guiType.GuiType;
 import org.joml.Vector2i;
 import org.liquidengine.legui.DefaultInitializer;
 import org.liquidengine.legui.component.Frame;
@@ -12,9 +13,6 @@ import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 import org.lwjgl.opengl.GL;
-
-import java.lang.reflect.InvocationTargetException;
-
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -22,10 +20,13 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class GuiCreator{
 
     private static volatile boolean running = true;
+    private long windowId;
     private static long[] monitors = null;
     private static boolean toggleFullscreen = false;
     private static boolean fullscreen = false;
     private static Context context;
+    private GlfwHelper glfwHelper;
+    private final String title;
 
     /**
      * GLFW commands used to help to create a new window
@@ -114,16 +115,18 @@ public class GuiCreator{
         }
     }
 
+    public GuiCreator(final String title) {
+        this.glfwHelper = new GlfwHelper();
+        this.title = title;
+        windowId = glfwHelper.createWindow(title);
+        glfwHelper.setWindowProperty(windowId, GL_TRUE, GL_FALSE);
+    }
+
     /**
      * Create a new Gui
-     * @param title -- Title of the window.
-     * @param guiType -- Complete package name of a class that extends Gui.
+
      */
-    public void createGui(String title, GuiType guiType) {
-        GlfwHelper glfwHelper = new GlfwHelper();
-        final long windowId = glfwHelper.createWindow(title);
-        glfwHelper.setWindowProperty(windowId, GL_TRUE, GL_FALSE);
-        Gui myGui = guiType.instanceNewGui().get();
+    public void createGui(final GenericGui myGui) {
         myGui.setWindow(windowId);
         var myMonitor = glfwHelper.getMonitorProperty();
         Frame frame = new Frame(myMonitor.getWidth(), myMonitor.getHeight());
@@ -170,10 +173,10 @@ public class GuiCreator{
         }
     }
 
-    private void createGuiElements(Frame frame, Gui gui) {
-        gui.setFocusable(false);
-        gui.getListenerMap().addListener(WindowSizeEvent.class, (WindowSizeEventListener) event -> gui.setSize(event.getWidth(), event.getHeight()));
-        frame.getContainer().add(gui);
+    private void createGuiElements(Frame frame, GenericGui genericGui) {
+        genericGui.setFocusable(false);
+        genericGui.getListenerMap().addListener(WindowSizeEvent.class, (WindowSizeEventListener) event -> genericGui.setSize(event.getWidth(), event.getHeight()));
+        frame.getContainer().add(genericGui);
         frame.getContainer().setFocusable(false);
     }
 }
