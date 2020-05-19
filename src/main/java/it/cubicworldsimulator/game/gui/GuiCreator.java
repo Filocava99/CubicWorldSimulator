@@ -1,6 +1,5 @@
 package it.cubicworldsimulator.game.gui;
 
-import it.cubicworldsimulator.game.gui.guiType.GuiType;
 import org.joml.Vector2i;
 import org.liquidengine.legui.DefaultInitializer;
 import org.liquidengine.legui.component.Frame;
@@ -116,15 +115,14 @@ public class GuiCreator{
     }
 
     public GuiCreator(final String title) {
-        this.glfwHelper = new GlfwHelper();
         this.title = title;
+        glfwHelper = new GlfwHelper();
         windowId = glfwHelper.createWindow(title);
         glfwHelper.setWindowProperty(windowId, GL_TRUE, GL_FALSE);
     }
 
     /**
      * Create a new Gui
-
      */
     public void createGui(final GenericGui myGui) {
         myGui.setWindow(windowId);

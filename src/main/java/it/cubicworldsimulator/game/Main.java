@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 public class Main {
 
     private static final Logger logger = LogManager.getLogger(Main.class);
-    private static final GuiCreator guiCreator = new GuiCreator("CubicWorldSimulator Launcher");;
+    private static final GuiCreator guiCreator = new GuiCreator("CubicWorldSimulator Launcher");
 
     public static void main(String[] args) {
         try {
