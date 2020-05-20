@@ -125,7 +125,7 @@ public class GuiContainer {
     /**
      * Link given Gui to container
      */
-    public void linkGuiToContainer(final LeguiGenericGui myGui) {
+    public void linkGuiToContainer(final GenericGui myGui) {
         myGui.setWindow(windowId);
         var myMonitor = glfwHelper.getMonitorProperty();
         Frame frame = new Frame(myMonitor.getWidth(), myMonitor.getHeight());
@@ -172,7 +172,7 @@ public class GuiContainer {
         }
     }
 
-    private void createGuiElements(Frame frame, LeguiGenericGui myGui) {
+    private void createGuiElements(Frame frame, GenericGui myGui) {
         myGui.setFocusable(false);
         myGui.getListenerMap().addListener(WindowSizeEvent.class, (WindowSizeEventListener) event -> {
             myGui.setSize(event.getWidth(), event.getHeight());

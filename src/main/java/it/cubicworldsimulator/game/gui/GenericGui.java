@@ -6,13 +6,39 @@ import org.liquidengine.legui.component.Label;
 import org.liquidengine.legui.component.Panel;
 import org.liquidengine.legui.component.TextInput;
 
-/**
- * It models a generic gui using LEGUI library.
- */
-public interface GenericGui {
-    void setAspectRatio();
-    Button createButton(String text, Vector2f position, Vector2f size);
-    Label createLabel(String messageText, Vector2f position);
-    Label createOptionLabel(String title, Panel panelToAdd);
-    TextInput createTextInput(String title, Panel panelToAdd);
+public abstract class GenericGui extends Panel {
+    protected final GuiFactory guiFactory;
+    protected long windowId;
+
+    protected GenericGui(int x, int y, float width, float height) {
+        super(x, y, width, height);
+        guiFactory = new LauncherFactory();
+        guiFactory.setWidth((int) width);
+        guiFactory.setHeight((int) height);
+        this.setAspectRatio();
+    }
+
+    public void setAspectRatio() {
+        guiFactory.setAspectRatio();
+    }
+
+    public Button createButton(String text, Vector2f position, Vector2f size) {
+        return guiFactory.createButton(text, position, size);
+    }
+
+    public Label createLabel(String text, Vector2f position, Panel panelToAdd) {
+        return guiFactory.createLabel(text, position, panelToAdd);
+    }
+
+    public TextInput createTextInput(String title, Panel panelToAdd) {
+        return guiFactory.createTextInput(title, panelToAdd);
+    }
+
+    protected boolean isFiled(String text) {
+        return !text.isEmpty();
+    }
+
+    protected void setWindow(long windowId) {
+        this.windowId = windowId;
+    }
 }
