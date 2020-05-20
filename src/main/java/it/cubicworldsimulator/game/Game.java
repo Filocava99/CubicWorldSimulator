@@ -106,10 +106,11 @@ public class Game implements GameLogic {
             scene.getPlayer().getCamera().getCameraMovement().y = -1;
         } else if (window.isKeyPressed(GLFW_KEY_SPACE)) {
             scene.getPlayer().getCamera().getCameraMovement().y = 1;
-            System.out.println("PROVA");
         }
-        if(window.isKeyPressed(GLFW_KEY_F5)) {
-        	scene.getPlayer().getCamera().changeView();
+        if(window.isKeyPressed(GLFW_KEY_T)) {
+        	scene.getPlayer().getCamera().changeView(View.THIRDPERSON);
+        }else if(window.isKeyPressed(GLFW_KEY_F)) {
+        	scene.getPlayer().getCamera().changeView(View.FIRSTPERSON);
         }
     }
 
@@ -121,6 +122,7 @@ public class Game implements GameLogic {
                 scene.getPlayer().getCamera().getCameraMovement().y * scene.getPlayer().getCamera().getCameraStep(),
                 scene.getPlayer().getCamera().getCameraMovement().z * scene.getPlayer().getCamera().getCameraStep());
         scene.getPlayer().movePlayer();
+        
         // Update scene.getPlayer()() based on mouse
         if (mouseInput.isRightButtonPressed()) {
             Vector2f rotVec = mouseInput.getDisplacementVector();
