@@ -5,17 +5,18 @@ import it.cubicworldsimulator.game.utility.Constants;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 public class Player{
-
+	private static final float DISTANCE_FROM_CAMERA = 50;
     private Vector3f lastPos;
     private Vector3f position;
     private Vector3i lastChunk;
     private GameItem playerModel;
     private Camera camera;
-    
+    private View view;
     
     public Player(String objModel, String textureFile){
     	this.position  = new Vector3f(0, 35, 0);
-    	this.camera = new Camera(this.position);
+    	this.view = View.FIRSTPERSON;
+    	this.camera = new Camera(new Vector3f(this.position.x,this.position.y,this.position.z));
     	OBJLoader objLoader = new OBJLoader();
 		try {
 			Mesh playerMesh = objLoader.loadFromOBJ(objModel, textureFile);
@@ -25,12 +26,27 @@ public class Player{
 		}
     }
     
+    public void changeView(View view) {
+    	this.view = view;
+    }
+    
     public void movePlayer() {
-    	this.position = this.camera.getPosition();
-    	if(this.camera.getView().equals(View.THIRDPERSON)) {
-    		this.position.x += Camera.DISTANCE_FROM_PLAYER;
-    		this.position.y -= Camera.DISTANCE_FROM_PLAYER;
-    		this.position.z += Camera.DISTANCE_FROM_PLAYER;
+    	this.position.x = this.camera.getPosition().x;
+    	this.position.y = this.camera.getPosition().y;
+    	this.position.z = this.camera.getPosition().z;
+    	
+    	if(this.view.equals(View.THIRDPERSON)) {
+    		/*this.position.x += (float)Math.sin(Math.toRadians(this.camera.getRotation().y)) * -1.0f * DISTANCE_FROM_CAMERA;
+    		this.position.x += (float)Math.sin(Math.toRadians(this.camera.getRotation().y - 90)) * -1.0f * DISTANCE_FROM_CAMERA;
+    		
+    		this.position.y -= DISTANCE_FROM_CAMERA;
+    		
+    		this.position.z += (float)Math.sin(Math.toRadians(this.camera.getRotation().y)) * -1.0f * DISTANCE_FROM_CAMERA;
+    		this.position.z += (float)Math.cos(Math.toRadians(this.camera.getRotation().y - 90)) * DISTANCE_FROM_CAMERA;*/
+    		
+    		this.position.x += DISTANCE_FROM_CAMERA;
+    		this.position.y -= DISTANCE_FROM_CAMERA;
+    		this.position.z += DISTANCE_FROM_CAMERA;
     	}
     	 System.out.println("PLAYER POSITION:" + position.x + " " + position.y + " " + position.z);
     }
