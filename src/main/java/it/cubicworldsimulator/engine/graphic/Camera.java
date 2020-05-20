@@ -57,19 +57,18 @@ public class Camera {
             position.x += (float)Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offsetX;
             position.z += (float)Math.cos(Math.toRadians(rotation.y - 90)) * offsetX;
         }
-        if(this.view.equals(View.FIRSTPERSON)) {
-        	position.y += offsetY;
-        }else {
-        	position.y += (offsetY + DISTANCE_FROM_PLAYER);
+       
+        position.y += offsetY;
+        if(this.view.equals(View.THIRDPERSON)) {
+        	position.x -= DISTANCE_FROM_PLAYER;
+        	position.y += DISTANCE_FROM_PLAYER;
+        	position.z -= DISTANCE_FROM_PLAYER;
         }
+        System.out.println("CAMERA POSITION:" + position.x + " " + position.y + " " + position.z);
     }
     
-    public void changeView() {
-    	if(this.view.equals(View.FIRSTPERSON)) {
-    		this.view = View.THIRDPERSON;
-    	}else {
-    		this.view = View.FIRSTPERSON;
-    	}
+    public void changeView(View view) {
+    	this.view = view;
     }
     
     public View getView() {
