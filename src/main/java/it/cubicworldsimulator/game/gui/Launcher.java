@@ -22,7 +22,7 @@ import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLIC
 import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Launcher extends LeguiGenericGui {
+public class Launcher extends GenericGui {
     private static final Logger logger = LogManager.getLogger(Launcher.class);
     private GameEngine gameEngine;
 
@@ -73,23 +73,23 @@ public class Launcher extends LeguiGenericGui {
         Label widthLabel = createOptionLabel("Width", settings);
         widthInput = createTextInput("1920", settings);
         createLabel("Default is 1920",
-                new Vector2f(widthInput.getPosition().x + widthInput.getSize().x + 20, widthLabel.getPosition().y));
+                new Vector2f(widthInput.getPosition().x + widthInput.getSize().x + 20, widthLabel.getPosition().y), settings);
         Label heightLabel = createOptionLabel("Height", settings);
         heightInput = createTextInput("1080", settings);
         createLabel("Default is 1080",
-                new Vector2f(heightInput.getPosition().x + heightInput.getSize().x + 20, heightLabel.getPosition().y));
+                new Vector2f(heightInput.getPosition().x + heightInput.getSize().x + 20, heightLabel.getPosition().y), settings);
         Label renderingDistanceLabel = createOptionLabel("Rendering distance", settings);
         renderingDistanceInput = createTextInput("1", settings);
         createLabel("Value must be greater or equal to 1",
-                new Vector2f(renderingDistanceInput.getPosition().x + renderingDistanceInput.getSize().x + 20, renderingDistanceLabel.getPosition().y));
+                new Vector2f(renderingDistanceInput.getPosition().x + renderingDistanceInput.getSize().x + 20, renderingDistanceLabel.getPosition().y), settings);
         Label worldSeedLabel = createOptionLabel("World seed", settings);
         worldSeedInput = createTextInput("424243563456", settings);
         createLabel("Value must be numeric",
-                new Vector2f(worldSeedInput.getPosition().x + worldSeedInput.getSize().x + 20, worldSeedLabel.getPosition().y));
+                new Vector2f(worldSeedInput.getPosition().x + worldSeedInput.getSize().x + 20, worldSeedLabel.getPosition().y), settings);
         Label worldStringLabel = createOptionLabel("World name", settings);
         worldStringInput = createTextInput("world-1", settings);
         createLabel("World name can be whatever you want",
-                new Vector2f(worldStringInput.getPosition().x + worldStringInput.getSize().x + 20, worldStringLabel.getPosition().y));
+                new Vector2f(worldStringInput.getPosition().x + worldStringInput.getSize().x + 20, worldStringLabel.getPosition().y), settings);
         launchGame = createButton("Start game", new Vector2f(290, 50), new Vector2f(80, 50));
         startGame();
         add(launchGame);
@@ -116,6 +116,16 @@ public class Launcher extends LeguiGenericGui {
                 gameEngine.run();
             }
         });
+    }
+
+    /**
+     * Creates a specific label left to text input
+     * @param title of the label
+     * @param panelToAdd where label will be added
+     * @return
+     */
+    public Label createOptionLabel(String title, Panel panelToAdd) {
+        return ((LauncherFactory)guiFactory).createOptionLabel(title, panelToAdd);
     }
 
     /**

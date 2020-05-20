@@ -79,10 +79,19 @@ public class LauncherFactory implements GuiFactory {
     }
 
     @Override
-    public Label createLabel(String messageText, Vector2f position) {
+    public Label createLabel(String messageText, Vector2f position, Panel panelToAdd) {
         Label message = new Label(messageText);
         message.setPosition(position);
         return message;
+    }
+
+    public Label createOptionLabel(String title, Panel panelToAdd) {
+        Label label = new Label(title);
+        panelToAdd.add(label);
+        label.setPosition(X_LABEL, this.newYLabel);
+        newYLabel = label.getPosition().y + Y_OFFSET;
+        newXInput = label.getPosition().x + label.getSize().x + X_INPUT_OFFSET;
+        return label;
     }
 
     @Override
@@ -95,13 +104,4 @@ public class LauncherFactory implements GuiFactory {
         return input;
     }
 
-    //TODO Fare refactoring chiamanda il metodo createLabel
-    public Label createOptionLabel(String title, Panel panelToAdd) {
-        Label label = new Label(title);
-        panelToAdd.add(label);
-        label.setPosition(X_LABEL, this.newYLabel);
-        newYLabel = label.getPosition().y + Y_OFFSET;
-        newXInput = label.getPosition().x + label.getSize().x + X_INPUT_OFFSET;
-        return label;
-    }
 }
