@@ -16,7 +16,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class GuiContainer {
+public class GuiContainer2 {
 
     private static volatile boolean running = true;
     private long windowId;
@@ -114,7 +114,7 @@ public class GuiContainer {
         }
     }
 
-    public GuiContainer prepareContainer(final String title) {
+    public GuiContainer2 prepareContainer(final String title) {
         this.title = title;
         glfwHelper = new GlfwHelper();
         windowId = glfwHelper.createWindow(title);
@@ -125,8 +125,8 @@ public class GuiContainer {
     /**
      * Link given Gui to container
      */
-    public void linkGuiToContainer(final GenericGui myGui) {
-        myGui.setWindow(windowId);
+    public void init(final GenericGui myGui) {
+
         var myMonitor = glfwHelper.getMonitorProperty();
         Frame frame = new Frame(myMonitor.getWidth(), myMonitor.getHeight());
         createGuiElements(frame, myGui);

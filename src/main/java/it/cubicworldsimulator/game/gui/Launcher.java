@@ -45,8 +45,7 @@ public class Launcher extends GenericGui {
     private final Settings.Builder mySettingsBuilder;
 
     /**
-     * Constructor gets resolution of primary monitor and invoke the creationGui method. It gets invoked
-     * by reflection
+     * Constructor gets resolution of primary monitor and invoke the creationGui method.
      */
     public Launcher() {
         super(0, 0,
@@ -180,5 +179,9 @@ public class Launcher extends GenericGui {
                 fromInt(0, 0, 0, 1f),  // shadowColor
                 ColorConstants.white()
         ));
+    }
+
+    public String getTitle() {
+        return "CubicWorldSimulator Launcher";
     }
 }
