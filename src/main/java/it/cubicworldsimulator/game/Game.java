@@ -108,9 +108,9 @@ public class Game implements GameLogic {
             scene.getPlayer().getCamera().getCameraMovement().y = 1;
         }
         if(window.isKeyPressed(GLFW_KEY_T)) {
-        	scene.getPlayer().getCamera().changeView(View.THIRDPERSON);
+        	scene.getPlayer().changeView(View.THIRDPERSON);
         }else if(window.isKeyPressed(GLFW_KEY_F)) {
-        	scene.getPlayer().getCamera().changeView(View.FIRSTPERSON);
+        	scene.getPlayer().changeView(View.FIRSTPERSON);
         }
     }
 

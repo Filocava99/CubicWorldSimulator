@@ -5,14 +5,13 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class Camera {
-	public static final float DISTANCE_FROM_PLAYER = 50;
     private final float cameraStep = 1;
     private final Vector3f cameraMovement = new Vector3f();
     private final Vector3f position;
     private final Vector3f rotation;
     private final Transformation transformation;
     private Matrix4f viewMatrix;
-    private View view;
+    
     
     public Camera() {
         this(new Vector3f(0, 35, 0), new Vector3f(0, 0, 0));
@@ -27,7 +26,7 @@ public class Camera {
         this.rotation = rotation;
         transformation = new Transformation();
         viewMatrix = new Matrix4f();
-        this.view = View.FIRSTPERSON;
+     
     }
 
     public Matrix4f updateViewMatrix(){
@@ -59,21 +58,9 @@ public class Camera {
         }
        
         position.y += offsetY;
-        if(this.view.equals(View.THIRDPERSON)) {
-        	position.x -= DISTANCE_FROM_PLAYER;
-        	position.y += DISTANCE_FROM_PLAYER;
-        	position.z -= DISTANCE_FROM_PLAYER;
-        }
         System.out.println("CAMERA POSITION:" + position.x + " " + position.y + " " + position.z);
     }
     
-    public void changeView(View view) {
-    	this.view = view;
-    }
-    
-    public View getView() {
-    	return this.view;
-    }
     
     public Vector3f getRotation() {
         return rotation;
