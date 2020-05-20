@@ -91,21 +91,21 @@ public class Game implements GameLogic {
 
     @Override
     public void input(Window window, MouseInput mouseInput) {
-        scene.getPlayer().getCamera().getCameraMovement().set(0, 0, 0);
+        scene.getCamera().getCameraMovement().set(0, 0, 0);
         if (window.isKeyPressed(GLFW_KEY_W)) {
-            scene.getPlayer().getCamera().getCameraMovement().z = -1;
+            scene.getCamera().getCameraMovement().z = -1;
         } else if (window.isKeyPressed(GLFW_KEY_S)) {
-            scene.getPlayer().getCamera().getCameraMovement().z = 1;
+            scene.getCamera().getCameraMovement().z = 1;
         }
         if (window.isKeyPressed(GLFW_KEY_A)) {
-            scene.getPlayer().getCamera().getCameraMovement().x = -1;
+            scene.getCamera().getCameraMovement().x = -1;
         } else if (window.isKeyPressed(GLFW_KEY_D)) {
-            scene.getPlayer().getCamera().getCameraMovement().x = 1;
+            scene.getCamera().getCameraMovement().x = 1;
         }
         if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
-            scene.getPlayer().getCamera().getCameraMovement().y = -1;
+            scene.getCamera().getCameraMovement().y = -1;
         } else if (window.isKeyPressed(GLFW_KEY_SPACE)) {
-            scene.getPlayer().getCamera().getCameraMovement().y = 1;
+            scene.getCamera().getCameraMovement().y = 1;
         }
         if(window.isKeyPressed(GLFW_KEY_T)) {
         	scene.getPlayer().changeView(View.THIRDPERSON);
@@ -118,15 +118,15 @@ public class Game implements GameLogic {
     public void update(float interval, MouseInput mouseInput) {
         logger.trace("Updating");
         // Update camera position
-        scene.getPlayer().getCamera().movePosition(scene.getPlayer().getCamera().getCameraMovement().x * scene.getPlayer().getCamera().getCameraStep(),
-                scene.getPlayer().getCamera().getCameraMovement().y * scene.getPlayer().getCamera().getCameraStep(),
-                scene.getPlayer().getCamera().getCameraMovement().z * scene.getPlayer().getCamera().getCameraStep());
-        scene.getPlayer().movePlayer();
+        scene.getCamera().movePosition(scene.getCamera().getCameraMovement().x * scene.getCamera().getCameraStep(),
+                scene.getCamera().getCameraMovement().y * scene.getCamera().getCameraStep(),
+                scene.getCamera().getCameraMovement().z * scene.getCamera().getCameraStep());
+        //scene.getPlayer().movePlayer();
         
         // Update scene.getPlayer()() based on mouse
         if (mouseInput.isRightButtonPressed()) {
             Vector2f rotVec = mouseInput.getDisplacementVector();
-            scene.getPlayer().getCamera().moveRotation(rotVec.x * mouseInput.getMouseSensitivity(), rotVec.y * mouseInput.getMouseSensitivity(), 0);
+            scene.getCamera().moveRotation(rotVec.x * mouseInput.getMouseSensitivity(), rotVec.y * mouseInput.getMouseSensitivity(), 0);
         }
         if (scene.getPlayer().didPlayerChangedChunk()) {
             worldManager.updateActiveChunksAsync(scene.getPlayer().getChunkPosition());

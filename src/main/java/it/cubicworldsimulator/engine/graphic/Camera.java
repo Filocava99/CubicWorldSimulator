@@ -1,17 +1,21 @@
 package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.Transformation;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-public class Camera {
+public class Camera{
     private final float cameraStep = 1;
     private final Vector3f cameraMovement = new Vector3f();
     private final Vector3f position;
     private final Vector3f rotation;
     private final Transformation transformation;
     private Matrix4f viewMatrix;
-    
+    private final Set<Observer> observer= new HashSet<>();
     
     public Camera() {
         this(new Vector3f(0, 35, 0), new Vector3f(0, 0, 0));
@@ -58,6 +62,9 @@ public class Camera {
         }
        
         position.y += offsetY;
+        for(Observer o : this.observer) {
+        	o.update(this.position);
+        }
         System.out.println("CAMERA POSITION:" + position.x + " " + position.y + " " + position.z);
     }
     
@@ -85,4 +92,9 @@ public class Camera {
     public Vector3f getCameraMovement() {
         return cameraMovement;
     }
+    
+    public void attach(Observer o) {
+    	this.observer.add(o);
+    }
+
 }
