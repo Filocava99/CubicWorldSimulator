@@ -38,7 +38,5 @@ public abstract class GenericGui extends Panel {
         return !text.isEmpty();
     }
 
-    protected void setWindow(long windowId) {
-        this.windowId = windowId;
-    }
+    public abstract String getTitle();
 }
