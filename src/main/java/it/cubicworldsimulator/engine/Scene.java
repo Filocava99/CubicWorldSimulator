@@ -1,11 +1,14 @@
 package it.cubicworldsimulator.engine;
 
+import it.cubicworldsimulator.engine.graphic.Camera;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.Player;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
 import it.cubicworldsimulator.engine.loader.Loader;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
 import java.util.*;
+
+import org.joml.Vector3f;
 
 public class Scene {
 
@@ -15,8 +18,8 @@ public class Scene {
     private final SkyBox skyBox;
 
     private final SceneLight sceneLight;
-    private final Player player = new Player("/models/person.obj", "src/main/resources/textures/playerTexture.png");
-
+    private final Player player = new Player("/models/person.obj", "src/main/resources/textures/playerTexture.png", new Vector3f(0,35,0));
+    private final Camera camera = new Camera(new Vector3f(0,35,0));
 
     public Scene(Map<Mesh, List<GameItem>> opaqueMeshMap, Map<Mesh, List<GameItem>> transparentMeshMap, ShaderProgram shaderProgram, SkyBox skyBox, SceneLight sceneLight) {
         this.opaqueMeshMap = opaqueMeshMap;
@@ -24,6 +27,7 @@ public class Scene {
         this.shaderProgram = shaderProgram;
         this.skyBox = skyBox;
         this.sceneLight = sceneLight;
+        this.camera.attach(this.player);
     }
 
     public Scene(ShaderProgram shaderProgram, SkyBox skyBox, SceneLight sceneLight, GameItem... gameItems){
@@ -31,6 +35,11 @@ public class Scene {
         setGameItems(gameItems);
         this.skyBox = skyBox;
         this.sceneLight = sceneLight;
+        this.camera.attach(this.player);
+    }
+    
+    public Camera getCamera() {
+    	return this.camera;
     }
 
     public Scene(GameItem[] gameItems, ShaderProgram shaderProgram, SkyBox skyBox, SceneLight sceneLight){
@@ -38,6 +47,7 @@ public class Scene {
         setGameItems(gameItems);
         this.skyBox = skyBox;
         this.sceneLight = sceneLight;
+        this.camera.attach(this.player);
     }
 
     public void setGameItems(GameItem[] gameItems) {

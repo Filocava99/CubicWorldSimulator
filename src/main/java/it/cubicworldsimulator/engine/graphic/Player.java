@@ -4,19 +4,19 @@ import it.cubicworldsimulator.engine.GameItem;
 import it.cubicworldsimulator.game.utility.Constants;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-public class Player{
+public class Player implements Observer{
 	private static final float DISTANCE_FROM_CAMERA = 50;
     private Vector3f lastPos;
     private Vector3f position;
     private Vector3i lastChunk;
     private GameItem playerModel;
-    private Camera camera;
+    //private Camera camera;
     private View view;
     
-    public Player(String objModel, String textureFile){
-    	this.position  = new Vector3f(0, 35, 0);
+    public Player(String objModel, String textureFile, Vector3f position){
+    	this.position  = position;
     	this.view = View.FIRSTPERSON;
-    	this.camera = new Camera(new Vector3f(this.position.x,this.position.y,this.position.z));
+    	//this.camera = new Camera(new Vector3f(this.position.x,this.position.y,this.position.z));
     	OBJLoader objLoader = new OBJLoader();
 		try {
 			Mesh playerMesh = objLoader.loadFromOBJ(objModel, textureFile);
@@ -30,7 +30,7 @@ public class Player{
     	this.view = view;
     }
     
-    public void movePlayer() {
+    /*public void movePlayer() {
     	this.position.x = this.camera.getPosition().x;
     	this.position.y = this.camera.getPosition().y;
     	this.position.z = this.camera.getPosition().z;
@@ -42,19 +42,19 @@ public class Player{
     		this.position.y -= DISTANCE_FROM_CAMERA;
     		
     		this.position.z += (float)Math.sin(Math.toRadians(this.camera.getRotation().y)) * -1.0f * DISTANCE_FROM_CAMERA;
-    		this.position.z += (float)Math.cos(Math.toRadians(this.camera.getRotation().y - 90)) * DISTANCE_FROM_CAMERA;*/
+    		this.position.z += (float)Math.cos(Math.toRadians(this.camera.getRotation().y - 90)) * DISTANCE_FROM_CAMERA;
     		
     		this.position.x += DISTANCE_FROM_CAMERA;
     		this.position.y -= DISTANCE_FROM_CAMERA;
     		this.position.z += DISTANCE_FROM_CAMERA;
     	}
     	 System.out.println("PLAYER POSITION:" + position.x + " " + position.y + " " + position.z);
-    }
+    }*/
     
     public boolean didPlayerMove(){
-        final boolean result = this.camera.getPosition().equals(lastPos);
+        final boolean result = this.position.equals(lastPos);
         if(result){
-            lastPos = this.camera.getPosition();
+            lastPos = this.position;
         }
         return result;
     }
@@ -81,8 +81,16 @@ public class Player{
     public GameItem getPlayerModel() {
     	return this.playerModel;
     }
-    
+    /*
     public Camera getCamera() {
     	return this.camera;
-    }
+    }*/
+
+	@Override
+	public void update(Vector3f position) {
+		this.position = new Vector3f(position.x, position.y, position.z);
+		if(this.view.equals(View.THIRDPERSON)) {
+			//Andrà modificato 
+		}
+	}
 }
