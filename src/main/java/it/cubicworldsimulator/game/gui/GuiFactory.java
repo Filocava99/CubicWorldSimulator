@@ -10,10 +10,10 @@ import org.liquidengine.legui.component.TextInput;
  * It models a generic Gui factory. Can be used to generate different type of gui
  */
 public interface GuiFactory {
-    int getWidth();
-    void setWidth(float width);
     int getHeight();
-    void setHeight(float height);
+    void setHeight(int height);
+    int getWidth();
+    void setWidth(int width);
     void setAspectRatio();
     Button createButton(String text, Vector2f position, Vector2f size);
     Label createLabel(String messageText, Vector2f position, Panel panelToAdd);
