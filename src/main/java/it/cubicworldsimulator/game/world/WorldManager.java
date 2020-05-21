@@ -8,6 +8,7 @@ import it.cubicworldsimulator.game.openglcommands.OpenGLLoadChunkCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
 import it.cubicworldsimulator.game.utility.yaml.YAMLComponent;
 import it.cubicworldsimulator.game.utility.yaml.YAMLLoader;
+import it.cubicworldsimulator.game.world.block.BlockBuilder;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.BlockMaterial;
 import it.cubicworldsimulator.game.world.chunk.*;
@@ -42,7 +43,7 @@ public class WorldManager {
     public WorldManager(World world, CommandsQueue commandsQueue) {
         this.world = world;
         this.commandsQueue = commandsQueue;
-        this.chunkGenerator = new ChunkGenerator(world.getSeed(), this);
+        this.chunkGenerator = new ChunkGenerator(new DefaultGenerationAlgorithm(world.getSeed(), this));
         this.chunkLoader = new ChunkLoader(world.getName());
         this.alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
         TextureLoader loader = new TextureLoaderImpl();
@@ -124,27 +125,26 @@ public class WorldManager {
         loadBlockTypes(root);
     }
 
-    private void loadTextureConfig(YAMLComponent root){
+    private void loadTextureConfig(YAMLComponent root) {
         textureFile = root.getString("file");
         textureStep = root.getFloat("step");
     }
 
-    private void loadBlockTypes(YAMLComponent root)  {
+    private void loadBlockTypes(YAMLComponent root) {
         YAMLComponent blocksList = root.getYAMLComponent("blocks");
         blocksList.getEntrySet().forEach(entry -> {
-            String blockName = entry.getKey();
+            BlockBuilder blockBuilder = new BlockBuilder();
             YAMLComponent blockInfo = new YAMLComponent(entry.getValue());
-            byte blockId = blockInfo.getByte("id");
-            boolean transparency = blockInfo.getBoolean("transparent");
+            blockBuilder.setName(entry.getKey()).setId(blockInfo.getByte("id")).setTransparency(blockInfo.getBoolean("transparent"));
             YAMLComponent blockTextureInfo = blockInfo.getYAMLComponent("textures");
-            BlockMaterial material = null;
+            BlockMaterial material;
             if (blockTextureInfo != null) {
                 Vector2f[] coords = new Vector2f[6];
                 var iterator = blockTextureInfo.getEntrySet().iterator();
                 int i = 0;
                 while (iterator.hasNext()) {
                     if (i == 6) {
-                        logger.warn("Found more than six coordinates for block '" + blockName + "' !");
+                        logger.warn("Found more than six coordinates for block '" + blockBuilder.getName() + "' !");
                         break;
                     }
                     YAMLComponent faceInfo = new YAMLComponent(iterator.next().getValue());
@@ -153,13 +153,11 @@ public class WorldManager {
                     coords[i] = new Vector2f(x, y);
                     i++;
                 }
-                material = new BlockMaterial(blockId, blockName, new BlockTexture(textureStep, coords), transparency);
+                blockBuilder.setBlockTexture(new BlockTexture(textureStep, coords));
             }
-            if (material == null) {
-                material = new BlockMaterial(blockId, blockName, null, transparency);
-            }
-            blockTypes.put(blockName, material);
-            blockTypes.put(blockId, material);
+            material = blockBuilder.build();
+            blockTypes.put(blockBuilder.getName(), material);
+            blockTypes.put(blockBuilder.getId(), material);
         });
     }
 
