@@ -1,19 +1,12 @@
 package it.cubicworldsimulator.game;
 
-import it.cubicworldsimulator.game.gui.GenericGui;
-
 import it.cubicworldsimulator.game.gui.GuiContainer;
+import it.cubicworldsimulator.game.gui.Info;
 import it.cubicworldsimulator.game.gui.Launcher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.lwjgl.glfw.GLFW.glfwInit;
 
 public class Main {
 
@@ -23,7 +16,7 @@ public class Main {
         try {
             logger.debug("Platform: " + System.getProperty("os.name"));
             logger.trace("Game launcher started...");
-            new GuiContainer().init(Arrays.asList(new Launcher(), new Launcher()));
+            new GuiContainer().init(Arrays.asList(new Info(), new Launcher()));
         } catch (Exception e) {
             logger.error(e);
             System.exit(-1);

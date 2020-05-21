@@ -57,10 +57,8 @@ public class Launcher extends GenericGui {
         this.mySettingsBuilder = new Settings.Builder();
     }
 
-    /**
-     * It creates gui components
-     */
-    private void createGui() {
+
+    public void createGui() {
         Panel settings = new Panel(0, 200, (float) widthScreen, heightScreen);
         Label settingsLabel = createOptionLabel("Settings", settings);
         createOptionLabel("vSync", settings);
@@ -93,9 +91,7 @@ public class Launcher extends GenericGui {
         startGame();
         add(launchGame);
         add(settings);
-        switchTheme();
-        Themes.getDefaultTheme().applyAll(this);
-        //Set other style options AFTER theme has been applied
+        changeTheme();
         settingsLabel.getStyle().setFontSize(40f);
     }
 
@@ -165,23 +161,12 @@ public class Launcher extends GenericGui {
         return false;
     }
 
-    /**
-     * Switch from any theme to the default one.
-     */
-    private void switchTheme() {
-        Themes.setDefaultTheme(new FlatColoredTheme(
-                fromInt(44, 62, 80, 1), // backgroundColor
-                fromInt(127, 140, 141, 1), // borderColor
-                fromInt(127, 140, 141, 1), // sliderColor
-                fromInt(2, 119, 189, 1), // strokeColor
-                fromInt(39, 174, 96, 1), // allowColor
-                fromInt(192, 57, 43, 1), // denyColor
-                fromInt(0, 0, 0, 1f),  // shadowColor
-                ColorConstants.white()
-        ));
-    }
-
     public String getTitle() {
         return "CubicWorldSimulator Launcher";
+    }
+
+    @Override
+    protected void changeTheme() {
+        flatColoredTheme();
     }
 }
