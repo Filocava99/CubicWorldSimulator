@@ -2,10 +2,10 @@ package it.cubicworldsimulator.game.world.block;
 
 public class BlockBuilder {
 
-    private byte id;
-    private String name;
+    private byte id = 0;
+    private String name = "";
     private BlockTexture blockTexture;
-    private boolean transparent;
+    private boolean transparent = false;
 
     public BlockBuilder setId(byte id) {
         this.id = id;
