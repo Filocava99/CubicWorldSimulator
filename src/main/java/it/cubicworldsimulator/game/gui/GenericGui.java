@@ -1,11 +1,13 @@
 package it.cubicworldsimulator.game.gui;
 
+import lwjgui.font.Font;
 import org.joml.Vector2f;
 import org.liquidengine.legui.component.Button;
 import org.liquidengine.legui.component.Label;
 import org.liquidengine.legui.component.Panel;
 import org.liquidengine.legui.component.TextInput;
 import org.liquidengine.legui.style.color.ColorConstants;
+import org.liquidengine.legui.style.font.FontRegistry;
 import org.liquidengine.legui.theme.Themes;
 import org.liquidengine.legui.theme.colored.FlatColoredTheme;
 
@@ -15,9 +17,9 @@ public abstract class GenericGui extends Panel {
     protected final GuiFactory guiFactory;
     private long windowId;
 
-    protected GenericGui(int x, int y, float width, float height) {
+    protected GenericGui(int x, int y, float width, float height, GuiFactory guiFactory) {
         super(x, y, width, height);
-        guiFactory = new LauncherFactory();
+        this.guiFactory = guiFactory;
         guiFactory.setWidth((int) width);
         guiFactory.setHeight((int) height);
         this.setAspectRatio();
@@ -30,18 +32,6 @@ public abstract class GenericGui extends Panel {
 
     public void setAspectRatio() {
         guiFactory.setAspectRatio();
-    }
-
-    public Button createButton(String text, Vector2f position, Vector2f size) {
-        return guiFactory.createButton(text, position, size);
-    }
-
-    public Label createLabel(String text, Vector2f position, Panel panelToAdd) {
-        return guiFactory.createLabel(text, position, panelToAdd);
-    }
-
-    public TextInput createTextInput(String title, Panel panelToAdd) {
-        return guiFactory.createTextInput(title, panelToAdd);
     }
 
     protected boolean isFiled(String text) {
@@ -72,7 +62,8 @@ public abstract class GenericGui extends Panel {
                 fromInt(39, 174, 96, 1), // allowColor
                 fromInt(192, 57, 43, 1), // denyColor
                 fromInt(0, 0, 0, 1f),  // shadowColor
-                ColorConstants.white()
+                ColorConstants.white(),
+                FontRegistry.getDefaultFont(),30f
         ));
        applyTheme();
     }

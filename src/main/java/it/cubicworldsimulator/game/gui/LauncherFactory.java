@@ -10,7 +10,6 @@ import org.liquidengine.legui.style.font.FontRegistry;
 
 public class LauncherFactory implements GuiFactory {
 
-    protected long window;
     //X position where print label
     protected float X_LABEL = 20;
     //Y position where start to print
@@ -31,31 +30,31 @@ public class LauncherFactory implements GuiFactory {
     private float aspectRatio;
 
     //Fonts and colors
-    private static final float buttonFontSize = 30;
-    private static final String buttonFont = FontRegistry.ROBOTO_BOLD;
-
-
-    public int getWidth() {
-        return width;
-    }
-
+    protected static final float buttonFontSize = 30;
+    protected static final String buttonFont = FontRegistry.ROBOTO_BOLD;
 
     @Override
-    public void setWidth(float width) {
-        this.width = (int) width;
-    }
-
     public int getHeight() {
-        return height;
+        return this.height;
     }
 
     @Override
-    public void setHeight(float height) {
-        this.height = (int) height;
-    }
-
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    @Override
+    public int getWidth() {
+        return this.width;
+    }
+
+    @Override
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public float getAspectRatio() {
+        return aspectRatio;
     }
 
     @Override
@@ -67,6 +66,8 @@ public class LauncherFactory implements GuiFactory {
         this.Y_OFFSET*=aspectRatio;
         this.newYLabel=Y_START_VALUE;
     }
+
+
 
     @Override
     public Button createButton(String text, Vector2f position, Vector2f size) {
@@ -81,6 +82,7 @@ public class LauncherFactory implements GuiFactory {
     @Override
     public Label createLabel(String messageText, Vector2f position, Panel panelToAdd) {
         Label message = new Label(messageText);
+        panelToAdd.add(message);
         message.setPosition(position);
         return message;
     }
@@ -103,5 +105,4 @@ public class LauncherFactory implements GuiFactory {
         panelToAdd.add(input);
         return input;
     }
-
 }

@@ -50,7 +50,8 @@ public class Launcher extends GenericGui {
     public Launcher() {
         super(0, 0,
                 Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).width(),
-                Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).height());
+                Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).height(),
+                new LauncherFactory());
         widthScreen = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).width();
         heightScreen = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).height();
         createGui();
@@ -59,35 +60,35 @@ public class Launcher extends GenericGui {
 
 
     public void createGui() {
-        Panel settings = new Panel(0, 200, (float) widthScreen, heightScreen);
+        Panel settings = new Panel(0, 200, (float) widthScreen, (float) heightScreen);
         Label settingsLabel = createOptionLabel("Settings", settings);
         createOptionLabel("vSync", settings);
-        vSyncInput = createTextInput("true", settings);
+        vSyncInput = guiFactory.createTextInput("true", settings);
         createOptionLabel("Debug", settings);
-        debugInput = createTextInput("false", settings);
+        debugInput = guiFactory.createTextInput("false", settings);
         createOptionLabel("Fullscreen", settings);
-        fullScreenInput = createTextInput("true", settings);
+        fullScreenInput = guiFactory.createTextInput("true", settings);
         Label widthLabel = createOptionLabel("Width", settings);
-        widthInput = createTextInput("1920", settings);
-        createLabel("Default is 1920",
+        widthInput = guiFactory.createTextInput("1920", settings);
+        guiFactory.createLabel("Default is 1920",
                 new Vector2f(widthInput.getPosition().x + widthInput.getSize().x + 20, widthLabel.getPosition().y), settings);
         Label heightLabel = createOptionLabel("Height", settings);
-        heightInput = createTextInput("1080", settings);
-        createLabel("Default is 1080",
+        heightInput = guiFactory.createTextInput("1080", settings);
+        guiFactory.createLabel("Default is 1080",
                 new Vector2f(heightInput.getPosition().x + heightInput.getSize().x + 20, heightLabel.getPosition().y), settings);
         Label renderingDistanceLabel = createOptionLabel("Rendering distance", settings);
-        renderingDistanceInput = createTextInput("1", settings);
-        createLabel("Value must be greater or equal to 1",
+        renderingDistanceInput = guiFactory.createTextInput("1", settings);
+        guiFactory.createLabel("Value must be greater or equal to 1",
                 new Vector2f(renderingDistanceInput.getPosition().x + renderingDistanceInput.getSize().x + 20, renderingDistanceLabel.getPosition().y), settings);
         Label worldSeedLabel = createOptionLabel("World seed", settings);
-        worldSeedInput = createTextInput("424243563456", settings);
-        createLabel("Value must be numeric",
+        worldSeedInput = guiFactory.createTextInput("424243563456", settings);
+        guiFactory.createLabel("Value must be numeric",
                 new Vector2f(worldSeedInput.getPosition().x + worldSeedInput.getSize().x + 20, worldSeedLabel.getPosition().y), settings);
         Label worldStringLabel = createOptionLabel("World name", settings);
-        worldStringInput = createTextInput("world-1", settings);
-        createLabel("World name can be whatever you want",
+        worldStringInput = guiFactory.createTextInput("world-1", settings);
+        guiFactory.createLabel("World name can be whatever you want",
                 new Vector2f(worldStringInput.getPosition().x + worldStringInput.getSize().x + 20, worldStringLabel.getPosition().y), settings);
-        launchGame = createButton("Start game", new Vector2f(290, 50), new Vector2f(80, 50));
+        launchGame = guiFactory.createButton("Start game", new Vector2f(290, 50), new Vector2f(80, 50));
         startGame();
         add(launchGame);
         add(settings);
