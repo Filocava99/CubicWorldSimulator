@@ -106,7 +106,7 @@ public class Launcher extends GenericGui {
         launchGame.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
             if (CLICK == event.getAction() && checkGameCanStart()) {
                 final Settings mySettings = performSettingsBuilder();
-                glfwHideWindow(windowId);
+                glfwHideWindow(getWindowId());
                 try {
                     gameEngine = new GameEngine("CubicWorldSimulator",
                                  new Game(mySettings), mySettings);

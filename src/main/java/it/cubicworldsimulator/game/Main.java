@@ -20,11 +20,8 @@ public class Main {
         try {
             logger.debug("Platform: " + System.getProperty("os.name"));
             logger.trace("Game launcher started...");
-            glfwInit();
-            List<GenericGui> myList = new ArrayList<>();
-            myList.add(new Launcher());
-            myList.add(new Launcher());
-            new GuiContainer().init(myList);
+
+            new GuiContainer().init(new Launcher());
         } catch (Exception e) {
             logger.error(e);
             System.exit(-1);
