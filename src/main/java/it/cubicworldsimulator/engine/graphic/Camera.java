@@ -62,9 +62,11 @@ public class Camera{
         }
        
         position.y += offsetY;
-        for(Observer o : this.observer) {
-        	o.update(this.position);
-        }
+   
+        this.observer.stream().forEach( (e)->{
+        	e.update(this.position);
+        });
+        
         System.out.println("CAMERA POSITION:" + position.x + " " + position.y + " " + position.z);
     }
     
