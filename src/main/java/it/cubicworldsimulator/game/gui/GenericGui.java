@@ -8,7 +8,7 @@ import org.liquidengine.legui.component.TextInput;
 
 public abstract class GenericGui extends Panel {
     protected final GuiFactory guiFactory;
-    protected long windowId;
+    private long windowId;
 
     protected GenericGui(int x, int y, float width, float height) {
         super(x, y, width, height);
@@ -39,4 +39,12 @@ public abstract class GenericGui extends Panel {
     }
 
     public abstract String getTitle();
+
+    protected long getWindowId() {
+        return windowId;
+    }
+
+    protected void setWindowId(long windowId) {
+        this.windowId = windowId;
+    }
 }
