@@ -3,25 +3,26 @@ package it.cubicworldsimulator.game.world.chunk;
 import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.utility.math.OpenSimplexNoise;
 import it.cubicworldsimulator.game.utility.math.SerializableVector3f;
-import it.cubicworldsimulator.game.world.WorldManager;
+import it.cubicworldsimulator.game.world.block.BlockMaterial;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
 
 public class DefaultGenerationAlgorithm implements GenerationAlgorithm{
 
     private final OpenSimplexNoise noise;
-    private final WorldManager worldManager;
-    private int waterLevel = 30;
-    private int stoneLevel = 60;
+    private final Map<Object, BlockMaterial> blockTypes;
+    private static final int WATER_LEVEL = 30;
+    private static final int STONE_LEVEL = 60;
 
 
-    public DefaultGenerationAlgorithm(long seed, WorldManager worldManager) {
+    public DefaultGenerationAlgorithm(long seed, Map<Object, BlockMaterial> blockTypes) {
         this.noise = new OpenSimplexNoise(seed);
-        this.worldManager = worldManager;
+        this.blockTypes = blockTypes;
     }
 
     @Override
@@ -34,18 +35,18 @@ public class DefaultGenerationAlgorithm implements GenerationAlgorithm{
                 double height = noise.sumOcatave(16, ((chunkX << 4) + x), ((chunkZ << 4) + z), 0.5, 0.0095, 0, 255) / 4;
                 //System.out.println(height);
                 for (int y = 0; y < height; y++) {
-                    if (y <= stoneLevel) {
-                        blocks[(x) + (y * 256) + (z * 16)] = worldManager.getBlockTypes().get("stone").getId();
+                    if (y <= STONE_LEVEL) {
+                        blocks[(x) + (y * 256) + (z * 16)] = blockTypes.get("stone").getId();
                     } else {
-                        blocks[(x) + (y * 256) + (z * 16)] = worldManager.getBlockTypes().get("dirt").getId();
+                        blocks[(x) + (y * 256) + (z * 16)] = blockTypes.get("dirt").getId();
                     }
                 }
-                blocks[(x) + ((int) height << 8) + (z << 4)] = worldManager.getBlockTypes().get("grass").getId();
+                blocks[(x) + ((int) height << 8) + (z << 4)] = blockTypes.get("grass").getId();
                 for (int y = (int) height + 1; y < 256; y++) {
-                    if (y <= waterLevel) {
-                        blocks[(x) + (y << 8) + (z << 4)] = worldManager.getBlockTypes().get("water").getId();
+                    if (y <= WATER_LEVEL) {
+                        blocks[(x) + (y << 8) + (z << 4)] = blockTypes.get("water").getId();
                     } else {
-                        blocks[(x) + (y << 8) + (z << 4)] = worldManager.getBlockTypes().get("air").getId();
+                        blocks[(x) + (y << 8) + (z << 4)] = blockTypes.get("air").getId();
                     }
                 }
             }
@@ -64,7 +65,7 @@ public class DefaultGenerationAlgorithm implements GenerationAlgorithm{
         for (int i = 0; i < 5; i++) {
             int x = Math.abs(random.nextInt() % 12) + 2;
             int z = Math.abs(random.nextInt() % 12) + 2;
-            int y = chunkColumn.getHeight(new Vector2i(x, z), worldManager.getBlockTypes().get("air").getId());
+            int y = chunkColumn.getHeight(new Vector2i(x, z), blockTypes.get("air").getId());
             Vector3i treePos = new Vector3i(x, y, z);
             int height = random.nextInt() % 2 + 4;
             if (isSpaceAvailableForTree(chunkColumn, treePos, height)) {
@@ -78,7 +79,7 @@ public class DefaultGenerationAlgorithm implements GenerationAlgorithm{
     private boolean isSpaceAvailableForTree(ChunkColumn chunkColumn, Vector3i coord, int height) {
         if (coord.y > Constants.minHeight) {
             byte block = chunkColumn.getBlock(new Vector3i(coord.x, coord.y - 1, coord.z));
-            if (block == worldManager.getBlockTypes().get("water").getId() || block == worldManager.getBlockTypes().get("log").getId()) {
+            if (block == blockTypes.get("water").getId() || block == blockTypes.get("log").getId()) {
                 return false;
             }
         }
@@ -100,8 +101,8 @@ public class DefaultGenerationAlgorithm implements GenerationAlgorithm{
     % contains leaves 50% of the time
      */
     private void growTree(ChunkColumn chunk, Vector3i pos, int height) {
-        byte logId = worldManager.getBlockTypes().get("log").getId();
-        byte leafId = worldManager.getBlockTypes().get("leaf").getId();
+        byte logId = blockTypes.get("log").getId();
+        byte leafId = blockTypes.get("leaf").getId();
         //Max layer
         // if (height + pos.y)
 
