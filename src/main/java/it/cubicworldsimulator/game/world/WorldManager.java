@@ -43,7 +43,7 @@ public class WorldManager {
     public WorldManager(World world, CommandsQueue commandsQueue) {
         this.world = world;
         this.commandsQueue = commandsQueue;
-        this.chunkGenerator = new ChunkGenerator(new DefaultGenerationAlgorithm(world.getSeed(), this));
+        this.chunkGenerator = new ChunkGenerator(new DefaultGenerationAlgorithm(world.getSeed(), blockTypes));
         this.chunkLoader = new ChunkLoader(world.getName());
         this.alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
         TextureLoader loader = new TextureLoaderImpl();
