@@ -1,24 +1,25 @@
 package it.cubicworldsimulator.engine.graphic;
 
+import it.cubicworldsimulator.engine.loader.VAO;
 import it.cubicworldsimulator.engine.loader.VBO;
 
 import java.util.List;
 
 public class Mesh {
 
-    private final int vaoId;
+    private final VAO myVao;
     private final List<VBO> vboList;
     private final List<VBO> textureVboList;
     private final int vertexCount;
     private final Material material;
     private final float boundingRadius;
 
-    public Mesh(Material texture, float boundingRadius, int vertexCount, int vaoId,
+    public Mesh(Material texture, float boundingRadius, int vertexCount, VAO myVao,
                 List<VBO> vboList, List<VBO> textureVboList) {
         this.material = texture;
         this.boundingRadius = boundingRadius;
         this.vertexCount = vertexCount;
-        this.vaoId = vaoId;
+        this.myVao = myVao;
         this.vboList = vboList;
         this.textureVboList = textureVboList;
     }
@@ -27,8 +28,8 @@ public class Mesh {
         return vertexCount;
     }
 
-    public int getVaoId() {
-        return this.vaoId;
+    public VAO getVao() {
+        return this.myVao;
     }
 
     public float getBoundingRadius() {

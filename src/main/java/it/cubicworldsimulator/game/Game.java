@@ -70,7 +70,6 @@ public class Game implements GameLogic {
             SceneLight sceneLight = new SceneLight(directionalLight, new PointLight[0], new SpotLight[0], ambientLight, specularPower);
 
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
-
             worldManager.updateActiveChunksSync(new Vector3i(0, 0, 0));
             while (commandsQueue.hasLoadCommand()) {
                 Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
@@ -88,7 +87,6 @@ public class Game implements GameLogic {
             }
         } catch (Exception e) {
             logger.error(e);
-
             System.exit(2);
         }
     }

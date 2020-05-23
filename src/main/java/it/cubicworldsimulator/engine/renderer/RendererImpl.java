@@ -203,7 +203,7 @@ public class RendererImpl implements Renderer {
             glBindTexture(GL_TEXTURE_2D, texture.getId());
         }
         //Bind the VAO
-        glBindVertexArray(mesh.getVaoId());
+        glBindVertexArray(mesh.getVao().getId());
     }
 
     /**
