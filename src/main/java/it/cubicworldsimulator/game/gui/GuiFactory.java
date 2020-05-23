@@ -8,6 +8,7 @@ import org.liquidengine.legui.component.TextInput;
 
 /**
  * It models a generic Gui factory. Can be used to generate different type of gui
+ * @autor Lorenzo Balzani
  */
 public interface GuiFactory {
     int getHeight();

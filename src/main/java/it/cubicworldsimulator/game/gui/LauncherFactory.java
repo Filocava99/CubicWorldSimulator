@@ -8,6 +8,10 @@ import org.liquidengine.legui.component.TextInput;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
 
+/**
+ * @author Lorenzo Balzani
+ */
+
 public class LauncherFactory implements GuiFactory {
 
     //X position where print label

@@ -22,6 +22,10 @@ import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLIC
 import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
 import static org.lwjgl.glfw.GLFW.*;
 
+/**
+ * @author Lorenzo Balzani
+ */
+
 public class Launcher extends GenericGui {
     private static final Logger logger = LogManager.getLogger(Launcher.class);
     private GameEngine gameEngine;
