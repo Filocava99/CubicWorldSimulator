@@ -95,7 +95,7 @@ public class OBJLoader {
         logger.debug("Vertices: " + posArr.length);
         logger.debug("UVs: " + textCoordArr.length);
         logger.debug("Indices: " + indicesArr.length);
-        return new Loader().createMesh(posArr, textCoordArr, indicesArr, normArr,
+        return Loader.createMesh(posArr, textCoordArr, indicesArr, normArr,
                 new Material(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
     }
 
@@ -121,7 +121,6 @@ public class OBJLoader {
         }
     }
 
-    /*Inner class*/
     private static class Face {
         /**
          * List of idxGroup groups for a face triangle (3 vertices per face).
