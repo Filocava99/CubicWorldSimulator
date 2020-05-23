@@ -48,11 +48,11 @@ public class Window {
 
     public Window(String title, Settings mySettings, Vector4f clearColor) {
         this.title = title;
-        this.width = mySettings.getWidth().orElse(1920);
-        this.height = mySettings.getHeight().orElse(1080);
-        this.fullscreen = mySettings.getFullscreen().orElse(true);
-        this.vSync = mySettings.getvSync().orElse(true);
-        this.debug = mySettings.getDebug().orElse(false);
+        this.width = mySettings.getWidth();
+        this.height = mySettings.getHeight();
+        this.fullscreen = mySettings.getFullscreen();
+        this.vSync = mySettings.getvSync();
+        this.debug = mySettings.getDebug();
         this.resized = false;
         this.clearColor = clearColor;
         this.projectionMatrix = new Matrix4f();
