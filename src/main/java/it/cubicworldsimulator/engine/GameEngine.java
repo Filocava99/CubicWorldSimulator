@@ -28,7 +28,7 @@ public class GameEngine extends Thread {
 
     //TODO dove bisogna inserire il fullscreen????
     public GameEngine(String windowTitle,  GameLogic gameLogic, Settings mySettings) throws Exception {
-        Vector4f clearColor = new Vector4f(0.0f,0.0f,255.0f,0.0f); //TODO Creare diversi costruttori in modo da passare il clearColor facoltativamente
+        Vector4f clearColor = new Vector4f(0.0f, 0.0f, 0.3f, 1.0f); //TODO Creare diversi costruttori in modo da passare il clearColor facoltativamente
         window = new Window(windowTitle, mySettings, clearColor);
         //mouseInput = new MouseInput(window);
         this.gameLogic = gameLogic;
@@ -54,6 +54,10 @@ public class GameEngine extends Thread {
         mouseInput.init(window);
         gameLogic.init(window);
         this.mouseInput.init(this.window);
+    }
+
+    private void dayNight() {
+
     }
 
     protected void gameLoop() {
