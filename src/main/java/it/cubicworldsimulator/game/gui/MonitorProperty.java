@@ -1,5 +1,9 @@
 package it.cubicworldsimulator.game.gui;
 
+/**
+ * @author Lorenzo Balzani
+ */
+
 public class MonitorProperty {
     private int height;
     private int width;

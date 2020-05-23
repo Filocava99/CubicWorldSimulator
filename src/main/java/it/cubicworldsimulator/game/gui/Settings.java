@@ -2,15 +2,18 @@ package it.cubicworldsimulator.game.gui;
 
 import java.util.Optional;
 
+/**
+ * @author Lorenzo Balzani
+ */
 public class Settings {
-    private Optional<Boolean> vSync = Optional.empty();
-    private Optional<Boolean> debug = Optional.empty();
-    private Optional<Boolean> fullscreen = Optional.empty();
-    private Optional<Integer> width = Optional.empty();
-    private Optional<Integer> height = Optional.empty();
-    private Optional<Integer> renderingDistance = Optional.empty();
-    private Optional<Long> worldSeed = Optional.empty();
-    private Optional<String> worldName = Optional.empty();
+    private Optional<Boolean> vSync;
+    private Optional<Boolean> debug;
+    private Optional<Boolean> fullscreen;
+    private Optional<Integer> width;
+    private Optional<Integer> height;
+    private Optional<Integer> renderingDistance;
+    private Optional<Long> worldSeed;
+    private Optional<String> worldName;
 
     public Settings(Optional<Boolean> vSync, Optional<Boolean> debug, Optional<Boolean> fullscreen, Optional<Integer> width, Optional<Integer> height, Optional<Integer> renderingDistance, Optional<Long> worldSeed, Optional<String> worldName) {
         this.vSync = vSync;
@@ -23,36 +26,36 @@ public class Settings {
         this.worldName = worldName;
     }
 
-    public Optional<Boolean> getvSync() {
-        return vSync;
+    public boolean getvSync() {
+        return vSync.orElse(true);
     }
 
-    public Optional<Boolean> getDebug() {
-        return debug;
+    public boolean getDebug() {
+        return debug.orElse(false);
     }
 
-    public Optional<Boolean> getFullscreen() {
-        return fullscreen;
+    public boolean getFullscreen() {
+        return fullscreen.orElse(true);
     }
 
-    public Optional<Integer> getWidth() {
-        return width;
+    public int getWidth() {
+        return width.orElse(1920);
     }
 
-    public Optional<Integer> getHeight() {
-        return height;
+    public int getHeight() {
+        return height.orElse(1080);
     }
 
-    public Optional<Integer> getRenderingDistance() {
-        return renderingDistance;
+    public int getRenderingDistance() {
+        return renderingDistance.orElse(1);
     }
 
-    public Optional<Long> getWorldSeed() {
-        return worldSeed;
+    public long getWorldSeed() {
+        return worldSeed.orElse(424243563456L);
     }
 
-    public Optional<String> getWorldName() {
-        return worldName;
+    public String getWorldName() {
+        return worldName.orElse("world-1");
     }
 
     /**
@@ -74,37 +77,40 @@ public class Settings {
         }
 
         public Builder debug(boolean debug){
-            this.debug = Optional.ofNullable(debug);
+            this.debug = Optional.of(debug);
             return this;
         }
 
         public Builder fullscreen(boolean fullscreen){
-            this.fullscreen = Optional.ofNullable(fullscreen);
+            this.fullscreen = Optional.of(fullscreen);
             return this;
         }
 
         public Builder width(int width){
-            this.width = Optional.ofNullable(width);
+            this.width = Optional.of(width);
             return this;
         }
 
         public Builder height(int height){
-            this.height = Optional.ofNullable(height);
+            this.height = Optional.of(height);
             return this;
         }
 
         public Builder renderingDistance(int renderingDistance){
-            this.renderingDistance = Optional.ofNullable(renderingDistance);
+            this.renderingDistance = Optional.of(renderingDistance);
             return this;
         }
 
         public Builder worldSeed(long worldSeed){
-            this.worldSeed = Optional.ofNullable(worldSeed);
+            this.worldSeed = Optional.of(worldSeed);
             return this;
         }
 
         public Builder worldName(String worldName){
-            this.worldName = Optional.ofNullable(worldName);
+            if (worldName == null || worldName.isEmpty()) {
+                throw new IllegalArgumentException();
+            }
+            this.worldName = Optional.of(worldName);
             return this;
         }
 

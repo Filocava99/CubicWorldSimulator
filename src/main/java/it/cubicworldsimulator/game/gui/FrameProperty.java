@@ -5,6 +5,10 @@ import org.liquidengine.legui.system.context.Context;
 import org.liquidengine.legui.system.handler.processor.SystemEventProcessor;
 import org.liquidengine.legui.system.renderer.Renderer;
 
+/**
+ * @author Lorenzo Balzani
+ */
+
 public class FrameProperty {
     private long windowId;
     private Renderer renderer;

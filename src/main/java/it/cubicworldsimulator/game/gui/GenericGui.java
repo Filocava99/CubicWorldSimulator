@@ -1,17 +1,17 @@
 package it.cubicworldsimulator.game.gui;
 
-import lwjgui.font.Font;
-import org.joml.Vector2f;
-import org.liquidengine.legui.component.Button;
-import org.liquidengine.legui.component.Label;
 import org.liquidengine.legui.component.Panel;
-import org.liquidengine.legui.component.TextInput;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
 import org.liquidengine.legui.theme.Themes;
 import org.liquidengine.legui.theme.colored.FlatColoredTheme;
 
 import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
+
+/**
+ * @author Lorenzo Balzani
+ */
+
 
 public abstract class GenericGui extends Panel {
     protected final GuiFactory guiFactory;

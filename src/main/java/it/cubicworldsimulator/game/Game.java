@@ -49,8 +49,8 @@ public class Game implements GameLogic {
     @Override
     public void init(Window window) {
         initShaderPrograms();
-        world = new World(mySettings.getWorldName().orElse("world-1"),
-                mySettings.getWorldSeed().orElse(424243563456L));
+        world = new World(mySettings.getWorldName(),
+                mySettings.getWorldSeed());
         worldManager = new WorldManager(world, commandsQueue);
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);

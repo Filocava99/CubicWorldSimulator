@@ -25,6 +25,10 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+/**
+ * It models a logic container for N 'LEGUI' windows
+ * @author Lorenzo Balzani
+ */
 public class GuiContainer {
 
     private static volatile boolean running = false;
