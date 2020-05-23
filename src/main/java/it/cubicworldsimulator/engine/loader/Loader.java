@@ -18,9 +18,9 @@ import static org.lwjgl.opengl.GL30C.*;
 
 public class Loader {
     private static final List<Integer> vaoList = new ArrayList<>();
-    private static final List<Integer> vboList = new ArrayList<>();
-    private static final List<Integer> textureVboList = new ArrayList<>();
-    private static final List<Integer> normalsVboList = new ArrayList<>();
+    private static final List<VBO> vboList = new ArrayList<>();
+    private static final List<VBO> textureVboList = new ArrayList<>();
+    private static final List<VBO> normalsVboList = new ArrayList<>();
     private static final List<FloatBuffer> floatBufferList = new ArrayList<>();
     private static final List<IntBuffer> intBufferlist = new ArrayList<>();
 
@@ -34,19 +34,19 @@ public class Loader {
 
             // Position VBO
             vboList.add(createVbo());
-            insertPositionIntoVbo(positions, vboList.get(vboList.size()-1));
+            insertPositionIntoVbo(vboList.get(vboList.size()-1), positions);
 
             // Index VBO
             vboList.add(createVbo());
-            insertIndicesIntoVbo(indices, vboList.get(vboList.size()-1));
+            insertIndicesIntoVbo(vboList.get(vboList.size()-1), indices);
 
             //Texture VBO
             textureVboList.add(createVbo());
-            insertTextureIntoVbo(textCoords, textureVboList.get(textureVboList.size()-1));
+            insertTextureIntoVbo(textureVboList.get(textureVboList.size()-1), textCoords);
 
             //Normals
             normalsVboList.add(createVbo());
-            insertNormalsIntoVbo(normals, normalsVboList.get(normalsVboList.size()-1));
+            insertNormalsIntoVbo(normalsVboList.get(normalsVboList.size()-1), normals);
 
         } finally {
             cleanBuffers();
@@ -61,47 +61,47 @@ public class Loader {
         return vaoId;
     }
 
-    public static int createVbo(){
-        int vboId = glGenBuffers();
-        vboList.add(vboId);
-        return vboId;
+    public static VBO createVbo(){
+        VBO myVBO = new VBO(glGenBuffers());
+        vboList.add(myVBO);
+        return myVBO;
     }
 
-    public static void insertPositionIntoVbo(float[] positions, int vboId) {
+    public static void insertPositionIntoVbo(VBO myVbo, float[] positions) {
         FloatBuffer posBuffer = MemoryUtil.memAllocFloat(positions.length);
         for (Float position : positions) {
             posBuffer.put(position);
         }
         posBuffer.flip();
-        insertIntoVbo(posBuffer, vboId, 3, 0);
+        insertIntoVbo(posBuffer, myVbo.getId(), 3, 0);
     }
 
-    public static void insertTextureIntoVbo(float[] textCoords, int vboId) {
+    public static void insertTextureIntoVbo(VBO myVbo, float[] textCoords) {
         FloatBuffer textCoordsBuffer = MemoryUtil.memAllocFloat(textCoords.length);
         for (Float textCoord : textCoords) {
             textCoordsBuffer.put(textCoord);
         }
         textCoordsBuffer.flip();
-        insertIntoVbo(textCoordsBuffer, vboId, 2, 1);
+        insertIntoVbo(textCoordsBuffer, myVbo.getId(), 2, 1);
     }
 
-    public static void insertIndicesIntoVbo(int[] indices, int vboId) {
+    public static void insertIndicesIntoVbo(VBO myVbo, int[] indices) {
         IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
         for (Integer index : indices) {
             indicesBuffer.put(index);
         }
         indicesBuffer.flip();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myVbo.getId());
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
     }
 
-    public static void insertNormalsIntoVbo(float[] normals, int vboId) {
+    public static void insertNormalsIntoVbo(VBO myVbo, float[] normals) {
         FloatBuffer normalsBuffer = MemoryUtil.memAllocFloat(normals.length);
         for (Float normal : normals) {
             normalsBuffer.put(normal);
         }
         normalsBuffer.flip();
-        insertIntoVbo(normalsBuffer, vboId, 3, 2);
+        insertIntoVbo(normalsBuffer, myVbo.getId(), 3, 2);
     }
 
     public static void cleanMesh(Mesh mesh) {
@@ -109,10 +109,10 @@ public class Loader {
 
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        mesh.getVboList().forEach(GL15::glDeleteBuffers);
+        mesh.getVboList().forEach(myVbo -> glDeleteBuffers(myVbo.getId()));
 
         // Delete the texture VBO
-        mesh.getTextureVboList().forEach(GL15::glDeleteBuffers);
+        mesh.getTextureVboList().forEach(myVbo -> glDeleteBuffers(myVbo.getId()));
 
         // Delete the VAOs
         glBindVertexArray(0);
