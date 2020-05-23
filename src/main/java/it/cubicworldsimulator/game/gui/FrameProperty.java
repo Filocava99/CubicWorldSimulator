@@ -11,6 +11,15 @@ public class FrameProperty {
     private Frame frame;
     private Context context;
     private SystemEventProcessor systemEventProcessor;
+    private GenericGui gui;
+
+    public GenericGui getGui() {
+        return gui;
+    }
+
+    public void setGui(GenericGui gui) {
+        this.gui = gui;
+    }
 
     public SystemEventProcessor getSystemEventProcessor() {
         return systemEventProcessor;

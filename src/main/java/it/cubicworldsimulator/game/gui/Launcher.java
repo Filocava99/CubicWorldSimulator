@@ -89,8 +89,8 @@ public class Launcher extends GenericGui {
         guiFactory.createLabel("World name can be whatever you want",
                 new Vector2f(worldStringInput.getPosition().x + worldStringInput.getSize().x + 20, worldStringLabel.getPosition().y), settings);
         launchGame = guiFactory.createButton("Start game", new Vector2f(290, 50), new Vector2f(80, 50));
-        startGame();
         add(launchGame);
+        startGame();
         add(settings);
         changeTheme();
         settingsLabel.getStyle().setFontSize(40f);

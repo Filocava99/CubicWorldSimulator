@@ -17,7 +17,9 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -60,7 +62,7 @@ public class GuiContainer {
          * @param myMonitor encapsulate information about the monitor
          * @return
          */
-        private long createWindow(String title, MonitorProperty myMonitor) {
+        private long createWindow(String title, MonitorProperty myMonitor, boolean isVisible) {
             long windowId = glfwCreateWindow(myMonitor.getWidth(), myMonitor.getHeight(),
                     title, NULL, NULL);
             glfwShowWindow(windowId);
@@ -96,10 +98,11 @@ public class GuiContainer {
         GLFWKeyCallbackI glfwKeyCallbackI = (w1, key, code, action, mods) -> running = !(key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE);
         GLFWWindowCloseCallbackI glfwWindowCloseCallbackI = w -> running = false;
         MonitorProperty myMonitor = glfwHelper.getMonitorProperty();
-        for (int i = 0; i < guiList.size(); i++) {
+        IntStream.range(0, guiList.size()).forEach(i -> {
             FrameProperty myFrameProperty = new FrameProperty();
             myFrames.add(myFrameProperty);
-            long windowId = glfwHelper.createWindow(guiList.get(i).getTitle(), myMonitor);
+            myFrameProperty.setGui(guiList.get(i));
+            long windowId = glfwHelper.createWindow(guiList.get(i).getTitle(), myMonitor, guiList.get(i).isVisible());
             guiList.get(i).setWindowId(windowId);
             myFrameProperty.setWindowId(windowId);
             myFrameProperty.setRenderer(new NvgRenderer());
@@ -112,7 +115,7 @@ public class GuiContainer {
             keeper.getChainWindowCloseCallback().add(glfwWindowCloseCallbackI);
             myFrameProperty.setSystemEventProcessor(new SystemEventProcessorImpl());
             SystemEventProcessor.addDefaultCallbacks(keeper, myFrameProperty.getSystemEventProcessor());
-        }
+        });
         loop();
         glfwHelper.destroyWindows();
     }
@@ -120,7 +123,7 @@ public class GuiContainer {
     private void loop() {
         running = true;
         while (running) {
-            for (FrameProperty myFrame : myFrames) {
+            myFrames.forEach(myFrame -> {
                 glfwMakeContextCurrent(myFrame.getWindowId());
                 GL.getCapabilities();
                 glfwSwapInterval(0);
@@ -135,7 +138,7 @@ public class GuiContainer {
                 myFrame.getSystemEventProcessor().processEvents(myFrame.getFrame(), myFrame.getContext());
                 EventProcessorProvider.getInstance().processEvents();
                 LayoutManager.getInstance().layout(myFrame.getFrame());
-            }
+            });
         }
     }
 
