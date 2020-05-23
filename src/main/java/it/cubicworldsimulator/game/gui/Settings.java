@@ -6,16 +6,18 @@ import java.util.Optional;
  * @author Lorenzo Balzani
  */
 public class Settings {
-    private Optional<Boolean> vSync;
-    private Optional<Boolean> debug;
-    private Optional<Boolean> fullscreen;
-    private Optional<Integer> width;
-    private Optional<Integer> height;
-    private Optional<Integer> renderingDistance;
-    private Optional<Long> worldSeed;
-    private Optional<String> worldName;
+    private final Optional<Boolean> vSync;
+    private final Optional<Boolean> debug;
+    private final Optional<Boolean> fullscreen;
+    private final Optional<Integer> width;
+    private final Optional<Integer> height;
+    private final Optional<Integer> renderingDistance;
+    private final Optional<Long> worldSeed;
+    private final Optional<String> worldName;
 
-    public Settings(Optional<Boolean> vSync, Optional<Boolean> debug, Optional<Boolean> fullscreen, Optional<Integer> width, Optional<Integer> height, Optional<Integer> renderingDistance, Optional<Long> worldSeed, Optional<String> worldName) {
+    public Settings(final Optional<Boolean> vSync, final Optional<Boolean> debug, final Optional<Boolean> fullscreen,
+                    final Optional<Integer> width, final Optional<Integer> height, final Optional<Integer> renderingDistance,
+                    final Optional<Long> worldSeed, final Optional<String> worldName) {
         this.vSync = vSync;
         this.debug = debug;
         this.fullscreen = fullscreen;
