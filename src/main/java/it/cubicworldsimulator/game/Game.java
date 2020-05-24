@@ -3,6 +3,8 @@ package it.cubicworldsimulator.game;
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.*;
 import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
+import it.cubicworldsimulator.engine.graphic.light.LightFactory;
+import it.cubicworldsimulator.engine.graphic.light.LightFactoryImpl;
 import it.cubicworldsimulator.engine.graphic.light.PointLight;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
 import it.cubicworldsimulator.engine.graphic.light.SpotLight;
@@ -10,8 +12,6 @@ import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
-import it.cubicworldsimulator.game.world.chunk.ChunkColumn;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
@@ -50,19 +50,22 @@ public class Game implements GameLogic {
         worldManager = new WorldManager(world, commandsQueue);
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
+           
             //LIGHTS
-            Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+            LightFactory lightFactory = new LightFactoryImpl();
+            
+            Vector3f ambientLight = lightFactory.createAmbientLight(0.3f, 0.3f, 0.3f);
             Vector3f lightColour = new Vector3f(1, 1, 1);
             Vector3f lightPosition = new Vector3f(0, 0, 1);
+            
             float specularPower = 10f;
             float lightIntensity = 1.0f;
-            PointLight pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
-            PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
-            pointLight.setAttenuation(att);
-
+            
+            PointLight pointLight = lightFactory.createPointLight(lightColour, lightPosition, lightIntensity);
+         
             lightPosition = new Vector3f(-1, 0, 0);
             lightColour = new Vector3f(1, 1, 1);
-            DirectionalLight directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
+            DirectionalLight directionalLight = lightFactory.createDirectionalLight(lightColour, lightPosition, lightIntensity);
             SceneLight sceneLight = new SceneLight(directionalLight, new PointLight[0], new SpotLight[0], ambientLight, specularPower);
 
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
