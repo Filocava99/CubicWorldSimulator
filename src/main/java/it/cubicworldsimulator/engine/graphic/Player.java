@@ -76,9 +76,10 @@ public class Player extends Camera{
     public boolean canPlayerMove(Vector3f offsetCamera, World world, WorldManager worldManager) {
 		Vector3f newCameraPosition = this.calculateNewPosition(offsetCamera);
     	Vector3i newChunkCoord = worldCoordToChunkCoord(newCameraPosition);
+    	System.out.println("newChunkCoord: " + newChunkCoord);
     	
-    	ChunkColumn chunkColumn = world.getActiveChunks().get(new Vector2f(Math.abs(newChunkCoord.x),Math.abs(newChunkCoord.z)));
-    	System.out.println("chunkColumn: " + chunkColumn.toString());
+    	ChunkColumn chunkColumn = world.getActiveChunks().get(new Vector2f(newChunkCoord.x,newChunkCoord.z));
+    	System.out.println("chunkColumn: " + chunkColumn.getPosition());
     	
     	byte blockId = chunkColumn.getBlock(new Vector3i((int)Math.floor(Math.abs(newCameraPosition.x)),(int)Math.floor(Math.abs(newCameraPosition.y)), (int)Math.floor(Math.abs(newCameraPosition.z))));
     	System.out.println("blockId: " + blockId);
