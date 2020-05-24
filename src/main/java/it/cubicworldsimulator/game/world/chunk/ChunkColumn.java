@@ -8,7 +8,11 @@ import org.joml.Vector3i;
 import java.io.Serializable;
 
 public class ChunkColumn implements Serializable {
-    private final Chunk[] chunks;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final Chunk[] chunks;
     private final Vector2f position;
 
     public ChunkColumn(Chunk[] chunks, Vector2f position){
