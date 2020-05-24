@@ -17,7 +17,7 @@ public class Camera {
     private Matrix4f viewMatrix;
 
     public Camera() {
-        this(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
+        this(new Vector3f(0, 50, 0), new Vector3f(0, 0, 0));
     }
 
     public Camera(Vector3f position, Vector3f rotation) {
@@ -27,6 +27,20 @@ public class Camera {
         viewMatrix = new Matrix4f();
     }
 
+    protected Vector3f calculateNewPosition(Vector3f offset) {
+    	Vector3f newPosition = new Vector3f(this.position);
+    	if ( offset.z != 0 ) {
+    		newPosition.x += (float)Math.sin(Math.toRadians(rotation.y)) * -1.0f * offset.z;
+    		newPosition.z += (float)Math.cos(Math.toRadians(rotation.y)) * offset.z;
+        }
+        if ( offset.x != 0) {
+        	newPosition.x += (float)Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offset.x;
+        	newPosition.z += (float)Math.cos(Math.toRadians(rotation.y - 90)) * offset.x;
+        }
+        newPosition.y += offset.y;
+    	return newPosition;
+    }
+    
     public Matrix4f updateViewMatrix(){
         return transformation.updateGenericViewMatrix(position, rotation, viewMatrix);
     }
@@ -46,7 +60,11 @@ public class Camera {
     }
 
     public void movePosition(float offsetX, float offsetY, float offsetZ) {
-        if ( offsetZ != 0 ) {
+    	Vector3f newPosition = calculateNewPosition(new Vector3f(offsetX,offsetY,offsetZ));
+    	this.position.x = newPosition.x;
+    	this.position.y = newPosition.y;
+    	this.position.z = newPosition.z;
+    	/*  if ( offsetZ != 0 ) {
             position.x += (float)Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;
             position.z += (float)Math.cos(Math.toRadians(rotation.y)) * offsetZ;
         }
@@ -54,7 +72,7 @@ public class Camera {
             position.x += (float)Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offsetX;
             position.z += (float)Math.cos(Math.toRadians(rotation.y - 90)) * offsetX;
         }
-        position.y += offsetY;
+        position.y += offsetY; */
     }
 
     public Vector3f getRotation() {

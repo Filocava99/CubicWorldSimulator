@@ -10,6 +10,8 @@ import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
+import it.cubicworldsimulator.game.world.chunk.ChunkColumn;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
@@ -110,12 +112,22 @@ public class Game implements GameLogic {
     @Override
     public void update(float interval, MouseInput mouseInput) {
         logger.trace("Updating");
-        // Update camera position
-
-        scene.getPlayer().movePosition(scene.getPlayer().getCameraMovement().x * scene.getPlayer().getCameraStep(),
+        
+        Vector3f offsetCamera = new Vector3f(scene.getPlayer().getCameraMovement().x * scene.getPlayer().getCameraStep(),
                 scene.getPlayer().getCameraMovement().y * scene.getPlayer().getCameraStep(),
                 scene.getPlayer().getCameraMovement().z * scene.getPlayer().getCameraStep());
+        
+        // Update camera position
 
+     /*   scene.getPlayer().movePosition(scene.getPlayer().getCameraMovement().x * scene.getPlayer().getCameraStep(),
+                scene.getPlayer().getCameraMovement().y * scene.getPlayer().getCameraStep(),
+                scene.getPlayer().getCameraMovement().z * scene.getPlayer().getCameraStep());
+*/
+        
+        if(scene.getPlayer().canPlayerMove(offsetCamera, world, worldManager)) {
+        	scene.getPlayer().movePosition(offsetCamera.x, offsetCamera.y, offsetCamera.z);
+        };
+        
         // Update scene.getPlayer()() based on mouse
 
         if (mouseInput.isRightButtonPressed()) {
@@ -123,9 +135,10 @@ public class Game implements GameLogic {
             scene.getPlayer().moveRotation(rotVec.x * mouseInput.getMouseSensitivity(), rotVec.y * mouseInput.getMouseSensitivity(), 0);
         }
 
-        if (scene.getPlayer().didPlayerChangedChunk()) {
-            worldManager.updateActiveChunksAsync(scene.getPlayer().getChunkPosition());
-        }
+		
+		  if (scene.getPlayer().didPlayerChangedChunk()) {
+		  worldManager.updateActiveChunksAsync(scene.getPlayer().getChunkPosition()); }
+		 
         for (int i = 0; i < 1; i++) {
             Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
             if (pair != null) {
