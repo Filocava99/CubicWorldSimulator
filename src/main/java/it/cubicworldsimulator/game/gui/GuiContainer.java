@@ -66,12 +66,13 @@ public class GuiContainer {
          * @param myMonitor encapsulate information about the monitor
          * @return
          */
-        private long createWindow(String title, MonitorProperty myMonitor, boolean isVisible) {
+        private long createWindow(String title, MonitorProperty myMonitor) {
             long windowId = glfwCreateWindow(myMonitor.getWidth(), myMonitor.getHeight(),
                     title, NULL, NULL);
             glfwShowWindow(windowId);
             glfwMakeContextCurrent(windowId);
             GL.createCapabilities();
+            glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
             glfwSwapInterval(0);
             return windowId;
         }
@@ -106,7 +107,7 @@ public class GuiContainer {
             FrameProperty myFrameProperty = new FrameProperty();
             myFrames.add(myFrameProperty);
             myFrameProperty.setGui(guiList.get(i));
-            long windowId = glfwHelper.createWindow(guiList.get(i).getTitle(), myMonitor, guiList.get(i).isVisible());
+            long windowId = glfwHelper.createWindow(guiList.get(i).getTitle(), myMonitor);
             guiList.get(i).setWindowId(windowId);
             myFrameProperty.setWindowId(windowId);
             myFrameProperty.setRenderer(new NvgRenderer());

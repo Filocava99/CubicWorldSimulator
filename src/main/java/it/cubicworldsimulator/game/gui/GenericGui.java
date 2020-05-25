@@ -48,6 +48,10 @@ public abstract class GenericGui extends Panel {
         this.windowId = windowId;
     }
 
+    protected float getFontSize() {
+        return guiFactory.getFontSize();
+    }
+
     /**
      * Switch to the different theme
      */
