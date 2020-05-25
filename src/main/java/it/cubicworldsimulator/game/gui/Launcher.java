@@ -5,16 +5,15 @@ import it.cubicworldsimulator.game.Game;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
-import org.liquidengine.legui.component.Button;
-import org.liquidengine.legui.component.Label;
-import org.liquidengine.legui.component.Panel;
-import org.liquidengine.legui.component.TextInput;
+import org.liquidengine.legui.component.*;
 import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.theme.Themes;
 import org.liquidengine.legui.theme.colored.FlatColoredTheme;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.isNumeric;
@@ -48,6 +47,8 @@ public class Launcher extends GenericGui {
     //Settings
     private final Settings.Builder mySettingsBuilder;
 
+    List<Component> objects = new ArrayList<>();
+
     /**
      * Constructor gets resolution of primary monitor and invoke the creationGui method.
      */
@@ -65,39 +66,54 @@ public class Launcher extends GenericGui {
 
     public void createGui() {
         Panel settings = new Panel(0, 200, (float) widthScreen, (float) heightScreen);
-        Label settingsLabel = createOptionLabel("Settings", settings);
-        createOptionLabel("vSync", settings);
+        objects.add(createOptionLabel("Settings", settings));
+        objects.add(createOptionLabel("vSync", settings));
         vSyncInput = guiFactory.createTextInput("true", settings);
-        createOptionLabel("Debug", settings);
+        objects.add(vSyncInput);
+        objects.add(createOptionLabel("Debug", settings));
         debugInput = guiFactory.createTextInput("false", settings);
-        createOptionLabel("Fullscreen", settings);
+        objects.add(debugInput);
+        objects.add(createOptionLabel("Fullscreen", settings));
         fullScreenInput = guiFactory.createTextInput("true", settings);
+        objects.add(fullScreenInput);
         Label widthLabel = createOptionLabel("Width", settings);
+        objects.add(widthLabel);
         widthInput = guiFactory.createTextInput("1920", settings);
-        guiFactory.createLabel("Default is 1920",
-                new Vector2f(widthInput.getPosition().x + widthInput.getSize().x + 20, widthLabel.getPosition().y), settings);
+        objects.add(widthInput);
+        objects.add(guiFactory.createLabel("Default is 1920",
+                new Vector2f(widthInput.getPosition().x + widthInput.getSize().x + 20, widthLabel.getPosition().y), settings));
         Label heightLabel = createOptionLabel("Height", settings);
+        objects.add(heightLabel);
         heightInput = guiFactory.createTextInput("1080", settings);
-        guiFactory.createLabel("Default is 1080",
-                new Vector2f(heightInput.getPosition().x + heightInput.getSize().x + 20, heightLabel.getPosition().y), settings);
+        objects.add(heightInput);
+        objects.add(guiFactory.createLabel("Default is 1080",
+                new Vector2f(heightInput.getPosition().x + heightInput.getSize().x + 20, heightLabel.getPosition().y), settings));
         Label renderingDistanceLabel = createOptionLabel("Rendering distance", settings);
+        objects.add(renderingDistanceLabel);
         renderingDistanceInput = guiFactory.createTextInput("1", settings);
-        guiFactory.createLabel("Value must be greater or equal to 1",
-                new Vector2f(renderingDistanceInput.getPosition().x + renderingDistanceInput.getSize().x + 20, renderingDistanceLabel.getPosition().y), settings);
+        objects.add(renderingDistanceInput);
+        objects.add(guiFactory.createLabel("Value must be greater or equal to 1",
+                new Vector2f(renderingDistanceInput.getPosition().x + renderingDistanceInput.getSize().x + 20, renderingDistanceLabel.getPosition().y), settings));
         Label worldSeedLabel = createOptionLabel("World seed", settings);
+        objects.add(worldSeedLabel);
         worldSeedInput = guiFactory.createTextInput("424243563456", settings);
-        guiFactory.createLabel("Value must be numeric",
-                new Vector2f(worldSeedInput.getPosition().x + worldSeedInput.getSize().x + 20, worldSeedLabel.getPosition().y), settings);
+        objects.add(worldSeedInput);
+        objects.add(guiFactory.createLabel("Value must be numeric",
+                new Vector2f(worldSeedInput.getPosition().x + worldSeedInput.getSize().x + 20, worldSeedLabel.getPosition().y), settings));
         Label worldStringLabel = createOptionLabel("World name", settings);
+        objects.add(worldStringLabel);
         worldStringInput = guiFactory.createTextInput("world-1", settings);
-        guiFactory.createLabel("World name can be whatever you want",
-                new Vector2f(worldStringInput.getPosition().x + worldStringInput.getSize().x + 20, worldStringLabel.getPosition().y), settings);
-        launchGame = guiFactory.createButton("Start game", new Vector2f(290, 50), new Vector2f(80, 50));
-        add(launchGame);
+        objects.add(worldStringInput);
+        objects.add(guiFactory.createLabel("World name can be whatever you want",
+                new Vector2f(worldStringInput.getPosition().x + worldStringInput.getSize().x + 20, worldStringLabel.getPosition().y), settings));
+        launchGame = guiFactory.createButton("Start game", new Vector2f(290, 50), this);
+        objects.add(launchGame);
         startGame();
         add(settings);
         changeTheme();
-        settingsLabel.getStyle().setFontSize(40f);
+        objects.forEach(item -> {
+            item.getStyle().setFontSize(getFontSize());
+        });
     }
 
     /**

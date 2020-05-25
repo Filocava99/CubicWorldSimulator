@@ -16,7 +16,8 @@ public interface GuiFactory {
     int getWidth();
     void setWidth(int width);
     void setAspectRatio();
-    Button createButton(String text, Vector2f position, Vector2f size);
+    float getFontSize();
+    Button createButton(String text, Vector2f position, Panel panelToAdd);
     Label createLabel(String messageText, Vector2f position, Panel panelToAdd);
     TextInput createTextInput(String title, Panel panelToAdd);
 }
