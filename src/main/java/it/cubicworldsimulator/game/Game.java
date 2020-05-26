@@ -108,9 +108,18 @@ public class Game implements GameLogic {
             scene.getCamera().getCameraMovement().y = 1;
         }
         if(window.isKeyPressed(GLFW_KEY_T)) {
-        	scene.getPlayer().changeView(View.THIRDPERSON);
+        	scene.getPlayer().setStrategy((e)->{
+        		Vector3f newPosition = new Vector3f(e);
+        		newPosition.x += Player.DISTANCE_FROM_CAMERA; //Spostarlo in costants
+        		newPosition.y -= Player.DISTANCE_FROM_CAMERA;
+        		newPosition.z += Player.DISTANCE_FROM_CAMERA;
+        		return newPosition;
+        	});
         }else if(window.isKeyPressed(GLFW_KEY_F)) {
-        	scene.getPlayer().changeView(View.FIRSTPERSON);
+        	scene.getPlayer().setStrategy(e -> {
+        		Vector3f newPosition = new Vector3f(e);
+        		return newPosition;
+        	});
         }
     }
 
@@ -121,7 +130,7 @@ public class Game implements GameLogic {
         scene.getCamera().movePosition(scene.getCamera().getCameraMovement().x * scene.getCamera().getCameraStep(),
                 scene.getCamera().getCameraMovement().y * scene.getCamera().getCameraStep(),
                 scene.getCamera().getCameraMovement().z * scene.getCamera().getCameraStep());
-        //scene.getPlayer().movePlayer();
+       
         
         // Update scene.getPlayer()() based on mouse
         if (mouseInput.isRightButtonPressed()) {
