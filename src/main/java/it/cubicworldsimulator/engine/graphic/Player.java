@@ -4,17 +4,21 @@ import it.cubicworldsimulator.engine.GameItem;
 import it.cubicworldsimulator.game.utility.Constants;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
+
 public class Player implements Observer{
-	private static final float DISTANCE_FROM_CAMERA = 30;
+	public static final float DISTANCE_FROM_CAMERA = 30;
     private Vector3f lastPos;
     private Vector3f position;
     private Vector3i lastChunk;
     private GameItem playerModel;
-    private View view;
+    private VisualizationStrategy visualizationStrategy;
     
     public Player(String objModel, String textureFile, Vector3f position){
     	this.position  = position;
-    	this.view = View.FIRSTPERSON;
+    	this.visualizationStrategy = (e) -> {
+    		Vector3f newPosition = new Vector3f(e);
+    		return newPosition;
+    	};
     	OBJLoader objLoader = new OBJLoader();
 		try {
 			Mesh playerMesh = objLoader.loadFromOBJ(objModel, textureFile);
@@ -23,11 +27,11 @@ public class Player implements Observer{
 			e.printStackTrace();
 		}
     }
-    
-    public void changeView(View view) {
-    	this.view = view;
-    }
+
   
+    public void setStrategy(VisualizationStrategy visualizationStrategy) {
+    	this.visualizationStrategy = visualizationStrategy;
+    }
     public boolean didPlayerMove(){
         final boolean result = this.position.equals(lastPos);
         if(result){
@@ -61,13 +65,7 @@ public class Player implements Observer{
 
 	@Override
 	public void update(Vector3f position) {
-		this.position = new Vector3f(position.x, position.y, position.z);
-		if(this.view.equals(View.THIRDPERSON)) {
-			//CAVA E' QUESTO CHE VA CORRETTO 
-			this.position.x += DISTANCE_FROM_CAMERA;
-			this.position.y -= DISTANCE_FROM_CAMERA;
-			this.position.z += DISTANCE_FROM_CAMERA;
-		}
+		this.position = this.visualizationStrategy.calculatePosition(position);
 		System.out.println("PLAYER POSITION:" + this.position.x + " " + this.position.y + " " + this.position.z);
 	}
 }
