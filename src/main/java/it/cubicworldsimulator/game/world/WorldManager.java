@@ -25,8 +25,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class WorldManager {
 
-    private static final Logger logger = LogManager.getLogger(WorldManager.class);
-    private final int renderingDistance = 8;
+    private static final Logger LOGGER = LogManager.getLogger(WorldManager.class);
+    private static final int LOADED_CHUNKS_RADIUS = 8;
 
     private final World world;
     private final CommandsQueue commandsQueue;
@@ -51,7 +51,7 @@ public class WorldManager {
             loadConfig("src/main/resources/default.yml");
             worldTexture = new Material(loader.loadTexture(textureFile));
         } catch (Exception e) {
-            logger.error(e);
+            LOGGER.error(e);
             System.exit(1);
         }
     }
@@ -72,7 +72,7 @@ public class WorldManager {
         Queue<Vector2f> dumpQueue = new LinkedBlockingQueue<>();
         for (Map.Entry<Vector2f, ChunkColumn> entry : world.getActiveChunks().entrySet()) {
             Vector2f chunkColumnPosition = entry.getValue().getPosition();
-            if (chunkColumnPosition.x < chunkPosition.x - renderingDistance || chunkColumnPosition.x > chunkPosition.x + renderingDistance || chunkColumnPosition.y < chunkPosition.z - renderingDistance || chunkColumnPosition.y > chunkPosition.z + renderingDistance) {
+            if (chunkColumnPosition.x < chunkPosition.x - LOADED_CHUNKS_RADIUS || chunkColumnPosition.x > chunkPosition.x + LOADED_CHUNKS_RADIUS || chunkColumnPosition.y < chunkPosition.z - LOADED_CHUNKS_RADIUS || chunkColumnPosition.y > chunkPosition.z + LOADED_CHUNKS_RADIUS) {
                 ChunkColumn chunkColumn = entry.getValue();
                 chunkLoader.saveChunkColumn(chunkColumn);
                 for (Chunk chunk : chunkColumn.getChunks()) {
@@ -89,8 +89,8 @@ public class WorldManager {
 
     private void loadNewChunks(Vector3i chunkPosition) {
         var activeChunks = world.getActiveChunks();
-        for (int x = chunkPosition.x - renderingDistance; x <= chunkPosition.x + renderingDistance; x++) {
-            for (int z = chunkPosition.z - renderingDistance; z <= chunkPosition.z + renderingDistance; z++) {
+        for (int x = chunkPosition.x - LOADED_CHUNKS_RADIUS; x <= chunkPosition.x + LOADED_CHUNKS_RADIUS; x++) {
+            for (int z = chunkPosition.z - LOADED_CHUNKS_RADIUS; z <= chunkPosition.z + LOADED_CHUNKS_RADIUS; z++) {
                 Vector2f newChunkCoord = new Vector2f(x, z);
                 if (!activeChunks.containsKey(newChunkCoord)) {
                     ChunkColumn chunkColumn = loadChunkColumn(newChunkCoord);
@@ -144,7 +144,7 @@ public class WorldManager {
                 int i = 0;
                 while (iterator.hasNext()) {
                     if (i == 6) {
-                        logger.warn("Found more than six coordinates for block '" + blockBuilder.getName() + "' !");
+                        LOGGER.warn("Found more than six coordinates for block '" + blockBuilder.getName() + "' !");
                         break;
                     }
                     YAMLComponent faceInfo = new YAMLComponent(iterator.next().getValue());
