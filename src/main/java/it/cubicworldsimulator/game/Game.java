@@ -5,7 +5,6 @@ import it.cubicworldsimulator.engine.graphic.*;
 import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
 import it.cubicworldsimulator.engine.graphic.light.PointLight;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
-import it.cubicworldsimulator.engine.graphic.light.SpotLight;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
@@ -61,8 +60,12 @@ public class Game implements GameLogic {
             lightPosition = new Vector3f(-1, 0, 0);
             lightColour = new Vector3f(1, 1, 1);
             DirectionalLight directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
-            SceneLight sceneLight = new SceneLight(directionalLight, new PointLight[0], new SpotLight[0], ambientLight, specularPower);
-
+            SceneLight sceneLight = new SceneLight.Builder()
+            		.addDirectionalLight(directionalLight)
+            		.addAmbientLight(ambientLight)
+            		.addSpecularPower(specularPower)
+            		.build();
+            
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
             
             this.opaqueMeshMap.put(scene.getPlayer().getPlayerModel().getMesh(), List.of(scene.getPlayer().getPlayerModel()));
