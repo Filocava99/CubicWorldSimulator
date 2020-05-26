@@ -1,6 +1,8 @@
 package it.cubicworldsimulator.engine.graphic.light;
 
+import java.util.Objects;
 import org.joml.Vector3f;
+
 
 public class SceneLight {
 
@@ -36,5 +38,64 @@ public class SceneLight {
 
     public float getSpecularPower() {
         return specularPower;
+    }
+    
+    public static class Builder implements SceneLightBuilder{
+    	
+    	private DirectionalLight directionalLight;
+    	private PointLight[] pointLights;
+    	private SpotLight[] spotLights;    	
+    	private Vector3f ambientLight;
+    	private float specularPower;
+    	
+		@Override
+		public SceneLightBuilder addDirectionalLight(DirectionalLight light) throws IllegalStateException {
+			Objects.requireNonNull(light);
+			if(this.directionalLight != null) {
+				throw new IllegalStateException();
+			}
+			this.directionalLight = light;
+			return this;
+		}
+
+		@Override
+		public SceneLightBuilder addPointLight(PointLight light) {
+			Objects.requireNonNull(light);
+			this.pointLights[this.pointLights.length] = light;
+			return this;
+		}
+
+		@Override
+		public SceneLightBuilder addSpotLight(SpotLight light) {
+			Objects.requireNonNull(light);
+			this.spotLights[this.spotLights.length] = light;
+			return this;
+		}
+
+		@Override
+		public SceneLightBuilder addAmbientLight(Vector3f light) throws IllegalStateException {
+			Objects.requireNonNull(light);
+			if(this.ambientLight != null) {
+				throw new IllegalStateException();
+			}
+			this.ambientLight = light;
+			return this;
+		}
+
+		@Override
+		public SceneLightBuilder addSpecularPower(float specularPower) {
+			Objects.requireNonNull(specularPower);
+			this.specularPower = specularPower;
+			return this;
+		}
+
+		@Override
+		public SceneLight build() throws IllegalStateException {
+			if( this.ambientLight == null || this.directionalLight == null ) {
+				throw new IllegalStateException();
+			}
+			return new SceneLight(this.directionalLight, this.pointLights, this.spotLights, this.ambientLight, this.specularPower);
+		}
+    	
     }
 }
