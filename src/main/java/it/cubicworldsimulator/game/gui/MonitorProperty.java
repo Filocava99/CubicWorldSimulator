@@ -1,35 +1,15 @@
 package it.cubicworldsimulator.game.gui;
 
-/**
- * @author Lorenzo Balzani
- */
+public interface MonitorProperty {
+    int getHeight();
 
-public class MonitorProperty {
-    private int height;
-    private int width;
-    private int refreshRate;
+    void setHeight(int height);
 
-    public int getHeight() {
-        return height;
-    }
+    int getWidth();
 
-    public void setHeight(int height) {
-        this.height = height;
-    }
+    void setWidth(int width);
 
-    public int getWidth() {
-        return width;
-    }
+    int getRefreshRate();
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getRefreshRate() {
-        return refreshRate;
-    }
-
-    public void setRefreshRate(int refreshRate) {
-        this.refreshRate = refreshRate;
-    }
+    void setRefreshRate(int refreshRate);
 }

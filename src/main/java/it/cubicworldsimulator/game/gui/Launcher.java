@@ -47,7 +47,7 @@ public class Launcher extends GenericGui {
     //Settings
     private final Settings.Builder mySettingsBuilder;
 
-    List<Component> objects = new ArrayList<>();
+    private final List<Component> objects = new ArrayList<>();
 
     /**
      * Constructor gets resolution of primary monitor and invoke the creationGui method.
@@ -119,7 +119,7 @@ public class Launcher extends GenericGui {
     /**
      * Perform all operations with the goal of starting the game
      */
-    private void startGame() {
+    public void startGame() {
         launchGame.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
             if (CLICK == event.getAction() && checkGameCanStart()) {
                 final Settings mySettings = performSettingsBuilder();
@@ -152,6 +152,7 @@ public class Launcher extends GenericGui {
                          .height(Integer.parseInt(heightInput.getTextState().getText()))
                          .worldName(worldStringInput.getTextState().getText())
                          .worldSeed(Long.parseLong(worldSeedInput.getTextState().getText()))
+                         .renderingDistance(Integer.parseInt(renderingDistanceInput.getTextState().getText()))
                          .fullscreen(Boolean.parseBoolean(fullScreenInput.getTextState().getText()))
                          .vSync(Boolean.parseBoolean(vSyncInput.getTextState().getText()))
                          .debug(Boolean.parseBoolean(debugInput.getTextState().getText()))
