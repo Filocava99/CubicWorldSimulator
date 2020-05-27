@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 public class Player implements Observer{
-	public static final float DISTANCE_FROM_CAMERA = 30;
+	
     private Vector3f lastPos;
     private Vector3f position;
     private Vector3i lastChunk;
