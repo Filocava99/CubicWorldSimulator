@@ -5,5 +5,5 @@ import org.joml.Vector3f;
 @FunctionalInterface
 public interface VisualizationStrategy {
 	
-	public Vector3f calculatePosition(Vector3f position);
+	public Vector3f calculatePosition(Vector3f position, Vector3f rotation);
 }

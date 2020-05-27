@@ -9,14 +9,16 @@ public class Player implements Observer{
 	
     private Vector3f lastPos;
     private Vector3f position;
+    private Vector3f rotation;
     private Vector3i lastChunk;
     private GameItem playerModel;
     private VisualizationStrategy visualizationStrategy;
     
     public Player(String objModel, String textureFile, Vector3f position){
     	this.position  = position;
-    	this.visualizationStrategy = (e) -> {
-    		Vector3f newPosition = new Vector3f(e);
+    	this.rotation = new Vector3f(0,0,0);
+    	this.visualizationStrategy = (p, r) -> {
+    		Vector3f newPosition = new Vector3f(p);
     		return newPosition;
     	};
     	OBJLoader objLoader = new OBJLoader();
@@ -64,8 +66,9 @@ public class Player implements Observer{
     }
 
 	@Override
-	public void update(Vector3f position) {
-		this.position = this.visualizationStrategy.calculatePosition(position);
+	public void update(Vector3f position, Vector3f rotation) {
+		this.rotation = rotation;
+		this.position = this.visualizationStrategy.calculatePosition(position, this.rotation);
 		System.out.println("PLAYER POSITION:" + this.position.x + " " + this.position.y + " " + this.position.z);
 	}
 }
