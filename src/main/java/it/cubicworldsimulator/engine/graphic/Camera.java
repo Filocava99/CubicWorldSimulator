@@ -64,7 +64,7 @@ public class Camera{
         position.y += offsetY;
    
         this.observer.stream().forEach( (e)->{
-        	e.update(this.position);
+        	e.update(this.position, this.rotation);
         });
         
         System.out.println("CAMERA POSITION:" + position.x + " " + position.y + " " + position.z);
@@ -85,6 +85,10 @@ public class Camera{
         rotation.x += offsetX;
         rotation.y += offsetY;
         rotation.z += offsetZ;
+        
+        this.observer.stream().forEach( (e)->{
+        	e.update(this.position, this.rotation);
+        });
     }
 
     public float getCameraStep() {

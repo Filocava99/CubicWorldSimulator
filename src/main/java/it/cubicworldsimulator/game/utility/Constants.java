@@ -14,6 +14,7 @@ public class Constants {
     public static final int minHeight = 0;
     public static final String installationFolder;
     public static final float DISTANCE_FROM_CAMERA = 15;
+    
     static {
         logBase2ChunkSize = (int)AdvancedMath.logInBase(chunkAxisSize, 2);
         System.out.println(logBase2ChunkSize);
