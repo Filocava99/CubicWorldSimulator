@@ -36,7 +36,6 @@ public class LauncherFactory implements GuiFactory {
     //Screen size
     private int width;
     private int height;
-    private float aspectRatio;
 
     //Fonts and colors
     protected float buttonFontSize = 30;
@@ -68,12 +67,12 @@ public class LauncherFactory implements GuiFactory {
     public void setAspectRatio() {
         logger.debug("Height: " + this.height);
         logger.debug("Width: " + this.width);
-        this.aspectRatio=(this.height*this.width)/800_000f;
-        this.buttonFontSize=aspectRatio*20f;
-        this.X_LABEL*=aspectRatio;
-        this.Y_START_VALUE*=aspectRatio;
-        this.X_INPUT_OFFSET*=aspectRatio;
-        this.Y_OFFSET*=aspectRatio;
+        float aspectRatio = (this.height * this.width) / 800_000f;
+        this.buttonFontSize= aspectRatio *20f;
+        this.X_LABEL*= aspectRatio;
+        this.Y_START_VALUE*= aspectRatio;
+        this.X_INPUT_OFFSET*= aspectRatio;
+        this.Y_OFFSET*= aspectRatio;
         this.newYLabel=Y_START_VALUE;
         this.buttonWidth *= aspectRatio;
         this.buttonHeight *= aspectRatio;
