@@ -56,10 +56,6 @@ public class GameEngine extends Thread {
         this.mouseInput.init(this.window);
     }
 
-    private void dayNight() {
-
-    }
-
     protected void gameLoop() {
         float elapsedTime;
         float accumulator = 0f;

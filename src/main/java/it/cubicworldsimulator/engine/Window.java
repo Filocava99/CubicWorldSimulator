@@ -38,9 +38,9 @@ public class Window {
 
     private boolean resized;
 
-    private boolean fullscreen;
+    private final boolean fullscreen;
 
-    private Matrix4f projectionMatrix;
+    private final Matrix4f projectionMatrix;
 
     private boolean vSync;
     private final boolean debug;

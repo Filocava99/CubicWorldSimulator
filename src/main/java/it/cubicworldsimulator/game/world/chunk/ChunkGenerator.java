@@ -18,8 +18,8 @@ public class ChunkGenerator {
 
     private final OpenSimplexNoise noise;
     private final WorldManager worldManager;
-    private int waterLevel = 30;
-    private int stoneLevel = 60;
+    private final int waterLevel = 30;
+    private final int stoneLevel = 60;
 
     public ChunkGenerator(long seed, WorldManager worldManager) {
         this.noise = new OpenSimplexNoise(seed);

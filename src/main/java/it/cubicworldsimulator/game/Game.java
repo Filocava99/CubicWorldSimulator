@@ -40,10 +40,10 @@ public class Game implements GameLogic {
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
     private Window window;
-    private Timer timer = new Timer();
+    private final Timer timer = new Timer();
     private static final float DELTA_NIGHT = 0.00250f;
     private long time = 0;
-    private Vector4f newColour = new Vector4f(0.0f, 0.0f, 0.2f, 1.0f);
+    private final Vector4f newColour = new Vector4f(0.0f, 0.0f, 0.2f, 1.0f);
 
     public Game(Settings mySettings) {
         renderer = new RendererImpl();

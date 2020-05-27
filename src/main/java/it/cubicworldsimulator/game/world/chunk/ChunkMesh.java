@@ -21,8 +21,8 @@ public class ChunkMesh implements Serializable {
     private final transient Chunk chunk;
     private final transient Map<Object, BlockMaterial> blocksTypes;
 
-    private VBOContainer opaqueMesh;
-    private VBOContainer transparentMesh;
+    private final VBOContainer opaqueMesh;
+    private final VBOContainer transparentMesh;
     private transient boolean meshesReady = false;
 
     public ChunkMesh(final Chunk chunk, Map<Object, BlockMaterial> blocksTypes, Material material) {

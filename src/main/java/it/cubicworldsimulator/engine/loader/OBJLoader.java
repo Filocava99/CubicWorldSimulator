@@ -68,7 +68,7 @@ public class OBJLoader {
         return this.reorderLists();
     }
 
-    private Mesh reorderLists() throws Exception {
+    private Mesh reorderLists() {
         List<Integer> indices = new ArrayList<>();
         // Create position array in the order it has been declared
         float[] posArr = new float[this.vertices.size() * 3];

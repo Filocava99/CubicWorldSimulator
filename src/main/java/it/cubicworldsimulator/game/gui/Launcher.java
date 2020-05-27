@@ -9,7 +9,6 @@ import org.liquidengine.legui.component.*;
 import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.style.color.ColorConstants;
-import org.liquidengine.legui.theme.Themes;
 import org.liquidengine.legui.theme.colored.FlatColoredTheme;
 
 import java.util.ArrayList;
@@ -110,7 +109,7 @@ public class Launcher extends GenericGui {
         objects.add(launchGame);
         startGame();
         add(settings);
-        changeTheme();
+        changeTheme(MyThemes.FLAT_COLORED_THEME);
         objects.forEach(item -> {
             item.getStyle().setFontSize(getFontSize());
         });
@@ -187,8 +186,4 @@ public class Launcher extends GenericGui {
         return "CubicWorldSimulator Launcher";
     }
 
-    @Override
-    protected void changeTheme() {
-        flatColoredTheme();
-    }
 }

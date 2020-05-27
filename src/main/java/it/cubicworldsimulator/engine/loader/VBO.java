@@ -1,7 +1,7 @@
 package it.cubicworldsimulator.engine.loader;
 
 public class VBO {
-    int Id;
+    final int Id;
 
     public VBO(int Id) {
         this.Id = Id;
