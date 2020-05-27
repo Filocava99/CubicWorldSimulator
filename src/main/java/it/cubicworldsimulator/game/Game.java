@@ -6,6 +6,7 @@ import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
 import it.cubicworldsimulator.engine.graphic.light.PointLight;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
+import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
@@ -113,9 +114,9 @@ public class Game implements GameLogic {
         if(window.isKeyPressed(GLFW_KEY_T)) {
         	scene.getPlayer().setStrategy((e)->{
         		Vector3f newPosition = new Vector3f(e);
-        		newPosition.x += Player.DISTANCE_FROM_CAMERA; //Spostarlo in costants
-        		newPosition.y -= Player.DISTANCE_FROM_CAMERA;
-        		newPosition.z += Player.DISTANCE_FROM_CAMERA;
+        		//newPosition.x += Player.DISTANCE_FROM_CAMERA; //Spostarlo in costants
+        		newPosition.y -= Constants.DISTANCE_FROM_CAMERA;
+        		newPosition.z -= Constants.DISTANCE_FROM_CAMERA;
         		return newPosition;
         	});
         }else if(window.isKeyPressed(GLFW_KEY_F)) {
