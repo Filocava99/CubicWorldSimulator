@@ -18,6 +18,6 @@ public interface GuiFactory {
     void setAspectRatio();
     float getFontSize();
     Button createButton(String text, Vector2f position, Panel panelToAdd);
-    Label createLabel(String messageText, Vector2f position, Panel panelToAdd);
+    Label createLabel(String text, Vector2f position, Panel panelToAdd);
     TextInput createTextInput(String title, Panel panelToAdd);
 }

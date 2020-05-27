@@ -6,18 +6,18 @@ import java.util.Optional;
  * @author Lorenzo Balzani
  */
 public class Settings {
-    private final Optional<Boolean> vSync;
-    private final Optional<Boolean> debug;
-    private final Optional<Boolean> fullscreen;
-    private final Optional<Integer> width;
-    private final Optional<Integer> height;
-    private final Optional<Integer> renderingDistance;
-    private final Optional<Long> worldSeed;
-    private final Optional<String> worldName;
+    private final boolean vSync;
+    private final boolean debug;
+    private final boolean fullscreen;
+    private final int width;
+    private final int height;
+    private final int renderingDistance;
+    private final long worldSeed;
+    private final String worldName;
 
-    public Settings(final Optional<Boolean> vSync, final Optional<Boolean> debug, final Optional<Boolean> fullscreen,
-                    final Optional<Integer> width, final Optional<Integer> height, final Optional<Integer> renderingDistance,
-                    final Optional<Long> worldSeed, final Optional<String> worldName) {
+    public Settings(final boolean vSync, final boolean debug, final boolean fullscreen,
+                    final int width, final int height, final int renderingDistance,
+                    final long worldSeed, final String worldName) {
         this.vSync = vSync;
         this.debug = debug;
         this.fullscreen = fullscreen;
@@ -29,35 +29,35 @@ public class Settings {
     }
 
     public boolean getvSync() {
-        return vSync.orElse(true);
+        return vSync;
     }
 
     public boolean getDebug() {
-        return debug.orElse(false);
+        return debug;
     }
 
     public boolean getFullscreen() {
-        return fullscreen.orElse(true);
+        return fullscreen;
     }
 
     public int getWidth() {
-        return width.orElse(1920);
+        return width;
     }
 
     public int getHeight() {
-        return height.orElse(1080);
+        return height;
     }
 
     public int getRenderingDistance() {
-        return renderingDistance.orElse(1);
+        return renderingDistance;
     }
 
     public long getWorldSeed() {
-        return worldSeed.orElse(424243563456L);
+        return worldSeed;
     }
 
     public String getWorldName() {
-        return worldName.orElse("world-1");
+        return worldName;
     }
 
     /**
@@ -74,7 +74,7 @@ public class Settings {
         private Optional<String> worldName = Optional.empty();
 
         public Builder vSync(boolean vSync){
-            this.vSync = Optional.ofNullable(vSync);
+            this.vSync = Optional.of(vSync);
             return this;
         }
 
@@ -117,8 +117,9 @@ public class Settings {
         }
 
         public Settings build() {
-            return new Settings(vSync, debug, fullscreen, width, height,
-                    renderingDistance, worldSeed, worldName);
+            return new Settings(vSync.orElse(true), debug.orElse(false),
+                    fullscreen.orElse(true), width.orElse(1920), height.orElse(1080),
+                    renderingDistance.orElse(1), worldSeed.orElse(424243563456L), worldName.orElse("world-1"));
         }
     }
 }

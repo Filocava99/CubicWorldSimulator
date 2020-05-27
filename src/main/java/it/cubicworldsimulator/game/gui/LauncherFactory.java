@@ -64,10 +64,6 @@ public class LauncherFactory implements GuiFactory {
         this.width = width;
     }
 
-    public float getAspectRatio() {
-        return aspectRatio;
-    }
-
     @Override
     public void setAspectRatio() {
         logger.debug("Height: " + this.height);
