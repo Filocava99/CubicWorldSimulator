@@ -34,7 +34,7 @@ public class GuiContainer {
     private final List<FrameProperty> myFrames = new ArrayList<>();
     private final GlfwHelper glfwHelper = new GlfwHelper();
     private MonitorProperty myMonitor;
-    private final List<GenericGui> guiList;
+    private List<GenericGui> guiList;
 
     private class GlfwHelper {
         /**
@@ -90,8 +90,7 @@ public class GuiContainer {
         }
     }
 
-    public GuiContainer(List<GenericGui> guiList) {
-        this.guiList = guiList;
+    public GuiContainer() {
         glfwInit();
         System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
         System.setProperty("java.awt.headless", Boolean.TRUE.toString());
@@ -100,7 +99,8 @@ public class GuiContainer {
         }
     }
 
-    public void initContainer() {
+    public void initContainer(List<GenericGui> guiList) {
+        this.guiList = guiList;
         glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err));
         GLFWKeyCallbackI glfwKeyCallbackI = (w1, key, code, action, mods) -> running = !(key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE);
         GLFWWindowCloseCallbackI glfwWindowCloseCallbackI = w -> running = false;

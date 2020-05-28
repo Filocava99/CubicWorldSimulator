@@ -3,7 +3,6 @@ package it.cubicworldsimulator.game.world.chunk;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.engine.loader.LoaderUtility;
-import it.cubicworldsimulator.engine.loader.MeshBuilder;
 import it.cubicworldsimulator.engine.loader.MyMeshBuilder;
 import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.world.block.BlockTexture;

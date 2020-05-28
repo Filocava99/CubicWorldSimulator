@@ -17,7 +17,6 @@ public abstract class GenericGui extends Panel {
     protected final GuiFactory guiFactory;
     private long windowId;
 
-    @SuppressWarnings("SameParameterValue")
     protected GenericGui(int x, int y, float width, float height, GuiFactory guiFactory) {
         super(x, y, width, height);
         this.guiFactory = guiFactory;

@@ -2,7 +2,6 @@ package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.GameItem;
 import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.game.openglcommands.OpenGLCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLLoadChunkCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
 import it.cubicworldsimulator.game.utility.BiConcurrentHashMap;
@@ -11,9 +10,7 @@ import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.utility.Pair;
 import org.joml.Vector3f;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CommandsQueue {
