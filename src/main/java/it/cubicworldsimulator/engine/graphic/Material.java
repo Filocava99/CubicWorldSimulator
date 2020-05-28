@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.engine.graphic;
 
+import it.cubicworldsimulator.engine.graphic.Texture.Texture;
 import org.joml.Vector4f;
 
 public class Material {

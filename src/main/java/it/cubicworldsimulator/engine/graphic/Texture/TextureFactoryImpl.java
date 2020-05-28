@@ -1,6 +1,5 @@
-package it.cubicworldsimulator.engine.loader;
+package it.cubicworldsimulator.engine.graphic.Texture;
 
-import it.cubicworldsimulator.engine.graphic.Texture;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.system.MemoryStack;
@@ -13,16 +12,15 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.stb.STBImage.*;
 
-public class TextureLoaderImpl implements TextureLoader {
-
-    private final static Logger logger = LogManager.getLogger(TextureLoaderImpl.class);
+public class TextureFactoryImpl implements TextureFactory{
+    private final static Logger logger = LogManager.getLogger(TextureFactoryImpl.class);
 
     private int height;
     private int width;
     private ByteBuffer byteBuffer;
 
     @Override
-    public Texture loadTexture(String filename) {
+    public Texture createTexture(String filename) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             //Height, width and colour channels are 1 byte each
             IntBuffer w = stack.mallocInt(1);
@@ -42,7 +40,7 @@ public class TextureLoaderImpl implements TextureLoader {
             int textureID = this.generateTexture();
             this.generateMipMap();
             this.clean();
-            return new Texture(textureID, this.width, this.height);
+            return new TextureImpl(textureID, this.width, this.height);
         } catch (Exception e) {
             logger.error(e);
             return null;
