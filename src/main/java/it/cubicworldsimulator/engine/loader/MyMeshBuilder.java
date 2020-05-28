@@ -2,6 +2,7 @@ package it.cubicworldsimulator.engine.loader;
 
 import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.engine.graphic.Mesh;
+import it.cubicworldsimulator.engine.graphic.MeshImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class MyMeshBuilder implements MeshBuilder {
         if (boundingRadius<0 || indicesLength<0) {
             throw new IllegalStateException();
         }
-        return new Mesh(Objects.requireNonNull(texture), boundingRadius, indicesLength,
+        return new MeshImpl(Objects.requireNonNull(texture), boundingRadius, indicesLength,
                 Objects.requireNonNull(myVao), Objects.requireNonNull(vboList),
                 Objects.requireNonNull(textureVboList));
     }

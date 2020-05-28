@@ -4,8 +4,6 @@ package it.cubicworldsimulator.game.openglcommands;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.game.world.chunk.ChunkMesh;
 
-import java.util.List;
-
 public class OpenGLLoadChunkCommand implements OpenGLCommand {
 
     private final ChunkMesh mesh;

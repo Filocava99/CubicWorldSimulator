@@ -1,14 +1,11 @@
 package it.cubicworldsimulator.engine.loader;
 
 import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.Material;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL15C.*;
