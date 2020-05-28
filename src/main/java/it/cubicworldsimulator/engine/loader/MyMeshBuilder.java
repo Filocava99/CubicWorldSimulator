@@ -5,6 +5,9 @@ import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.MeshImpl;
 
 import java.util.ArrayList;
+import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vao;
+import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vbo;
+
 import java.util.List;
 import java.util.Objects;
 

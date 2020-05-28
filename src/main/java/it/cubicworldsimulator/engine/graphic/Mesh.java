@@ -1,7 +1,7 @@
 package it.cubicworldsimulator.engine.graphic;
 
-import it.cubicworldsimulator.engine.loader.Vao;
-import it.cubicworldsimulator.engine.loader.Vbo;
+import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vao;
+import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vbo;
 
 import java.util.List;
 

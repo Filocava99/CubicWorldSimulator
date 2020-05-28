@@ -6,7 +6,8 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-
+import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vao;
+import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vbo;
 import static org.lwjgl.opengl.GL11C.GL_FLOAT;
 import static org.lwjgl.opengl.GL15C.*;
 import static org.lwjgl.opengl.GL20C.*;
