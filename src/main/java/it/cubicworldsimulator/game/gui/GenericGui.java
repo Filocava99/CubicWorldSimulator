@@ -57,18 +57,22 @@ public abstract class GenericGui extends Panel {
      * Switch to the different theme
      */
     protected void changeTheme(MyThemes theme) {
-        if (theme==MyThemes.FLAT_COLORED_THEME) {
-            Themes.setDefaultTheme(new FlatColoredTheme(
-                    fromInt(44, 62, 80, 1), // backgroundColor
-                    fromInt(127, 140, 141, 1), // borderColor
-                    fromInt(127, 140, 141, 1), // sliderColor
-                    fromInt(2, 119, 189, 1), // strokeColor
-                    fromInt(39, 174, 96, 1), // allowColor
-                    fromInt(192, 57, 43, 1), // denyColor
-                    fromInt(0, 0, 0, 1f),  // shadowColor
-                    ColorConstants.white(),
-                    FontRegistry.getDefaultFont(),30f
-            ));
+        switch (theme) {
+            case FLAT_COLORED_THEME:
+                Themes.setDefaultTheme(new FlatColoredTheme(
+                        fromInt(44, 62, 80, 1), // backgroundColor
+                        fromInt(127, 140, 141, 1), // borderColor
+                        fromInt(127, 140, 141, 1), // sliderColor
+                        fromInt(2, 119, 189, 1), // strokeColor
+                        fromInt(39, 174, 96, 1), // allowColor
+                        fromInt(192, 57, 43, 1), // denyColor
+                        fromInt(0, 0, 0, 1f),  // shadowColor
+                        ColorConstants.white(),
+                        FontRegistry.getDefaultFont(),30f
+                ));
+                break;
+            default:
+                throw new IllegalArgumentException();
         }
         Themes.getDefaultTheme().applyAll(this);
     }
