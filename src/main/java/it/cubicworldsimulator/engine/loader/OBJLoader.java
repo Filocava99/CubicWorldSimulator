@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This code is partially inspired by
+ * https://github.com/lwjglgamedev/lwjglbook/blob/master/chapter14/src/main/java/org/lwjglb/engine/graph/OBJLoader.java
+ */
 public class OBJLoader {
     private final static Logger logger = LogManager.getLogger(OBJLoader.class);
     private final List<Vector3f> vertices;
@@ -21,13 +25,13 @@ public class OBJLoader {
     private String textureFileName;
 
     public OBJLoader() {
-        this.vertices = new ArrayList<>();
-        this.textures = new ArrayList<>();
-        this.normals = new ArrayList<>();
-        this.faces = new ArrayList<>();
+        vertices = new ArrayList<>();
+        textures = new ArrayList<>();
+        normals = new ArrayList<>();
+        faces = new ArrayList<>();
     }
 
-    public Mesh loadFromOBJ(String objFileName, String textureFileName) throws Exception {
+    public Mesh loadFromOBJ(final String objFileName, final String textureFileName) {
         this.textureFileName = textureFileName;
         final List<String> lines = Utils.readAllLines(objFileName);
         for (String line : lines) {
@@ -61,31 +65,30 @@ public class OBJLoader {
                     faces.add(face);
                     break;
                 default:
-                    // Ignore other lines
                     break;
             }
         }
-        return this.reorderLists();
+        return reorderLists();
     }
 
     private Mesh reorderLists() {
         List<Integer> indices = new ArrayList<>();
         // Create position array in the order it has been declared
-        float[] posArr = new float[this.vertices.size() * 3];
+        float[] posArr = new float[vertices.size() * 3];
         int i = 0;
-        for (final Vector3f pos : this.vertices) {
+        for (final Vector3f pos : vertices) {
             posArr[i * 3] = pos.x();
             posArr[i * 3 + 1] = pos.y();
             posArr[i * 3 + 2] = pos.z();
             i++;
         }
-        float[] textCoordArr = new float[this.vertices.size() * 2];
-        float[] normArr = new float[this.vertices.size() * 3];
+        float[] textCoordArr = new float[vertices.size() * 2];
+        float[] normArr = new float[vertices.size() * 3];
 
-        for (Face face : this.faces) {
+        for (Face face : faces) {
             final List<IdxGroup> faceVertexIndices = face.getFaceVertexIndices();
             for (final IdxGroup indValue : faceVertexIndices) {
-                processFaceVertex(indValue, this.textures, this.normals,
+                processFaceVertex(indValue, textures, normals,
                         indices, textCoordArr, normArr);
             }
         }
@@ -95,8 +98,14 @@ public class OBJLoader {
         logger.debug("Vertices: " + posArr.length);
         logger.debug("UVs: " + textCoordArr.length);
         logger.debug("Indices: " + indicesArr.length);
-        return Loader.createMesh(posArr, textCoordArr, indicesArr, normArr,
-                new Material(new TextureLoaderImpl().loadTexture(textureFileName)), 0);
+        return new MyMeshBuilder()
+                    .addPositions(posArr)
+                    .addIndices(indicesArr)
+                    .addTextCoords(textCoordArr)
+                    .addNormals(normArr)
+                    .addTexture(new Material(new TextureLoaderImpl().loadTexture(textureFileName)))
+                    .setBoundingRadius(0)
+                    .build();
     }
 
     private void processFaceVertex(final IdxGroup indices, final List<Vector2f> textCoordList,
@@ -135,7 +144,7 @@ public class OBJLoader {
             this.indexGroups.add(parseLine(v3));
         }
 
-        public List<IdxGroup> getFaceVertexIndices() {
+        private List<IdxGroup> getFaceVertexIndices() {
             return this.indexGroups;
         }
 
@@ -156,6 +165,7 @@ public class OBJLoader {
             return idxGroup;
         }
     }
+
     private static class IdxGroup {
         public static final int NO_VALUE = -1;
         private int idxPos;

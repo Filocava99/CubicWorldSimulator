@@ -28,7 +28,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * It models a logic container for N 'LEGUI' windows
  * @author Lorenzo Balzani
  */
-public class GuiContainer implements GuiContainer {
+public class GuiContainer {
 
     private static volatile boolean running = false;
     private final List<FrameProperty> myFrames = new ArrayList<>();
@@ -39,10 +39,10 @@ public class GuiContainer implements GuiContainer {
         /**
          * @return resolution and refresh rate of primary monitor
          */
-        private MyMonitorProperty getMonitorProperty() {
+        private MonitorProperty getMonitorProperty() {
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
             assert vidmode != null;
-            var myMonitor = new MyMonitorProperty();
+            var myMonitor = new MonitorProperty();
             myMonitor.setHeight(vidmode.height());
             myMonitor.setWidth(vidmode.width());
             myMonitor.setRefreshRate(vidmode.refreshRate());
@@ -98,7 +98,6 @@ public class GuiContainer implements GuiContainer {
         }
     }
 
-    @Override
     public void init(List<GenericGui> guiList) {
         glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err));
         GLFWKeyCallbackI glfwKeyCallbackI = (w1, key, code, action, mods) -> running = !(key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE);

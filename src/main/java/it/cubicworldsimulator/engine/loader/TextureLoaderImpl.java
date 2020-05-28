@@ -78,6 +78,6 @@ public class TextureLoaderImpl implements TextureLoader {
 
     private void clean() {
         //Free ByteBuffer
-        stbi_image_free(this.byteBuffer);
+        stbi_image_free(byteBuffer);
     }
 }
