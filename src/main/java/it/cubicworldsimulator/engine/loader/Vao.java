@@ -1,9 +1,9 @@
 package it.cubicworldsimulator.engine.loader;
 
-public class VBO {
+public class Vao {
     final int Id;
 
-    public VBO(int Id) {
+    public Vao(int Id) {
         this.Id = Id;
     }
 

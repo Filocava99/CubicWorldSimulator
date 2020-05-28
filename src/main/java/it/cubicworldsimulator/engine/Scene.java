@@ -4,7 +4,7 @@ import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.Player;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
-import it.cubicworldsimulator.engine.loader.Loader;
+import it.cubicworldsimulator.engine.loader.LoaderUtility;
 
 import java.util.*;
 
@@ -54,10 +54,10 @@ public class Scene {
     }
 
     public void cleanUp(){
-        opaqueMeshMap.keySet().forEach(Loader::cleanMesh);
-        transparentMeshMap.keySet().forEach(Loader::cleanMesh);
+        opaqueMeshMap.keySet().forEach(LoaderUtility::cleanMesh);
+        transparentMeshMap.keySet().forEach(LoaderUtility::cleanMesh);
         shaderProgram.cleanup();
-        Loader.cleanMesh(skyBox.getMesh());
+        LoaderUtility.cleanMesh(skyBox.getMesh());
         skyBox.getShaderProgram().cleanup();
     }
 
