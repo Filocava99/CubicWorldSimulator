@@ -15,7 +15,7 @@ public class Main {
         try {
             logger.debug("Platform: " + System.getProperty("os.name"));
             logger.trace("Game launcher started...");
-            new GuiContainer().init(Arrays.asList(new Launcher()));
+            new GuiContainer().initContainer(Arrays.asList(new Launcher()));
         } catch (Exception e) {
             logger.error(e);
             System.exit(-1);
