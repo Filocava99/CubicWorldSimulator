@@ -62,14 +62,11 @@ public class MeshImpl implements Mesh {
 
     public void cleanMesh() {
         glDisableVertexAttribArray(0);
-
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         getVboList().forEach(myVbo -> glDeleteBuffers(myVbo.getId()));
-
         // Delete the texture VBO
         getTextureVboList().forEach(myVbo -> glDeleteBuffers(myVbo.getId()));
-
         // Delete the VAOs
         glBindVertexArray(0);
         glDeleteVertexArrays(getVao().getId());

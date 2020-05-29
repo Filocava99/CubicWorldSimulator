@@ -1,6 +1,5 @@
 package it.cubicworldsimulator.engine.loader;
 
-import it.cubicworldsimulator.engine.graphic.Mesh;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.Buffer;
@@ -16,8 +15,13 @@ import static org.lwjgl.opengl.GL30C.*;
 public class LoaderUtility {
 
     public static Vao createVao() {
-        Vao myVao = new Vao(glGenVertexArrays());
-        glBindVertexArray(myVao.getId());
+        Vao myVao;
+        try {
+            myVao = new Vao(glGenVertexArrays());
+            glBindVertexArray(myVao.getId());
+        } catch (Exception e) {
+            throw new IllegalStateException();
+        }
         return myVao;
     }
 
