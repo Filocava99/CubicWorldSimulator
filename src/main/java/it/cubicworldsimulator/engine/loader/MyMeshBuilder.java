@@ -4,12 +4,10 @@ import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.MeshImpl;
 
-import java.util.ArrayList;
+import java.util.*;
+
 import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vao;
 import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vbo;
-
-import java.util.List;
-import java.util.Objects;
 
 public class MyMeshBuilder implements MeshBuilder {
 
@@ -17,9 +15,9 @@ public class MyMeshBuilder implements MeshBuilder {
     private float boundingRadius;
     private Material texture;
     private int indicesLength;
-    private final List<Vbo> vboList = new ArrayList<>();
-    private final List<Vbo> textureVboList = new ArrayList<>();
-    private final List<Vbo> normalsVboList = new ArrayList<>();
+    private final Set<Vbo> vboList = new HashSet<>();
+    private final Set<Vbo> textureVboList = new HashSet<>();
+    private final Set<Vbo> normalsVboList = new HashSet<>();
 
 
     public MyMeshBuilder() {

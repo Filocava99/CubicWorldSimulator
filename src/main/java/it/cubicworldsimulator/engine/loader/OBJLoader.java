@@ -39,31 +39,24 @@ public class OBJLoader {
             final List<String> tokens = List.of(line.split("\\s+"));
             switch (tokens.get(0)) {
                 case "v":
-                    // Geometric vertex
-                    Vector3f vec3f = new Vector3f(
+                    vertices.add(new Vector3f(
                             Float.parseFloat(tokens.get(1)),
                             Float.parseFloat(tokens.get(2)),
-                            Float.parseFloat(tokens.get(3)));
-                    vertices.add(vec3f);
+                            Float.parseFloat(tokens.get(3))));
                     break;
                 case "vt":
-                    // Texture coordinate
-                    Vector2f vec2f = new Vector2f(
+                    textures.add(new Vector2f(
                             Float.parseFloat(tokens.get(1)),
-                            Float.parseFloat(tokens.get(2)));
-                    textures.add(vec2f);
+                            Float.parseFloat(tokens.get(2))));
                     break;
                 case "vn":
-                    // Vertex normal
-                    Vector3f vec3fNorm = new Vector3f(
+                    normals.add(new Vector3f(
                             Float.parseFloat(tokens.get(1)),
                             Float.parseFloat(tokens.get(2)),
-                            Float.parseFloat(tokens.get(3)));
-                    normals.add(vec3fNorm);
+                            Float.parseFloat(tokens.get(3))));
                     break;
                 case "f":
-                    final Face face = new Face(tokens.get(1), tokens.get(2), tokens.get(3));
-                    faces.add(face);
+                    faces.add(new Face(tokens.get(1), tokens.get(2), tokens.get(3)));
                     break;
                 default:
                     break;
@@ -74,7 +67,6 @@ public class OBJLoader {
 
     private Mesh reorderLists() {
         List<Integer> indices = new ArrayList<>();
-        // Create position array in the order it has been declared
         float[] posArr = new float[vertices.size() * 3];
         int i = 0;
         for (final Vector3f pos : vertices) {
@@ -112,18 +104,14 @@ public class OBJLoader {
     private void processFaceVertex(final IdxGroup indices, final List<Vector2f> textCoordList,
                                           final List<Vector3f> normList, final List<Integer> indicesList,
                                           final float[] texCoordArr, final float[] normArr) {
-        // Set index for vertex coordinates
         final int posIndex = indices.getIdxPos();
         indicesList.add(posIndex);
-
-        // Reorder texture coordinates
         if (indices.getIdxTextCoord() >= 0) {
             final Vector2f textCoord = textCoordList.get(indices.getIdxTextCoord());
             texCoordArr[posIndex * 2] = textCoord.x();
             texCoordArr[posIndex * 2 + 1] = 1 - textCoord.y();
         }
         if (indices.getIdxVecNormal() >= 0) {
-            // Reorder normal vectors
             final Vector3f vecNorm = normList.get(indices.getIdxVecNormal());
             normArr[posIndex * 3] = vecNorm.x();
             normArr[posIndex * 3 + 1] = vecNorm.y();
@@ -139,7 +127,6 @@ public class OBJLoader {
 
         public Face(final String v1, final String v2, final String v3) {
             this.indexGroups = new ArrayList<>();
-            // Parse the lines
             this.indexGroups.add(parseLine(v1));
             this.indexGroups.add(parseLine(v2));
             this.indexGroups.add(parseLine(v3));
@@ -156,7 +143,6 @@ public class OBJLoader {
             int length = lineTokens.size();
             idxGroup.setIdxPos(Integer.parseInt(lineTokens.get(0)) - 1);
             if (length > 1) {
-                // It can be empty if the obj does not define text coords
                 String textCoord = lineTokens.get(1);
                 idxGroup.setIdxTextCoord(textCoord.length() > 0 ? Integer.parseInt(textCoord) - 1 : IdxGroup.NO_VALUE);
                 if (length > 2) {

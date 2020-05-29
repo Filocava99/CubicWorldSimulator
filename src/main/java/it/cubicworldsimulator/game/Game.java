@@ -165,7 +165,6 @@ public class Game implements GameLogic {
     private void dayNight() {
         time += timer.getElapsedTime()*1000;
         time %= 24_000;
-        logger.debug("Time: " + time + "\tBlu: " + newColour.z);
         if(time >= 0 && time < 5000){
             if ((newColour.z -= DELTA_NIGHT) < 0) {
                 newColour.z=0;
