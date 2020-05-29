@@ -66,21 +66,6 @@ public class LoaderUtility {
         MemoryUtil.memFree(normalsBuffer);
     }
 
-    public static void cleanMesh(Mesh mesh) {
-        glDisableVertexAttribArray(0);
-
-        // Delete the VBOs
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        mesh.getVboList().forEach(myVbo -> glDeleteBuffers(myVbo.getId()));
-
-        // Delete the texture VBO
-        mesh.getTextureVboList().forEach(myVbo -> glDeleteBuffers(myVbo.getId()));
-
-        // Delete the VAOs
-        glBindVertexArray(0);
-        glDeleteVertexArrays(mesh.getVao().getId());
-    }
-
     private static void insertIntoVbo(Buffer buffer, Vbo myVbo, int size, int index) {
         glBindBuffer(GL_ARRAY_BUFFER, myVbo.getId());
         glBufferData(GL_ARRAY_BUFFER, (FloatBuffer) buffer, GL_STATIC_DRAW);

@@ -54,10 +54,10 @@ public class Scene {
     }
 
     public void cleanUp(){
-        opaqueMeshMap.keySet().forEach(LoaderUtility::cleanMesh);
-        transparentMeshMap.keySet().forEach(LoaderUtility::cleanMesh);
+        opaqueMeshMap.keySet().forEach(Mesh::cleanMesh);
+        transparentMeshMap.keySet().forEach(Mesh::cleanMesh);
         shaderProgram.cleanup();
-        LoaderUtility.cleanMesh(skyBox.getMesh());
+        skyBox.getMesh().cleanMesh();
         skyBox.getShaderProgram().cleanup();
     }
 

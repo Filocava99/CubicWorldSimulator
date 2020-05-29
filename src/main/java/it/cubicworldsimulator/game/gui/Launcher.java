@@ -110,9 +110,7 @@ public class Launcher extends GenericGui {
         startGame();
         add(settings);
         changeTheme(MyThemes.FLAT_COLORED_THEME);
-        objects.forEach(item -> {
-            item.getStyle().setFontSize(getFontSize());
-        });
+        objects.forEach(item -> item.getStyle().setFontSize(getFontSize()));
     }
 
     /**
