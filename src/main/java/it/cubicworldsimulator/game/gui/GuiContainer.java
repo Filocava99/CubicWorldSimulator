@@ -36,6 +36,10 @@ public class GuiContainer {
     private MonitorProperty myMonitor;
     private List<GenericGui> guiList;
 
+    public List<GenericGui> getGuiList() {
+        return guiList;
+    }
+
     private class GlfwHelper {
         /**
          * @return resolution and refresh rate of primary monitor
