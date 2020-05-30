@@ -2,25 +2,88 @@ package it.cubicworldsimulator.engine.loader;
 
 import exceptions.GLComponentException;
 import exceptions.InsertDataException;
-import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.game.gui.FrameProperty;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.opengl.GL;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
-import static org.lwjgl.opengl.GL11C.glGetError;
 import static org.lwjgl.opengl.GL15C.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 class LoaderTest {
 
     OpenGLComponent.Vao vao;
+
+    @BeforeAll
+    public static void initTest() {
+        if (!glfwInit()) {
+            throw new IllegalStateException("Unable to initialize GLFW");
+        }
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        long window = glfwCreateWindow(100, 100, "TEST", NULL, NULL);
+        glfwMakeContextCurrent(window);
+        GL.createCapabilities();
+    }
+
+    @Test
+    public void checkInsertFloat() {
+        OpenGLComponent.Vbo vbo = null;
+        float[] floatArray = new float[20];
+        try {
+            vbo = createVbo();
+        } catch (GLComponentException e){
+            fail("Failed to create GLComponent: " + e.getMessage());
+        }
+        try {
+            insertFloatArrayIntoVbo(vbo, floatArray);
+        } catch (InsertDataException e){
+            fail("Failed to insert data: " + e.getMessage());
+        }
+        FloatBuffer floatBuffer = Objects.requireNonNull(
+                                glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY, null))
+                                .asFloatBuffer();
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+        assertNotNull(floatBuffer);
+        IntStream.range(0, floatArray.length).forEach(i -> {
+                    assertEquals(floatArray[i], floatBuffer.get(i));
+        });
+    }
+
+    @Test
+    public void checkInsertInt() {
+        OpenGLComponent.Vbo vbo = null;
+        int[] intArray = new int[20];
+        try {
+            vbo = createVbo();
+        } catch (GLComponentException e){
+            fail("Failed to create GLComponent: " + e.getMessage());
+        }
+        try {
+            insertIntArrayIntoVbo(vbo, intArray);
+        } catch (InsertDataException e){
+            fail("Failed to insert data: " + e.getMessage());
+        }
+        IntBuffer intBuffer = Objects.requireNonNull(
+                              glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY, null))
+                              .asIntBuffer();
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+        assertNotNull(intBuffer);
+        IntStream.range(0, intArray.length).forEach(i -> {
+            assertEquals(intArray[i], intBuffer.get(i));
+        });
+    }
 
     public void createVao() throws GLComponentException {
         try {
@@ -49,46 +112,12 @@ class LoaderTest {
         }
     }
 
-    @Test
-    public void checkInsertFloat() {
-        initTest();
-        OpenGLComponent.Vbo vbo = null;
-        float[] floatArray = new float[20];
-        for (int i=0; i<floatArray.length; i++) {
-            floatArray[i] = i;
-        }
+    public void insertIntArrayIntoVbo(OpenGLComponent.Vbo vbo, int[] intArray) throws InsertDataException {
         try {
-            vbo = createVbo();
-        } catch (GLComponentException e){
-            fail("Failed to create GLComponent: " + e.getMessage());
+            LoaderUtility.insertIndicesIntoVbo(vbo, intArray);
         }
-        try {
-            insertFloatArrayIntoVbo(vbo, floatArray);
-        } catch (InsertDataException e){
-            fail("Failed to insert data: " + e.getMessage());
+        catch (Exception e){
+            throw new InsertDataException("int array into VBO " + vbo.getId());
         }
-        ByteBuffer buffer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY, null);
-        glUnmapBuffer(vbo.getId());
-        if (buffer==null) {
-            fail("Null buffer");
-        }
-        FloatBuffer floatBuffer  = buffer.asFloatBuffer();
-        IntStream.range(0, floatArray.length).forEach(i -> {
-                    assertEquals(floatArray[i], floatBuffer.get(i));
-        });
-    }
-    
-
-    public void initTest() {
-        if (!glfwInit()) {
-            throw new IllegalStateException("Unable to initialize GLFW");
-        }
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        long window = glfwCreateWindow(100, 100, "TEST", NULL, NULL);
-        glfwMakeContextCurrent(window);
-        GL.createCapabilities();
     }
 }
