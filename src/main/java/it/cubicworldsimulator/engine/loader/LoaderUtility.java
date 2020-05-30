@@ -3,6 +3,7 @@ package it.cubicworldsimulator.engine.loader;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vao;
@@ -15,13 +16,8 @@ import static org.lwjgl.opengl.GL30C.*;
 public class LoaderUtility {
 
     public static Vao createVao() {
-        Vao myVao;
-        try {
-            myVao = new Vao(glGenVertexArrays());
-            glBindVertexArray(myVao.getId());
-        } catch (Exception e) {
-            throw new IllegalStateException();
-        }
+        Vao myVao = new Vao(glGenVertexArrays());
+        glBindVertexArray(myVao.getId());
         return myVao;
     }
 
@@ -63,6 +59,7 @@ public class LoaderUtility {
     public static void insertNormalsIntoVbo(Vbo myVbo, float[] normals) {
         FloatBuffer normalsBuffer = MemoryUtil.memAllocFloat(normals.length);
         for (Float normal : normals) {
+
             normalsBuffer.put(normal);
         }
         normalsBuffer.flip();

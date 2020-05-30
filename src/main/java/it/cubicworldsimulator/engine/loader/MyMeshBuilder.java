@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.engine.loader;
 
+import exceptions.MeshBuilderException;
 import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.MeshImpl;
@@ -70,12 +71,17 @@ public class MyMeshBuilder implements MeshBuilder {
     }
 
     @Override
-    public Mesh build() {
+    public Mesh build() throws MeshBuilderException {
+        Mesh myMesh = null;
         if (boundingRadius<0 || indicesLength<0) {
             throw new IllegalStateException();
+        } try {
+            myMesh = new MeshImpl(Objects.requireNonNull(texture), boundingRadius, indicesLength,
+                    Objects.requireNonNull(myVao), Objects.requireNonNull(vboList),
+                    Objects.requireNonNull(textureVboList));
+        }catch (Exception e) {
+            throw new MeshBuilderException("Cannot create mesh.");
         }
-        return new MeshImpl(Objects.requireNonNull(texture), boundingRadius, indicesLength,
-                Objects.requireNonNull(myVao), Objects.requireNonNull(vboList),
-                Objects.requireNonNull(textureVboList));
+        return myMesh;
     }
 }
