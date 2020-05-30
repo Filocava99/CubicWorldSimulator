@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.engine.loader;
 
+import exceptions.MeshBuilderException;
 import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 
@@ -10,5 +11,5 @@ public interface MeshBuilder {
     MeshBuilder addNormals(float[] normals);
     MeshBuilder addTexture(Material texture);
     MeshBuilder setBoundingRadius(float value);
-    Mesh build();
+    Mesh build() throws MeshBuilderException;
 }
