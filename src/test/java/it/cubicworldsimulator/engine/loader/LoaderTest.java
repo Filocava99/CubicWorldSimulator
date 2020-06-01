@@ -1,8 +1,5 @@
 package it.cubicworldsimulator.engine.loader;
 
-import exceptions.GLComponentException;
-import exceptions.InsertDataException;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.opengl.GL;
@@ -37,11 +34,11 @@ class LoaderTest {
     }
 
     @Test
-    public void createVao() throws GLComponentException {
+    public void createVao() throws RuntimeException {
         try {
             vao = LoaderUtility.createVao();
         } catch (Exception e) {
-            throw new GLComponentException("Error creating Vao");
+            throw new RuntimeException("Error creating Vao");
         }
     }
 
@@ -51,12 +48,12 @@ class LoaderTest {
         float[] floatArray = new float[20];
         try {
             vbo = createVbo();
-        } catch (GLComponentException e){
+        } catch (RuntimeException e){
             fail("Failed to create GLComponent: " + e.getMessage());
         }
         try {
             insertFloatArrayIntoVbo(vbo, floatArray);
-        } catch (InsertDataException e){
+        } catch (RuntimeException e){
             fail("Failed to insert data: " + e.getMessage());
         }
         FloatBuffer floatBuffer = Objects.requireNonNull(
@@ -75,12 +72,12 @@ class LoaderTest {
         int[] intArray = new int[20];
         try {
             vbo = createVbo();
-        } catch (GLComponentException e){
+        } catch (RuntimeException e){
             fail("Failed to create GLComponent: " + e.getMessage());
         }
         try {
             insertIntArrayIntoVbo(vbo, intArray);
-        } catch (InsertDataException e){
+        } catch (RuntimeException e){
             fail("Failed to insert data: " + e.getMessage());
         }
         IntBuffer intBuffer = Objects.requireNonNull(
@@ -94,31 +91,31 @@ class LoaderTest {
     }
 
 
-    public OpenGLComponent.Vbo createVbo() throws GLComponentException {
+    public OpenGLComponent.Vbo createVbo() throws RuntimeException {
         OpenGLComponent.Vbo myVbo = null;
         try {
             myVbo = LoaderUtility.createVbo();
         } catch (Exception e) {
-            throw new GLComponentException("Error creating Vbo");
+            throw new RuntimeException("Error creating Vbo");
         }
         return myVbo;
     }
 
-    public void insertFloatArrayIntoVbo(OpenGLComponent.Vbo vbo, float[] floatArray) throws InsertDataException {
+    public void insertFloatArrayIntoVbo(OpenGLComponent.Vbo vbo, float[] floatArray) throws RuntimeException {
         try {
             LoaderUtility.insertPositionIntoVbo(vbo, floatArray);
         }
         catch (Exception e){
-            throw new InsertDataException("float array into VBO " + vbo.getId());
+            throw new RuntimeException("float array into VBO " + vbo.getId());
         }
     }
 
-    public void insertIntArrayIntoVbo(OpenGLComponent.Vbo vbo, int[] intArray) throws InsertDataException {
+    public void insertIntArrayIntoVbo(OpenGLComponent.Vbo vbo, int[] intArray) throws RuntimeException {
         try {
             LoaderUtility.insertIndicesIntoVbo(vbo, intArray);
         }
         catch (Exception e){
-            throw new InsertDataException("int array into VBO " + vbo.getId());
+            throw new RuntimeException("int array into VBO " + vbo.getId());
         }
     }
 }
