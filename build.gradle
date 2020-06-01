@@ -5,7 +5,7 @@ plugins {
 }
 
 project.ext.lwjglVersion = "3.2.3"
-project.ext.jomlVersion = "1.9.19"
+project.ext.jomlVersion = "1.9.25"
 
 switch (OperatingSystem.current()) {
     case OperatingSystem.LINUX:
@@ -33,11 +33,13 @@ def le_util              = '2.2.2'
 repositories {
     maven{
         url "http://oss.sonatype.org/content/groups/public/"
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url 'https://jitpack.io' }
         maven { url "https://raw.githubusercontent.com/SpinyOwl/repo/snapshots" }
         maven { url "https://raw.githubusercontent.com/SpinyOwl/repo/releases" }
     }
     mavenCentral()
+
 }
 
 dependencies {
@@ -66,7 +68,6 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
     implementation "org.joml:joml:${jomlVersion}"
-    implementation 'com.github.orange451:LWJGUI:3147548196'
     implementation "org.lwjgl:lwjgl-nanovg"
     implementation "org.lwjgl:lwjgl-nfd"
     runtimeOnly "org.lwjgl:lwjgl-nanovg::$lwjglNatives"

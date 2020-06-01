@@ -3,7 +3,6 @@ package it.cubicworldsimulator.engine.loader;
 import exceptions.GLComponentException;
 import exceptions.InsertDataException;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.opengl.GL;
@@ -37,7 +36,7 @@ class LoaderTest {
         GL.createCapabilities();
     }
 
-    @Before
+    @Test
     public void createVao() throws GLComponentException {
         try {
             vao = LoaderUtility.createVao();
@@ -93,7 +92,6 @@ class LoaderTest {
             assertEquals(intArray[i], intBuffer.get(i));
         });
     }
-
 
 
     public OpenGLComponent.Vbo createVbo() throws GLComponentException {
