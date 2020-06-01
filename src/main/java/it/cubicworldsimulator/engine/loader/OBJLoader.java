@@ -1,6 +1,5 @@
 package it.cubicworldsimulator.engine.loader;
 
-import exceptions.MeshBuilderException;
 import it.cubicworldsimulator.engine.Utils;
 import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.engine.graphic.Mesh;
@@ -33,7 +32,7 @@ public class OBJLoader {
         faces = new ArrayList<>();
     }
 
-    public Mesh loadFromOBJ(final String objFileName, final String textureFileName) throws MeshBuilderException {
+    public Mesh loadFromOBJ(final String objFileName, final String textureFileName) throws RuntimeException {
         this.textureFileName = textureFileName;
         final List<String> lines = Utils.readAllLines(objFileName);
         for (String line : lines) {
@@ -66,7 +65,7 @@ public class OBJLoader {
         return reorderLists();
     }
 
-    private Mesh reorderLists() throws MeshBuilderException {
+    private Mesh reorderLists() throws RuntimeException {
         List<Integer> indices = new ArrayList<>();
         float[] posArr = new float[vertices.size() * 3];
         int i = 0;
