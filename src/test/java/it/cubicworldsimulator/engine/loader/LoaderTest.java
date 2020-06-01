@@ -37,6 +37,15 @@ class LoaderTest {
         GL.createCapabilities();
     }
 
+    @Before
+    public void createVao() throws GLComponentException {
+        try {
+            vao = LoaderUtility.createVao();
+        } catch (Exception e) {
+            throw new GLComponentException("Error creating Vao");
+        }
+    }
+
     @Test
     public void checkInsertFloat() {
         OpenGLComponent.Vbo vbo = null;
@@ -85,13 +94,7 @@ class LoaderTest {
         });
     }
 
-    public void createVao() throws GLComponentException {
-        try {
-            vao = LoaderUtility.createVao();
-        } catch (Exception e) {
-            throw new GLComponentException("Error creating Vao");
-        }
-    }
+
 
     public OpenGLComponent.Vbo createVbo() throws GLComponentException {
         OpenGLComponent.Vbo myVbo = null;
