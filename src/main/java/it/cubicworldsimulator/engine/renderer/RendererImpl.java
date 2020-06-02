@@ -180,7 +180,7 @@ public class RendererImpl implements Renderer {
     private void renderListOfGameItems(ShaderProgram shaderProgram, Matrix4f viewMatrix, Mesh mesh, List<GameItem> gameItems) {
         initRender(mesh);
         gameItems.forEach(gameItem -> {
-            if(gameItem.isInsideFrustum()){
+            if(gameItem.isInsideFrustum() || gameItem.isIgnoreFrustum()){
                 Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
                 shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 shaderProgram.setUniform("material",mesh.getMeshMaterial());
