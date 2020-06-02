@@ -2,10 +2,7 @@ package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.*;
-import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
-import it.cubicworldsimulator.engine.graphic.light.PointLight;
-import it.cubicworldsimulator.engine.graphic.light.SceneLight;
-import it.cubicworldsimulator.engine.graphic.light.SpotLight;
+import it.cubicworldsimulator.engine.graphic.light.*;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.gui.Settings;
 import it.cubicworldsimulator.game.utility.Pair;
@@ -29,7 +26,6 @@ public class Game implements GameLogic {
 
     private final CommandsQueue commandsQueue;
     private WorldManager worldManager;
-    private World world;
     private Scene scene;
     private final Map<Mesh, List<GameItem>> opaqueMeshMap = new HashMap<>();
     private final Map<Mesh, List<GameItem>> transparentMeshMap = new HashMap<>();
@@ -38,11 +34,7 @@ public class Game implements GameLogic {
     private final Settings mySettings;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
-    private Window window;
-    private final Timer timer = new Timer();
-    private static final float DELTA_NIGHT = 0.00250f;
-    private long time = 0;
-    private final Vector4f newColour = new Vector4f(0.0f, 0.0f, 0.2f, 1.0f);
+    private DayNightCycle dayNightCycle;
 
     public Game(Settings mySettings) {
         renderer = new RendererImpl();
@@ -53,14 +45,13 @@ public class Game implements GameLogic {
     @Override
     public void init(Window window) {
         initShaderPrograms();
-        this.window=window;
-        world = new World(mySettings.getWorldName(),
+        World world = new World(mySettings.getWorldName(),
                 mySettings.getWorldSeed());
         worldManager = new WorldManager(world, commandsQueue);
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
             //LIGHTS
-            Vector3f ambientLight = new Vector3f(0.2f, 0.2f, 0.2f);
+            Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.2f);
             Vector3f lightColour = new Vector3f(1, 1, 1);
             Vector3f lightPosition = new Vector3f(0, 0, 1);
             float specularPower = 5f;
@@ -71,9 +62,9 @@ public class Game implements GameLogic {
             lightPosition = new Vector3f(-1, 0, 0);
             lightColour = new Vector3f(1, 1, 1);
             DirectionalLight directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
-            SceneLight sceneLight = new SceneLight(directionalLight, new PointLight[0], new SpotLight[0], ambientLight, specularPower);
-
-            scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
+            SceneLight mySceneLight = new SceneLight(directionalLight, new PointLight[0], new SpotLight[0], ambientLight, specularPower);
+            dayNightCycle = new DayNightCycleLight(mySceneLight);
+            scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, mySceneLight);
             worldManager.updateActiveChunksSync(new Vector3i(0, 0, 0));
             while (commandsQueue.hasLoadCommand()) {
                 Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
@@ -156,38 +147,10 @@ public class Game implements GameLogic {
                 }
             }
         }
-        dayNight();
+        dayNightCycle.updateCycle();
         // Update directional light direction, intensity and colour
         DirectionalLight directionalLight = scene.getSceneLight().getDirectionalLight();
         directionalLight.changeAngle(directionalLight.getAngle() + 1.1f);
-    }
-
-    private void dayNight() {
-        time += timer.getElapsedTime()*1000;
-        time %= 24_000;
-        if(time >= 0 && time < 5000){
-            if ((newColour.z -= DELTA_NIGHT) < 0) {
-                newColour.z=0;
-                return;
-            } else {
-                newColour.z -= DELTA_NIGHT;
-            }
-        }else if(time >= 5000 && time < 21000){
-            if ((newColour.z += DELTA_NIGHT) > 1) {
-                newColour.z=1;
-                return;
-            } else {
-                newColour.z += DELTA_NIGHT;
-            }
-        }else{
-            if ((newColour.z -= DELTA_NIGHT) < 0) {
-                newColour.z=0;
-                return;
-            } else {
-                newColour.z -= DELTA_NIGHT;
-            }
-        }
-        window.setClearColor(newColour.x, newColour.y, newColour.z, newColour.w);
     }
 
     @Override

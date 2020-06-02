@@ -4,7 +4,6 @@ import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.Player;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
-import it.cubicworldsimulator.engine.loader.LoaderUtility;
 
 import java.util.*;
 
