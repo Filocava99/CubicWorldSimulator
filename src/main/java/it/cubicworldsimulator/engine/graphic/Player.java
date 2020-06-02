@@ -1,6 +1,5 @@
 package it.cubicworldsimulator.engine.graphic;
 
-import it.cubicworldsimulator.engine.GameItem;
 import it.cubicworldsimulator.game.utility.Constants;
 
 import java.util.HashSet;
@@ -9,13 +8,12 @@ import java.util.Set;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-public class Player{
+public class Player implements Observable{
 	
     private Vector3f lastPos;
     private Vector3f position;
     private Vector3f rotation;
     private Vector3i lastChunk;
-    private PlayerModel playerModel;
     private final Set<Observer> observer= new HashSet<>();
 
     public Player(Vector3f position){
@@ -51,10 +49,6 @@ public class Player{
         return lastChunk;
     }
     
-    public GameItem getPlayerModel() {
-    	return this.playerModel;
-    }
-    
     public void movePosition(float offsetX, float offsetY, float offsetZ) {
         if ( offsetZ != 0 ) {
             position.x += (float)Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;
@@ -87,7 +81,7 @@ public class Player{
     	return this.position;
     }
     
-    public void attach(Observer o) {
-    	this.observer.add(o);
+    public void attach(Observer observer) {
+    	this.observer.add(observer);
     }
 }
