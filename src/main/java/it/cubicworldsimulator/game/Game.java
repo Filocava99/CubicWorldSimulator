@@ -256,6 +256,7 @@ public class Game implements GameLogic {
             skyBoxShaderProgram.createUniform("projectionMatrix");
             skyBoxShaderProgram.createUniform("modelViewMatrix");
             skyBoxShaderProgram.createUniform("texture_sampler");
+            skyBoxShaderProgram.createUniform("ambientLight");
         } catch (Exception e) {
             logger.error(e);
             System.exit(4);
