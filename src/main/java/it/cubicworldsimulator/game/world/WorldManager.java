@@ -8,6 +8,7 @@ import it.cubicworldsimulator.game.openglcommands.OpenGLLoadChunkCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
 import it.cubicworldsimulator.game.utility.yaml.YAMLComponent;
 import it.cubicworldsimulator.game.utility.yaml.YAMLLoader;
+import it.cubicworldsimulator.game.world.block.BlockBuilder;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.BlockMaterial;
 import it.cubicworldsimulator.game.world.chunk.*;
@@ -24,8 +25,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class WorldManager {
 
-    private static final Logger logger = LogManager.getLogger(WorldManager.class);
-    private final int renderingDistance = 8;
+    private static final Logger LOGGER = LogManager.getLogger(WorldManager.class);
+    private static final int LOADED_CHUNKS_RADIUS = 8;
 
     private final World world;
     private final CommandsQueue commandsQueue;
@@ -42,7 +43,7 @@ public class WorldManager {
     public WorldManager(World world, CommandsQueue commandsQueue) {
         this.world = world;
         this.commandsQueue = commandsQueue;
-        this.chunkGenerator = new ChunkGenerator(world.getSeed(), this);
+        this.chunkGenerator = new ChunkGenerator(new DefaultGenerationAlgorithm(world.getSeed(), blockTypes));
         this.chunkLoader = new ChunkLoader(world.getName());
         this.alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
         TextureFactory textureFactory = new TextureFactoryImpl();
@@ -50,7 +51,7 @@ public class WorldManager {
             loadConfig("src/main/resources/default.yml");
             worldTexture = new Material(textureFactory.createTexture(textureFile));
         } catch (Exception e) {
-            logger.error(e);
+            LOGGER.error(e);
             System.exit(1);
         }
     }
@@ -71,7 +72,7 @@ public class WorldManager {
         Queue<Vector2f> dumpQueue = new LinkedBlockingQueue<>();
         for (Map.Entry<Vector2f, ChunkColumn> entry : world.getActiveChunks().entrySet()) {
             Vector2f chunkColumnPosition = entry.getValue().getPosition();
-            if (chunkColumnPosition.x < chunkPosition.x - renderingDistance || chunkColumnPosition.x > chunkPosition.x + renderingDistance || chunkColumnPosition.y < chunkPosition.z - renderingDistance || chunkColumnPosition.y > chunkPosition.z + renderingDistance) {
+            if (chunkColumnPosition.x < chunkPosition.x - LOADED_CHUNKS_RADIUS || chunkColumnPosition.x > chunkPosition.x + LOADED_CHUNKS_RADIUS || chunkColumnPosition.y < chunkPosition.z - LOADED_CHUNKS_RADIUS || chunkColumnPosition.y > chunkPosition.z + LOADED_CHUNKS_RADIUS) {
                 ChunkColumn chunkColumn = entry.getValue();
                 chunkLoader.saveChunkColumn(chunkColumn);
                 for (Chunk chunk : chunkColumn.getChunks()) {
@@ -88,8 +89,8 @@ public class WorldManager {
 
     private void loadNewChunks(Vector3i chunkPosition) {
         var activeChunks = world.getActiveChunks();
-        for (int x = chunkPosition.x - renderingDistance; x <= chunkPosition.x + renderingDistance; x++) {
-            for (int z = chunkPosition.z - renderingDistance; z <= chunkPosition.z + renderingDistance; z++) {
+        for (int x = chunkPosition.x - LOADED_CHUNKS_RADIUS; x <= chunkPosition.x + LOADED_CHUNKS_RADIUS; x++) {
+            for (int z = chunkPosition.z - LOADED_CHUNKS_RADIUS; z <= chunkPosition.z + LOADED_CHUNKS_RADIUS; z++) {
                 Vector2f newChunkCoord = new Vector2f(x, z);
                 if (!activeChunks.containsKey(newChunkCoord)) {
                     ChunkColumn chunkColumn = loadChunkColumn(newChunkCoord);
@@ -124,27 +125,26 @@ public class WorldManager {
         loadBlockTypes(root);
     }
 
-    private void loadTextureConfig(YAMLComponent root){
+    private void loadTextureConfig(YAMLComponent root) {
         textureFile = root.getString("file");
         textureStep = root.getFloat("step");
     }
 
-    private void loadBlockTypes(YAMLComponent root)  {
+    private void loadBlockTypes(YAMLComponent root) {
         YAMLComponent blocksList = root.getYAMLComponent("blocks");
         blocksList.getEntrySet().forEach(entry -> {
-            String blockName = entry.getKey();
+            BlockBuilder blockBuilder = new BlockBuilder();
             YAMLComponent blockInfo = new YAMLComponent(entry.getValue());
-            byte blockId = blockInfo.getByte("id");
-            boolean transparency = blockInfo.getBoolean("transparent");
+            blockBuilder.setName(entry.getKey()).setId(blockInfo.getByte("id")).setTransparency(blockInfo.getBoolean("transparent"));
             YAMLComponent blockTextureInfo = blockInfo.getYAMLComponent("textures");
-            BlockMaterial material = null;
+            BlockMaterial material;
             if (blockTextureInfo != null) {
                 Vector2f[] coords = new Vector2f[6];
                 var iterator = blockTextureInfo.getEntrySet().iterator();
                 int i = 0;
                 while (iterator.hasNext()) {
                     if (i == 6) {
-                        logger.warn("Found more than six coordinates for block '" + blockName + "' !");
+                        LOGGER.warn("Found more than six coordinates for block '" + blockBuilder.getName() + "' !");
                         break;
                     }
                     YAMLComponent faceInfo = new YAMLComponent(iterator.next().getValue());
@@ -153,13 +153,11 @@ public class WorldManager {
                     coords[i] = new Vector2f(x, y);
                     i++;
                 }
-                material = new BlockMaterial(blockId, blockName, new BlockTexture(textureStep, coords), transparency);
+                blockBuilder.setBlockTexture(new BlockTexture(textureStep, coords));
             }
-            if (material == null) {
-                material = new BlockMaterial(blockId, blockName, null, transparency);
-            }
-            blockTypes.put(blockName, material);
-            blockTypes.put(blockId, material);
+            material = blockBuilder.build();
+            blockTypes.put(blockBuilder.getName(), material);
+            blockTypes.put(blockBuilder.getId(), material);
         });
     }
 
