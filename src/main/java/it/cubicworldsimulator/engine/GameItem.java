@@ -15,6 +15,8 @@ public class GameItem {
 
     private boolean insideFrustum;
 
+    private boolean ignoreFrustum = false;
+
     public GameItem(Mesh mesh) {
         this.mesh = mesh;
         scale = 1;
@@ -73,5 +75,13 @@ public class GameItem {
 
     public void setInsideFrustum(boolean insideFrustum) {
         this.insideFrustum = insideFrustum;
+    }
+
+    public boolean isIgnoreFrustum() {
+        return ignoreFrustum;
+    }
+
+    public void setIgnoreFrustum(boolean ignoreFrustum) {
+        this.ignoreFrustum = ignoreFrustum;
     }
 }

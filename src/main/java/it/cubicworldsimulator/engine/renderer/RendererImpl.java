@@ -153,6 +153,7 @@ public class RendererImpl implements Renderer {
         viewMatrix.m32(0);
         Matrix4f modelViewMatrix = transformation.getModelViewMatrix(skyBox, viewMatrix);
         skyBox.getShaderProgram().setUniform("modelViewMatrix", modelViewMatrix);
+        skyBox.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
         renderSingleGameItem(skyBox);
         skyBox.getShaderProgram().unbind();
     }
