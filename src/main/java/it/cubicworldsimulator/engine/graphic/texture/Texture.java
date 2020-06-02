@@ -1,4 +1,4 @@
-package it.cubicworldsimulator.engine.graphic.Texture;
+package it.cubicworldsimulator.engine.graphic.texture;
 
 public interface Texture {
     int getWidth();

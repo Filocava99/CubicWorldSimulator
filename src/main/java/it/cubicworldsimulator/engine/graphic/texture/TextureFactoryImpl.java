@@ -1,4 +1,4 @@
-package it.cubicworldsimulator.engine.graphic.Texture;
+package it.cubicworldsimulator.engine.graphic.texture;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

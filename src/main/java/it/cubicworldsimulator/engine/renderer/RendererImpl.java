@@ -2,7 +2,7 @@ package it.cubicworldsimulator.engine.renderer;
 
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.*;
-import it.cubicworldsimulator.engine.graphic.Texture.Texture;
+import it.cubicworldsimulator.engine.graphic.texture.Texture;
 import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
 import it.cubicworldsimulator.engine.graphic.light.PointLight;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
