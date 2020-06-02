@@ -109,6 +109,14 @@ public class CommandsQueue {
         }
     }
 
+    public boolean containsLoadCommand(Vector3f coord){
+        return loadCommandsMap.containsKey(coord);
+    }
+
+    public boolean containsUnloadCommand(Vector3f coord){
+        return unloadCommandsMap.containsKey(coord);
+    }
+
     public boolean hasLoadCommand(){
         return !loadCommands.isEmpty();
     }
