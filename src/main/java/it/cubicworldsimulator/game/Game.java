@@ -71,6 +71,7 @@ public class Game implements GameLogic {
             GameItem test = new GameItem(objLoader.loadFromOBJ("/models/person.obj","src/main/resources/textures/playerTexture.png"));
             test.setPosition(0,200,0);
             test.setScale(10);
+            test.setIgnoreFrustum(true);
             opaqueMeshMap.put(test.getMesh(), List.of(test));
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
             
