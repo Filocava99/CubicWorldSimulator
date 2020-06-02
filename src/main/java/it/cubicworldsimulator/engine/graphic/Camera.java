@@ -14,7 +14,7 @@ public class Camera {
 
     private final Transformation transformation;
 
-    private Matrix4f viewMatrix;
+    private final Matrix4f viewMatrix;
 
     public Camera() {
         this(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));

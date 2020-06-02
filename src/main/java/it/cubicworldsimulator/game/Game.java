@@ -7,6 +7,7 @@ import it.cubicworldsimulator.engine.graphic.light.PointLight;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
 import it.cubicworldsimulator.engine.graphic.light.SpotLight;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
+import it.cubicworldsimulator.game.gui.Settings;
 import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
@@ -15,8 +16,8 @@ import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
+import org.joml.Vector4f;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,38 +35,45 @@ public class Game implements GameLogic {
     private final Map<Mesh, List<GameItem>> transparentMeshMap = new HashMap<>();
 
     private final RendererImpl renderer;
+    private final Settings mySettings;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
+    private Window window;
+    private final Timer timer = new Timer();
+    private static final float DELTA_NIGHT = 0.00250f;
+    private long time = 0;
+    private final Vector4f newColour = new Vector4f(0.0f, 0.0f, 0.2f, 1.0f);
 
-    public Game() {
+    public Game(Settings mySettings) {
         renderer = new RendererImpl();
         commandsQueue = new CommandsQueue();
+        this.mySettings = mySettings;
     }
 
     @Override
     public void init(Window window) {
         initShaderPrograms();
-        world = new World("test", 463456L);
+        this.window=window;
+        world = new World(mySettings.getWorldName(),
+                mySettings.getWorldSeed());
         worldManager = new WorldManager(world, commandsQueue);
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
             //LIGHTS
-            Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+            Vector3f ambientLight = new Vector3f(0.2f, 0.2f, 0.2f);
             Vector3f lightColour = new Vector3f(1, 1, 1);
             Vector3f lightPosition = new Vector3f(0, 0, 1);
-            float specularPower = 10f;
+            float specularPower = 5f;
             float lightIntensity = 1.0f;
             PointLight pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
             PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
             pointLight.setAttenuation(att);
-
             lightPosition = new Vector3f(-1, 0, 0);
             lightColour = new Vector3f(1, 1, 1);
             DirectionalLight directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
             SceneLight sceneLight = new SceneLight(directionalLight, new PointLight[0], new SpotLight[0], ambientLight, specularPower);
 
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
-
             worldManager.updateActiveChunksSync(new Vector3i(0, 0, 0));
             while (commandsQueue.hasLoadCommand()) {
                 Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
@@ -83,7 +91,6 @@ public class Game implements GameLogic {
             }
         } catch (Exception e) {
             logger.error(e);
-
             System.exit(2);
         }
     }
@@ -149,9 +156,38 @@ public class Game implements GameLogic {
                 }
             }
         }
+        dayNight();
         // Update directional light direction, intensity and colour
         DirectionalLight directionalLight = scene.getSceneLight().getDirectionalLight();
         directionalLight.changeAngle(directionalLight.getAngle() + 1.1f);
+    }
+
+    private void dayNight() {
+        time += timer.getElapsedTime()*1000;
+        time %= 24_000;
+        if(time >= 0 && time < 5000){
+            if ((newColour.z -= DELTA_NIGHT) < 0) {
+                newColour.z=0;
+                return;
+            } else {
+                newColour.z -= DELTA_NIGHT;
+            }
+        }else if(time >= 5000 && time < 21000){
+            if ((newColour.z += DELTA_NIGHT) > 1) {
+                newColour.z=1;
+                return;
+            } else {
+                newColour.z += DELTA_NIGHT;
+            }
+        }else{
+            if ((newColour.z -= DELTA_NIGHT) < 0) {
+                newColour.z=0;
+                return;
+            } else {
+                newColour.z -= DELTA_NIGHT;
+            }
+        }
+        window.setClearColor(newColour.x, newColour.y, newColour.z, newColour.w);
     }
 
     @Override

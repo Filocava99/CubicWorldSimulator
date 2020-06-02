@@ -8,6 +8,10 @@ public class Timer {
         lastLoopTime = getTime();
     }
 
+    /**
+     * Gets time in seconds
+     * @return
+     */
     public double getTime() {
         return System.nanoTime() / 1000_000_000.0;
     }

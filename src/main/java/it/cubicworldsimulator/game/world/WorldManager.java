@@ -1,8 +1,8 @@
 package it.cubicworldsimulator.game.world;
 
 import it.cubicworldsimulator.engine.graphic.Material;
-import it.cubicworldsimulator.engine.loader.TextureLoader;
-import it.cubicworldsimulator.engine.loader.TextureLoaderImpl;
+import it.cubicworldsimulator.engine.graphic.Texture.TextureFactory;
+import it.cubicworldsimulator.engine.graphic.Texture.TextureFactoryImpl;
 import it.cubicworldsimulator.game.CommandsQueue;
 import it.cubicworldsimulator.game.openglcommands.OpenGLLoadChunkCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
@@ -46,10 +46,10 @@ public class WorldManager {
         this.chunkGenerator = new ChunkGenerator(new DefaultGenerationAlgorithm(world.getSeed(), blockTypes));
         this.chunkLoader = new ChunkLoader(world.getName());
         this.alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
-        TextureLoader loader = new TextureLoaderImpl();
+        TextureFactory textureFactory = new TextureFactoryImpl();
         try {
             loadConfig("src/main/resources/default.yml");
-            worldTexture = new Material(loader.loadTexture(textureFile));
+            worldTexture = new Material(textureFactory.createTexture(textureFile));
         } catch (Exception e) {
             LOGGER.error(e);
             System.exit(1);
