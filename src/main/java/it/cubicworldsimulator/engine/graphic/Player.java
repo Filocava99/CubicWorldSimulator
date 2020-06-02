@@ -73,7 +73,7 @@ public class Player implements Observer{
 		this.rotation = rotation;
 		this.position = this.visualizationStrategy.calculatePosition(position, this.rotation);
 		this.playerModel.setPosition(new Vector3f(this.position));
-		this.playerModel.setScale(0.1f);
+		this.playerModel.setRotation(new Vector3f(this.rotation));
 		System.out.println("PLAYER POSITION:" + this.position.x + " " + this.position.y + " " + this.position.z);
 	}
 }

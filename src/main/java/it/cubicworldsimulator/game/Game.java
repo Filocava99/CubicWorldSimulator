@@ -120,15 +120,15 @@ public class Game implements GameLogic {
         if(window.isKeyPressed(GLFW_KEY_T)) {
         	scene.getPlayer().setStrategy((p,r)->{
         		Vector3f newPosition = new Vector3f(p);
-        		//newPosition.x += Player.DISTANCE_FROM_CAMERA;
-        		//newPosition.y -= Constants.DISTANCE_FROM_CAMERA;
-        		//newPosition.z -= Constants.DISTANCE_FROM_CAMERA;
+        		newPosition.x += Constants.DISTANCE_FROM_CAMERA;
+        		newPosition.y -= 1;
+        		newPosition.z -= Constants.DISTANCE_FROM_CAMERA;
         		
-        		newPosition.x += (float)Math.sin(Math.toRadians(r.y)) * -1.0f * Constants.DISTANCE_FROM_CAMERA;
+        		/*newPosition.x += (float)Math.sin(Math.toRadians(r.y)) * -1.0f * Constants.DISTANCE_FROM_CAMERA;
                 newPosition.z += (float)Math.cos(Math.toRadians(r.y)) * Constants.DISTANCE_FROM_CAMERA;
                 newPosition.x += (float)Math.sin(Math.toRadians(r.y - 90)) * -1.0f * Constants.DISTANCE_FROM_CAMERA;
                 newPosition.z += (float)Math.cos(Math.toRadians(r.y - 90)) * Constants.DISTANCE_FROM_CAMERA;
-        		newPosition.y -= Constants.DISTANCE_FROM_CAMERA;
+        		newPosition.y -= Constants.DISTANCE_FROM_CAMERA;*/
         		return newPosition;
         	});
         }else if(window.isKeyPressed(GLFW_KEY_F)) {
