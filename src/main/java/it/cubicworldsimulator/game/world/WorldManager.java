@@ -1,8 +1,8 @@
 package it.cubicworldsimulator.game.world;
 
 import it.cubicworldsimulator.engine.graphic.Material;
-import it.cubicworldsimulator.engine.graphic.Texture.TextureFactory;
-import it.cubicworldsimulator.engine.graphic.Texture.TextureFactoryImpl;
+import it.cubicworldsimulator.engine.graphic.texture.TextureFactory;
+import it.cubicworldsimulator.engine.graphic.texture.TextureFactoryImpl;
 import it.cubicworldsimulator.game.CommandsQueue;
 import it.cubicworldsimulator.game.openglcommands.OpenGLLoadChunkCommand;
 import it.cubicworldsimulator.game.openglcommands.OpenGLUnloadChunkCommand;
@@ -76,7 +76,11 @@ public class WorldManager {
                 ChunkColumn chunkColumn = entry.getValue();
                 chunkLoader.saveChunkColumn(chunkColumn);
                 for (Chunk chunk : chunkColumn.getChunks()) {
-                    commandsQueue.addUnloadCommand(chunk.getPosition(), new OpenGLUnloadChunkCommand(chunkMeshes.get(chunk.getPosition())));
+                    if(commandsQueue.containsLoadCommand(chunk.getPosition())){
+                        commandsQueue.removeLoadCommand(chunk.getPosition());
+                    }else{
+                        commandsQueue.addUnloadCommand(chunk.getPosition(), new OpenGLUnloadChunkCommand(chunkMeshes.get(chunk.getPosition())));
+                    }
                     chunkMeshes.remove(chunk.getPosition());
                 }
                 dumpQueue.add(entry.getKey());
@@ -99,7 +103,11 @@ public class WorldManager {
                         Chunk chunk = chunkColumn.getChunks()[i];
                         ChunkMesh chunkMesh = new ChunkMesh(chunk, blockTypes, worldTexture);
                         chunkMesh.prepareVAOContent();
-                        commandsQueue.addLoadCommand(chunk.getPosition(), new OpenGLLoadChunkCommand(chunkMesh));
+                        if(commandsQueue.containsUnloadCommand(chunk.getPosition())){
+                            commandsQueue.removeUnloadCommand(chunk.getPosition());
+                        }else{
+                            commandsQueue.addLoadCommand(chunk.getPosition(), new OpenGLLoadChunkCommand(chunkMesh));
+                        }
                         chunkMeshes.put(chunk.getPosition(), chunkMesh);
                     }
                     activeChunks.put(newChunkCoord, chunkColumn);
