@@ -1,4 +1,4 @@
-package it.cubicworldsimulator.engine.graphic.Texture;
+package it.cubicworldsimulator.engine.graphic.texture;
 
 public class TextureImpl implements Texture {
     private final int id;

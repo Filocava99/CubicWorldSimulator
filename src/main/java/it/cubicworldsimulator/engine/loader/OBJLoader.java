@@ -3,7 +3,7 @@ package it.cubicworldsimulator.engine.loader;
 import it.cubicworldsimulator.engine.Utils;
 import it.cubicworldsimulator.engine.graphic.Material;
 import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.Texture.TextureFactoryImpl;
+import it.cubicworldsimulator.engine.graphic.texture.TextureFactoryImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
