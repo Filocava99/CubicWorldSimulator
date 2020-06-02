@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-import org.joml.Vector4f;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +33,7 @@ public class Game implements GameLogic {
     private final Settings mySettings;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
-    private DayNightCycle dayNightCycle;
+    private LightCycleManager dayNightManager;
 
     public Game(Settings mySettings) {
         renderer = new RendererImpl();
@@ -63,7 +62,8 @@ public class Game implements GameLogic {
             lightColour = new Vector3f(1, 1, 1);
             DirectionalLight directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
             SceneLight mySceneLight = new SceneLight(directionalLight, new PointLight[0], new SpotLight[0], ambientLight, specularPower);
-            dayNightCycle = new DayNightCycleLight(mySceneLight);
+            dayNightManager = new DayNightManager(mySceneLight);
+            dayNightManager.setDelta(0.00250f);
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, mySceneLight);
             worldManager.updateActiveChunksSync(new Vector3i(0, 0, 0));
             while (commandsQueue.hasLoadCommand()) {
@@ -147,7 +147,7 @@ public class Game implements GameLogic {
                 }
             }
         }
-        dayNightCycle.updateCycle();
+        dayNightManager.updateCycle();
         // Update directional light direction, intensity and colour
         DirectionalLight directionalLight = scene.getSceneLight().getDirectionalLight();
         directionalLight.changeAngle(directionalLight.getAngle() + 1.1f);
