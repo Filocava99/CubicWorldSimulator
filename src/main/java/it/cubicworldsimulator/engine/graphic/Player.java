@@ -28,6 +28,9 @@ public class Player implements Observer{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		this.playerModel.setPosition(new Vector3f(this.position));
+		this.playerModel.setScale(0.1f);
+		this.playerModel.setIgnoreFrustum(true);
     }
 
   
@@ -69,6 +72,8 @@ public class Player implements Observer{
 	public void update(Vector3f position, Vector3f rotation) {
 		this.rotation = rotation;
 		this.position = this.visualizationStrategy.calculatePosition(position, this.rotation);
+		this.playerModel.setPosition(new Vector3f(this.position));
+		this.playerModel.setScale(0.1f);
 		System.out.println("PLAYER POSITION:" + this.position.x + " " + this.position.y + " " + this.position.z);
 	}
 }
