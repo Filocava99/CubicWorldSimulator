@@ -66,7 +66,12 @@ public class Game implements GameLogic {
             		.addAmbientLight(ambientLight)
             		.addSpecularPower(specularPower)
             		.build();
-            
+
+            OBJLoader objLoader = new OBJLoader();
+            GameItem test = new GameItem(objLoader.loadFromOBJ("/models/person.obj","src/main/resources/textures/playerTexture.png"));
+            test.setPosition(0,200,0);
+            test.setScale(10);
+            opaqueMeshMap.put(test.getMesh(), List.of(test));
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
             
             this.opaqueMeshMap.put(scene.getPlayer().getPlayerModel().getMesh(), List.of(scene.getPlayer().getPlayerModel()));
