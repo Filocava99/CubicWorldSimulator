@@ -59,12 +59,12 @@ public class RendererImpl implements Renderer {
             //Update the view matrix
             Matrix4f viewMatrix = scene.getPlayer().updateViewMatrix();
 
-
             //Prepare the shader program and the required uniform variables
             scene.getShaderProgram().bind();
             scene.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
             scene.getShaderProgram().setUniform("texture_sampler", 0);
 
+            //INIZIO PARTE DI DOMINI E FOLIN | TODO CREARE UN MEDODO APPOSITO
             SceneLight sceneLight = scene.getSceneLight();
             // Process Point Lights
             int numLights = sceneLight.getPointLights() != null ? sceneLight.getPointLights().length : 0;
@@ -106,9 +106,7 @@ public class RendererImpl implements Renderer {
             dir.mul(viewMatrix);
             currDirLight.setDirection(new Vector3f(dir.x, dir.y, dir.z));
             scene.getShaderProgram().setUniform("directionalLight", currDirLight);
-
-
-
+            //FINE PARTE DI DOMINI E FOLIN
 
             //Update frustum culling
             filter.updateFrustum(projectionMatrix, viewMatrix);
@@ -133,7 +131,7 @@ public class RendererImpl implements Renderer {
             //If the scene has a skybox we render it
             if (scene.getSkyBox() != null) {
                 //Renders the skybox
-                renderSkyBox(projectionMatrix, scene.getSkyBox(), scene.getPlayer());
+                renderSkyBox(projectionMatrix, scene);
             }
         }
     }
@@ -141,10 +139,11 @@ public class RendererImpl implements Renderer {
     /**
      * Renders the skybox
      * @param projectionMatrix
-     * @param skyBox
-     * @param camera
+     * @param scene
      */
-    private void renderSkyBox(Matrix4f projectionMatrix, SkyBox skyBox, Camera camera) {
+    private void renderSkyBox(Matrix4f projectionMatrix, Scene scene) {
+        SkyBox skyBox = scene.getSkyBox();
+        Camera camera = scene.getPlayer();
         skyBox.getShaderProgram().bind();
         skyBox.getShaderProgram().setUniform("texture_sampler", 0);
         Matrix4f viewMatrix = camera.getViewMatrix();
@@ -152,21 +151,15 @@ public class RendererImpl implements Renderer {
         viewMatrix.m31(0);
         viewMatrix.m32(0);
         Matrix4f modelViewMatrix = transformation.getModelViewMatrix(skyBox, viewMatrix);
+        skyBox.getShaderProgram().setUniform("projectionMatrix", projectionMatrix);
         skyBox.getShaderProgram().setUniform("modelViewMatrix", modelViewMatrix);
-        renderSingleGameItem(skyBox);
-        skyBox.getShaderProgram().unbind();
-    }
-
-    /**
-     * Renders a single game item
-     * @param gameItem GameItem to be rendered
-     */
-    private void renderSingleGameItem(GameItem gameItem) {
-        initRender(gameItem.getMesh());
-        logger.trace("GameItem name: " + gameItem.toString());
-        logger.trace("Vertices rendered: " + gameItem.getMesh().getVertexCount());
-        glDrawElements(GL_TRIANGLES, gameItem.getMesh().getVertexCount(), GL_UNSIGNED_INT, 0);
+        skyBox.getShaderProgram().setUniform("ambientLight", scene.getSceneLight().getAmbientLight());
+        initRender(skyBox.getMesh());
+        logger.trace("GameItem name: " + skyBox.toString());
+        logger.trace("Vertices rendered: " + skyBox.getMesh().getVertexCount());
+        glDrawElements(GL_TRIANGLES, skyBox.getMesh().getVertexCount(), GL_UNSIGNED_INT, 0);
         endRender();
+        skyBox.getShaderProgram().unbind();
     }
 
     /**
