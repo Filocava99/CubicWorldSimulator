@@ -25,10 +25,6 @@ public class MonitorProperty {
         this.width = width;
     }
 
-    public int getRefreshRate() {
-        return refreshRate;
-    }
-
     public void setRefreshRate(int refreshRate) {
         this.refreshRate = refreshRate;
     }
