@@ -2,6 +2,7 @@ package it.cubicworldsimulator.engine.renderer;
 
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.*;
+import it.cubicworldsimulator.engine.graphic.Texture.Texture;
 import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
 import it.cubicworldsimulator.engine.graphic.light.PointLight;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
@@ -203,7 +204,7 @@ public class RendererImpl implements Renderer {
             glBindTexture(GL_TEXTURE_2D, texture.getId());
         }
         //Bind the VAO
-        glBindVertexArray(mesh.getVaoId());
+        glBindVertexArray(mesh.getVao().getId());
     }
 
     /**

@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.engine;
 
+import it.cubicworldsimulator.game.gui.Settings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
@@ -7,6 +8,8 @@ import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+
+import java.awt.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -35,19 +38,22 @@ public class Window {
 
     private boolean resized;
 
-    private Matrix4f projectionMatrix;
+    private final boolean fullscreen;
+
+    private final Matrix4f projectionMatrix;
 
     private boolean vSync;
     private final boolean debug;
     private final Vector4f clearColor;
 
-    public Window(String title, int width, int height, Vector4f clearColor, boolean vSync, boolean debug) {
+    public Window(String title, Settings mySettings, Vector4f clearColor) {
         this.title = title;
-        this.width = width;
-        this.height = height;
-        this.vSync = vSync;
+        this.width = mySettings.getWidth();
+        this.height = mySettings.getHeight();
+        this.fullscreen = mySettings.getFullscreen();
+        this.vSync = mySettings.getvSync();
+        this.debug = mySettings.getDebug();
         this.resized = false;
-        this.debug = debug;
         this.clearColor = clearColor;
         this.projectionMatrix = new Matrix4f();
     }
@@ -81,6 +87,7 @@ public class Window {
         }
 
         windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
+
         // Create the window
         if (windowHandle == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");

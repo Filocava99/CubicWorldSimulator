@@ -1,4 +1,5 @@
 # CubicWorldSimulator
+![In-game screen](https://i.imgur.com/Sf8HSNZ.jpg =100px)
 
 Use -XstartOnFirstThread JVM argument to launch game on Mac OS platform.
 
