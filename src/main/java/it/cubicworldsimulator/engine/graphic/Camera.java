@@ -2,20 +2,17 @@ package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.Transformation;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-public class Camera{
+public class Camera implements Observer{
     private final float cameraStep = 1;
     private final Vector3f cameraMovement = new Vector3f();
-    private final Vector3f position;
-    private final Vector3f rotation;
+    private Vector3f position;
+    private Vector3f rotation;
     private final Transformation transformation;
     private Matrix4f viewMatrix;
-    private final Set<Observer> observer= new HashSet<>();
+    private VisualizationStrategy visualizationStrategy;
     
     public Camera() {
         this(new Vector3f(0, 35, 0), new Vector3f(0, 0, 0));
@@ -30,7 +27,10 @@ public class Camera{
         this.rotation = rotation;
         transformation = new Transformation();
         viewMatrix = new Matrix4f();
-     
+        this.visualizationStrategy = (p, r) -> {
+    		Vector3f newPosition = new Vector3f(p);
+    		return newPosition;
+    	};
     }
 
     public Matrix4f updateViewMatrix(){
@@ -50,26 +50,6 @@ public class Camera{
         position.y = y;
         position.z = z;
     }
-
-    public void movePosition(float offsetX, float offsetY, float offsetZ) {
-        if ( offsetZ != 0 ) {
-            position.x += (float)Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;
-            position.z += (float)Math.cos(Math.toRadians(rotation.y)) * offsetZ;
-        }
-        if ( offsetX != 0) {
-            position.x += (float)Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offsetX;
-            position.z += (float)Math.cos(Math.toRadians(rotation.y - 90)) * offsetX;
-        }
-       
-        position.y += offsetY;
-   
-        this.observer.stream().forEach( (e)->{
-        	e.update(this.position, this.rotation);
-        });
-        
-        System.out.println("CAMERA POSITION:" + position.x + " " + position.y + " " + position.z);
-    }
-    
     
     public Vector3f getRotation() {
         return rotation;
@@ -80,17 +60,11 @@ public class Camera{
         rotation.y = y;
         rotation.z = z;
     }
-
-    public void moveRotation(float offsetX, float offsetY, float offsetZ) {
-        rotation.x += offsetX;
-        rotation.y += offsetY;
-        rotation.z += offsetZ;
-        
-        this.observer.stream().forEach( (e)->{
-        	e.update(this.position, this.rotation);
-        });
+    
+    public void setStrategy(VisualizationStrategy visualizationStrategy) {
+    	this.visualizationStrategy = visualizationStrategy;
     }
-
+    
     public float getCameraStep() {
         return cameraStep;
     }
@@ -98,9 +72,12 @@ public class Camera{
     public Vector3f getCameraMovement() {
         return cameraMovement;
     }
-    
-    public void attach(Observer o) {
-    	this.observer.add(o);
-    }
+
+	@Override
+	public void update(Vector3f position, Vector3f rotation) {
+		// TODO Auto-generated method stub
+		this.rotation = new Vector3f(rotation);
+		this.position = this.visualizationStrategy.calculatePosition(position, this.rotation);
+	}
 
 }

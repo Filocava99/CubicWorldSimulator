@@ -2,41 +2,28 @@ package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.GameItem;
 import it.cubicworldsimulator.game.utility.Constants;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-public class Player implements Observer{
+public class Player{
 	
     private Vector3f lastPos;
     private Vector3f position;
     private Vector3f rotation;
     private Vector3i lastChunk;
-    private GameItem playerModel;
-    private VisualizationStrategy visualizationStrategy;
-    
-    public Player(String objModel, String textureFile, Vector3f position){
+    private PlayerModel playerModel;
+    private final Set<Observer> observer= new HashSet<>();
+
+    public Player(Vector3f position){
     	this.position  = position;
     	this.rotation = new Vector3f(0,0,0);
-    	this.visualizationStrategy = (p, r) -> {
-    		Vector3f newPosition = new Vector3f(p);
-    		return newPosition;
-    	};
-    	OBJLoader objLoader = new OBJLoader();
-		try {
-			Mesh playerMesh = objLoader.loadFromOBJ(objModel, textureFile);
-			this.playerModel = new GameItem(playerMesh);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		this.playerModel.setPosition(new Vector3f(this.position));
-		this.playerModel.setScale(0.1f);
-		this.playerModel.setIgnoreFrustum(true);
+   
     }
 
-  
-    public void setStrategy(VisualizationStrategy visualizationStrategy) {
-    	this.visualizationStrategy = visualizationStrategy;
-    }
     public boolean didPlayerMove(){
         final boolean result = this.position.equals(lastPos);
         if(result){
@@ -67,13 +54,40 @@ public class Player implements Observer{
     public GameItem getPlayerModel() {
     	return this.playerModel;
     }
-
-	@Override
-	public void update(Vector3f position, Vector3f rotation) {
-		this.rotation = rotation;
-		this.position = this.visualizationStrategy.calculatePosition(position, this.rotation);
-		this.playerModel.setPosition(new Vector3f(this.position));
-		this.playerModel.setRotation(new Vector3f(this.rotation));
-		System.out.println("PLAYER POSITION:" + this.position.x + " " + this.position.y + " " + this.position.z);
-	}
+    
+    public void movePosition(float offsetX, float offsetY, float offsetZ) {
+        if ( offsetZ != 0 ) {
+            position.x += (float)Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;
+            position.z += (float)Math.cos(Math.toRadians(rotation.y)) * offsetZ;
+        }
+        if ( offsetX != 0) {
+            position.x += (float)Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offsetX;
+            position.z += (float)Math.cos(Math.toRadians(rotation.y - 90)) * offsetX;
+        }
+       
+        position.y += offsetY;
+   
+        this.observer.stream().forEach( (e)->{
+        	e.update(this.position, this.rotation);
+        });
+        
+    }
+    
+    public void moveRotation(float offsetX, float offsetY, float offsetZ) {
+        rotation.x += offsetX;
+        rotation.y += offsetY;
+        rotation.z += offsetZ;
+        
+        this.observer.stream().forEach( (e)->{
+        	e.update(this.position, this.rotation);
+        });
+    }
+    
+    public Vector3f getPosition() {
+    	return this.position;
+    }
+    
+    public void attach(Observer o) {
+    	this.observer.add(o);
+    }
 }
