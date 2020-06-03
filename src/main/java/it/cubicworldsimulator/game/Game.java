@@ -69,7 +69,7 @@ public class Game implements GameLogic {
 
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
             
-            this.opaqueMeshMap.put(scene.getPlayerModel().getMesh(), List.of(scene.getPlayerModel()));
+           
             
             worldManager.updateActiveChunksSync(new Vector3i(0, 0, 0));
             while (commandsQueue.hasLoadCommand()) {
@@ -112,6 +112,7 @@ public class Game implements GameLogic {
             scene.getCamera().getCameraMovement().y = 1;
         }
         if(window.isKeyPressed(GLFW_KEY_T)) {
+        	this.opaqueMeshMap.put(this.scene.getPlayerModel().getMesh(), List.of(this.scene.getPlayerModel()));
         	scene.getCamera().setStrategy((p,r)->{
         		Vector3f newPosition = new Vector3f(p);
         		newPosition.x -= Constants.DISTANCE_FROM_CAMERA;
@@ -120,6 +121,7 @@ public class Game implements GameLogic {
         		return newPosition;
         	});
         }else if(window.isKeyPressed(GLFW_KEY_F)) {
+        	this.opaqueMeshMap.remove(this.scene.getPlayerModel().getMesh(), List.of(this.scene.getPlayerModel()));
         	scene.getCamera().setStrategy( (p,r) -> {
         		Vector3f newPosition = new Vector3f(p);
         		return newPosition;
