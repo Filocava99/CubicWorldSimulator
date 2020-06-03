@@ -58,7 +58,7 @@ public class Scene {
 			this.playerModel.setMesh(playerMesh); 
 			this.playerModel.setPosition(new Vector3f(this.player.getPosition()));
 			this.playerModel.setRotation(new Vector3f(0,180,0));
-			this.playerModel.setScale(0.1f);
+			this.playerModel.setScale(0.06f);
 			this.playerModel.setIgnoreFrustum(true);
 		} catch (Exception e) {
 			e.printStackTrace();
