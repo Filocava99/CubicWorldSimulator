@@ -17,6 +17,6 @@ public class PlayerModel extends GameItem implements Observer {
 	@Override
 	public void update(Vector3f position, Vector3f rotation) {
 		this.setPosition(position);
-		this.setRotation(rotation);
+		//this.setRotation(rotation);
 	}
 }
