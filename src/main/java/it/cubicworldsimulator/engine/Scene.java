@@ -41,8 +41,6 @@ public class Scene {
         setGameItems(gameItems);
         this.skyBox = skyBox;
         this.sceneLight = sceneLight;
-        /*this.player.attach(this.camera);
-        loadPlayerModel();*/
     }
     
    
@@ -51,8 +49,6 @@ public class Scene {
         setGameItems(gameItems);
         this.skyBox = skyBox;
         this.sceneLight = sceneLight;
-        /*this.player.attach(this.camera);
-        loadPlayerModel();*/
     }
     
     private void loadPlayerModel() {
@@ -61,6 +57,7 @@ public class Scene {
 			Mesh playerMesh = objLoader.loadFromOBJ("/models/person.obj", "src/main/resources/textures/playerTexture.png");
 			this.playerModel.setMesh(playerMesh); 
 			this.playerModel.setPosition(new Vector3f(this.player.getPosition()));
+			this.playerModel.setRotation(new Vector3f(0,180,0));
 			this.playerModel.setScale(0.1f);
 			this.playerModel.setIgnoreFrustum(true);
 		} catch (Exception e) {
