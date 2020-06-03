@@ -12,7 +12,7 @@ public class FrustumCullingFilter {
 
     private final Matrix4f prjViewMatrix;
 
-    private FrustumIntersection frustumInt;
+    private final FrustumIntersection frustumInt;
 
     public FrustumCullingFilter() {
         prjViewMatrix = new Matrix4f();

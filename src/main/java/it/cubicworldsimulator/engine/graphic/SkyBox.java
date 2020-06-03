@@ -2,6 +2,7 @@ package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.GameItem;
 import it.cubicworldsimulator.engine.ShaderProgram;
+import it.cubicworldsimulator.engine.loader.OBJLoader;
 
 public class SkyBox extends GameItem {
 

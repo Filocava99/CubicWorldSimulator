@@ -2,12 +2,13 @@ package it.cubicworldsimulator.engine;
 
 import it.cubicworldsimulator.engine.graphic.Camera;
 import it.cubicworldsimulator.engine.graphic.Mesh;
-import it.cubicworldsimulator.engine.graphic.OBJLoader;
 import it.cubicworldsimulator.engine.graphic.Player;
 import it.cubicworldsimulator.engine.graphic.PlayerModel;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
-import it.cubicworldsimulator.engine.loader.Loader;
+
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
+import it.cubicworldsimulator.engine.loader.OBJLoader;
+
 import java.util.*;
 
 import org.joml.Vector3f;
@@ -86,10 +87,10 @@ public class Scene {
     }
 
     public void cleanUp(){
-        opaqueMeshMap.keySet().forEach(Loader::cleanMesh);
-        transparentMeshMap.keySet().forEach(Loader::cleanMesh);
+        opaqueMeshMap.keySet().forEach(Mesh::cleanMesh);
+        transparentMeshMap.keySet().forEach(Mesh::cleanMesh);
         shaderProgram.cleanup();
-        Loader.cleanMesh(skyBox.getMesh());
+        skyBox.getMesh().cleanMesh();
         skyBox.getShaderProgram().cleanup();
     }
 

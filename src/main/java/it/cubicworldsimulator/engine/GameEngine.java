@@ -1,11 +1,10 @@
 package it.cubicworldsimulator.engine;
 
 import it.cubicworldsimulator.engine.graphic.MouseInput;
+import it.cubicworldsimulator.game.gui.Settings;
 import org.joml.Vector4f;
-import org.lwjgl.glfw.GLFWWindowCloseCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11C.GL_FALSE;
 
 public class GameEngine extends Thread {
 
@@ -21,18 +20,18 @@ public class GameEngine extends Thread {
 
     private final GameLogic gameLogic;
 
-    public GameEngine(String windowTitle, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
+    /*public GameEngine(String windowTitle, GameLogic gameLogic) throws Exception {
         this(windowTitle, 0, 0, vSync, gameLogic, debug);
-    }
+    }*/
 
-    public GameEngine(String windowTitle, int width, int height, boolean vSync, GameLogic gameLogic, boolean debug) throws Exception {
-        Vector4f clearColor = new Vector4f(0.0f,0.0f,255.0f,0.0f); //TODO Creare diversi costruttori in modo da passare il clearColor facoltativamente
-        window = new Window(windowTitle, width, height, clearColor, vSync, debug);
+    //TODO dove bisogna inserire il fullscreen????
+    public GameEngine(String windowTitle,  GameLogic gameLogic, Settings mySettings) {
+        Vector4f clearColor = new Vector4f(0.0f, 0.0f, 0.3f, 1.0f); //TODO Creare diversi costruttori in modo da passare il clearColor facoltativamente
+        window = new Window(windowTitle, mySettings, clearColor);
         //mouseInput = new MouseInput(window);
         this.gameLogic = gameLogic;
         timer = new Timer();
         this.mouseInput = new MouseInput(this.window);
-
     }
 
     @Override
@@ -109,7 +108,7 @@ public class GameEngine extends Thread {
 
     protected void cleanUp(){
         gameLogic.cleanUp();
-        glfwHideWindow(window.getWindowHandle());
+        glfwHideWindow(window.getWindowId());
         System.exit(0);
     }
 }
