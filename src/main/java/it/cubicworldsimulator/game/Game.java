@@ -69,8 +69,6 @@ public class Game implements GameLogic {
 
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
             
-           
-            
             worldManager.updateActiveChunksSync(new Vector3i(0, 0, 0));
             while (commandsQueue.hasLoadCommand()) {
                 Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
@@ -96,6 +94,8 @@ public class Game implements GameLogic {
     @Override
     public void input(Window window, MouseInput mouseInput) {
         scene.getCamera().getCameraMovement().set(0, 0, 0);
+        
+        //Player movement
         if (window.isKeyPressed(GLFW_KEY_W)) {
             scene.getCamera().getCameraMovement().z = -1;
         } else if (window.isKeyPressed(GLFW_KEY_S)) {
@@ -111,13 +111,15 @@ public class Game implements GameLogic {
         } else if (window.isKeyPressed(GLFW_KEY_SPACE)) {
             scene.getCamera().getCameraMovement().y = 1;
         }
+        
+        //Change visual 
         if(window.isKeyPressed(GLFW_KEY_T)) {
         	this.opaqueMeshMap.put(this.scene.getPlayerModel().getMesh(), List.of(this.scene.getPlayerModel()));
         	scene.getCamera().setStrategy((p,r)->{
         		Vector3f newPosition = new Vector3f(p);
-        		newPosition.x -= Constants.DISTANCE_FROM_CAMERA;
-        		newPosition.y += 1;
-        		newPosition.z -= Constants.DISTANCE_FROM_CAMERA;
+        		newPosition.x += (float)Math.sin(Math.toRadians(r.y)) * -1.0f * Constants.DISTANCE_FROM_CAMERA;
+                newPosition.z += (float)Math.cos(Math.toRadians(r.y)) * Constants.DISTANCE_FROM_CAMERA;
+                newPosition.y += Constants.DISTANCE_FROM_CAMERA / 2;
         		return newPosition;
         	});
         }else if(window.isKeyPressed(GLFW_KEY_F)) {
