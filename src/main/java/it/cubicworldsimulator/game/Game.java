@@ -2,11 +2,12 @@ package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.graphic.*;
-import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
-import it.cubicworldsimulator.engine.graphic.light.PointLight;
+
+import it.cubicworldsimulator.game.utility.Constants;
+import it.cubicworldsimulator.engine.graphic.light.*;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
-import it.cubicworldsimulator.game.utility.Constants;
+import it.cubicworldsimulator.game.gui.Settings;
 import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
@@ -27,48 +28,53 @@ public class Game implements GameLogic {
 
     private final CommandsQueue commandsQueue;
     private WorldManager worldManager;
-    private World world;
     private Scene scene;
     private final Map<Mesh, List<GameItem>> opaqueMeshMap = new HashMap<>();
     private final Map<Mesh, List<GameItem>> transparentMeshMap = new HashMap<>();
 
     private final RendererImpl renderer;
+    private final Settings mySettings;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
+    private LightCycleManager dayNightManager;
 
-    public Game() {
+    public Game(Settings mySettings) {
         renderer = new RendererImpl();
         commandsQueue = new CommandsQueue();
+        this.mySettings = mySettings;
     }
 
     @Override
     public void init(Window window) {
         initShaderPrograms();
-        world = new World("test", 463456L);
+        World world = new World(mySettings.getWorldName(),
+                mySettings.getWorldSeed());
         worldManager = new WorldManager(world, commandsQueue);
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
             //LIGHTS
-            Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+            Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.2f);
             Vector3f lightColour = new Vector3f(1, 1, 1);
             Vector3f lightPosition = new Vector3f(0, 0, 1);
-            float specularPower = 10f;
+            float specularPower = 5f;
             float lightIntensity = 1.0f;
             PointLight pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
             PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
             pointLight.setAttenuation(att);
-
             lightPosition = new Vector3f(-1, 0, 0);
             lightColour = new Vector3f(1, 1, 1);
             DirectionalLight directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
+
             SceneLight sceneLight = new SceneLight.Builder()
             		.addDirectionalLight(directionalLight)
             		.addAmbientLight(ambientLight)
             		.addSpecularPower(specularPower)
             		.build();
 
+            dayNightManager = new DayNightManager(sceneLight);
+            dayNightManager.setDelta(0.00250f);
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
-            
+
             worldManager.updateActiveChunksSync(new Vector3i(0, 0, 0));
             while (commandsQueue.hasLoadCommand()) {
                 Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
@@ -86,7 +92,6 @@ public class Game implements GameLogic {
             }
         } catch (Exception e) {
             logger.error(e);
-
             System.exit(2);
         }
     }
@@ -174,6 +179,7 @@ public class Game implements GameLogic {
                 }
             }
         }
+        dayNightManager.updateCycle();
         // Update directional light direction, intensity and colour
         DirectionalLight directionalLight = scene.getSceneLight().getDirectionalLight();
         directionalLight.changeAngle(directionalLight.getAngle() + 1.1f);
@@ -245,6 +251,7 @@ public class Game implements GameLogic {
             skyBoxShaderProgram.createUniform("projectionMatrix");
             skyBoxShaderProgram.createUniform("modelViewMatrix");
             skyBoxShaderProgram.createUniform("texture_sampler");
+            skyBoxShaderProgram.createUniform("ambientLight");
         } catch (Exception e) {
             logger.error(e);
             System.exit(4);

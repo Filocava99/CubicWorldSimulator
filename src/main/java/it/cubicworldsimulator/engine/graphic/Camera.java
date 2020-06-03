@@ -13,7 +13,7 @@ public class Camera implements Observer{
     private final Transformation transformation;
     private Matrix4f viewMatrix;
     private VisualizationStrategy visualizationStrategy;
-    
+
     public Camera() {
         this(new Vector3f(0, 35, 0), new Vector3f(0, 0, 0));
     }

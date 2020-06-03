@@ -66,20 +66,20 @@ public class MouseInput {
 
 	
 	private void setCursorPosition(Window window) {
-		glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xpos, ypos) ->{
+		glfwSetCursorPosCallback(window.getWindowId(), (windowHandle, xpos, ypos) ->{
 			this.currentPosition.x = (float) xpos;
 			this.currentPosition.y = (float) ypos;
 		});
 	}
 	
 	private void checkCursorEnter(Window window) {
-		glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered)->{
+		glfwSetCursorEnterCallback(window.getWindowId(), (windowHandle, entered)->{
 			this.pointerInWindow = entered;
 		});
 	}
 	
 	private void setMouseButtonPressed(Window window) {
-		glfwSetMouseButtonCallback(window.getWindowHandle(), (windowHandle, button, action, mode)->{
+		glfwSetMouseButtonCallback(window.getWindowId(), (windowHandle, button, action, mode)->{
 			this.leftButtonPressed = (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS);
 			this.rightButtonPressed = (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS);
 		});

@@ -1,5 +1,6 @@
 package it.cubicworldsimulator.engine;
 
+import it.cubicworldsimulator.game.gui.Settings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
@@ -7,6 +8,8 @@ import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+
+import java.util.Objects;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -18,50 +21,40 @@ public class Window {
      * Field of View in Radians
      */
     private static final float FOV = (float) Math.toRadians(60.0f);
-
     private static final float Z_NEAR = 0.01f;
-
     private static final float Z_FAR = 1000.f;
-
     private static final Logger logger = LogManager.getLogger(Window.class);
 
+
     private final String title;
-
-    private int width;
-
-    private int height;
-
-    private long windowHandle;
-
-    private boolean resized;
-
-    private Matrix4f projectionMatrix;
-
-    private boolean vSync;
+    private final boolean fullscreen;
+    private final Matrix4f projectionMatrix;
+    private final boolean vSync;
     private final boolean debug;
     private final Vector4f clearColor;
 
-    public Window(String title, int width, int height, Vector4f clearColor, boolean vSync, boolean debug) {
+    private int width;
+    private int height;
+    private long windowId;
+    private boolean resized;
+
+    public Window(final String title, final Settings mySettings, final Vector4f clearColor) {
         this.title = title;
-        this.width = width;
-        this.height = height;
-        this.vSync = vSync;
+        this.width = mySettings.getWidth();
+        this.height = mySettings.getHeight();
+        this.fullscreen = mySettings.getFullscreen();
+        this.vSync = mySettings.getvSync();
+        this.debug = mySettings.getDebug();
         this.resized = false;
-        this.debug = debug;
         this.clearColor = clearColor;
         this.projectionMatrix = new Matrix4f();
     }
 
     public void init() {
-        // Setup an error callback. The default implementation
-        // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
-
-        // Initialize GLFW. Most GLFW functions will not work before doing this.
         if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
-
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE); // the window will be resizable
@@ -69,76 +62,46 @@ public class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-        boolean maximized = false;
-        // If no size has been specified set it to maximized state
-        if (width == 0 || height == 0) {
-            // Set up a fixed width and height so window initialization does not fail
-            width = 100;
-            height = 100;
-            glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
-            maximized = true;
+        windowId = glfwCreateWindow(width, height, title, NULL, NULL);
+        if (windowId == NULL) {
+            throw new RuntimeException("Failed to create a GLFW window");
         }
-
-        windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
-        // Create the window
-        if (windowHandle == NULL) {
-            throw new RuntimeException("Failed to create the GLFW window");
-        }
-        logger.trace("Window handle: " + windowHandle);
-        // Setup resize callback
-        glfwSetFramebufferSizeCallback(windowHandle, (window, width, height) -> {
-            this.width = width;
-            this.height = height;
-            this.setResized(true);
+        logger.trace("Window handle: " + windowId);
+        glfwSetFramebufferSizeCallback(windowId, (window, width, height) -> {
+            //this.width = width;
+            //this.height = height;
+            this.setResized(false);
         });
-
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
+        glfwSetKeyCallback(windowId, (window, key, scancode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
             }
         });
-
-        if (maximized) {
-            glfwMaximizeWindow(windowHandle);
+        if (fullscreen) {
+            glfwMaximizeWindow(windowId);
         } else {
-            // Get the resolution of the primary monitor
-            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-            // Center our window
+            GLFWVidMode monitor = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            Objects.requireNonNull(monitor);
             glfwSetWindowPos(
-                    windowHandle,
-                    (vidmode.width() - width) / 2,
-                    (vidmode.height() - height) / 2
+                    windowId,
+                    (monitor.width() - width) / 2,
+                    (monitor.height() - height) / 2
             );
         }
-
-
-        // Make the OpenGL context current
-        glfwMakeContextCurrent(windowHandle);
-
+        glfwMakeContextCurrent(windowId);
         if (isvSync()) {
-            // Enable v-sync
             glfwSwapInterval(1);
         }
-
-        // Make the window visible
-        glfwShowWindow(windowHandle);
-
+        glfwShowWindow(windowId);
         GL.createCapabilities();
-
-        // Set the clear color
         setClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
-
         glEnable(GL_DEPTH_TEST);
-
         // Support for transparencies
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-
         if(debug){
             glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         }
@@ -149,11 +112,11 @@ public class Window {
     }
 
     public boolean isKeyPressed(int keyCode) {
-        return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
+        return glfwGetKey(windowId, keyCode) == GLFW_PRESS;
     }
     
     public boolean isKeyReleased(int keyCode) {
-        return glfwGetKey(windowHandle, keyCode) == GLFW_RELEASE;
+        return glfwGetKey(windowId, keyCode) == GLFW_RELEASE;
     }
     
     public boolean onKeyReleased(int keyCode) {
@@ -161,15 +124,11 @@ public class Window {
     }
 
     public boolean windowShouldClose() {
-        return glfwWindowShouldClose(windowHandle);
+        return glfwWindowShouldClose(windowId);
     }
 
-    public long getWindowHandle() {
-        return windowHandle;
-    }
-
-    public String getTitle() {
-        return title;
+    public long getWindowId() {
+        return windowId;
     }
 
     public int getWidth() {
@@ -192,17 +151,13 @@ public class Window {
         return vSync;
     }
 
-    public void setvSync(boolean vSync) {
-        this.vSync = vSync;
-    }
-
     public void update() {
         logger.trace("Updating");
         if(isResized()){
             glViewport(0, 0, getWidth(), getHeight());
             setResized(false);
         }
-        glfwSwapBuffers(windowHandle);
+        glfwSwapBuffers(windowId);
         glfwPollEvents();
     }
 

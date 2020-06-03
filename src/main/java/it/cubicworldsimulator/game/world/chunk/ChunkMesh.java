@@ -2,7 +2,7 @@ package it.cubicworldsimulator.game.world.chunk;
 
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.Material;
-import it.cubicworldsimulator.engine.loader.Loader;
+import it.cubicworldsimulator.engine.loader.MyMeshBuilder;
 import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.world.block.BlockTexture;
 import it.cubicworldsimulator.game.world.block.BlockMaterial;
@@ -21,8 +21,8 @@ public class ChunkMesh implements Serializable {
     private final transient Chunk chunk;
     private final transient Map<Object, BlockMaterial> blocksTypes;
 
-    private VBOContainer opaqueMesh;
-    private VBOContainer transparentMesh;
+    private final VBOContainer opaqueMesh;
+    private final VBOContainer transparentMesh;
     private transient boolean meshesReady = false;
 
     public ChunkMesh(final Chunk chunk, Map<Object, BlockMaterial> blocksTypes, Material material) {
@@ -365,9 +365,18 @@ public class ChunkMesh implements Serializable {
             }
             if (!areVBOsArraysEmpty()) {
                 try {
-                    mesh = Loader.createMesh(verticesArray, uvsArray, indicesArray, normalsArray, material, Constants.chunkAxisSize);
+
+                    mesh = new MyMeshBuilder()
+                                .addPositions(verticesArray)
+                                .addTextCoords(uvsArray)
+                                .addIndices(indicesArray)
+                                .addNormals(normalsArray)
+                                .addTexture(material)
+                                .setBoundingRadius(Constants.chunkAxisSize)
+                                .build();
+
                     meshReady = true;
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
             }
@@ -378,7 +387,7 @@ public class ChunkMesh implements Serializable {
          */
         public void cleanUp() {
             if (mesh != null) {
-                Loader.cleanMesh(mesh);
+                mesh.cleanMesh();
                 meshReady = false;
             }
         }
