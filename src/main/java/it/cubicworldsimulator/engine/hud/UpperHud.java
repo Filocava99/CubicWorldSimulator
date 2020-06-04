@@ -50,10 +50,10 @@ public class UpperHud implements GenericHud {
         nvgFillColor(vg, fromRgbToNvg(0x0, 0x0, 0x66, 100));
         nvgFill(vg);
         glfwGetCursorPos(window.getWindowId(), posx, posy);
-        createText("Hour: " + getHour(), FONT_NAME, 40f,
+        createText("Hour: " + getHour(), FONT_NAME, 35f,
                 new Pair<>(0, 0),fromRgbToNvg(0xe6, 0xea, 0xed, 255));
-        createText("Move: WASD - Up Space - Down: Shift - Third/first person: T/P", FONT_NAME, 30f,
-                new Pair<>(window.getWidth()/2 + window.getWidth()/8, 0), fromRgbToNvg(0xe6, 0xea, 0xed, 255));
+        createText("Move: WASD - Up: Space - Down: Shift - First/third person: F/T", FONT_NAME, 35f,
+                new Pair<>(window.getWidth()/2 + window.getWidth()/12, 0), fromRgbToNvg(0xe6, 0xea, 0xed, 255));
         nvgEndFrame(vg);
         // Restore state
         window.restoreState();
