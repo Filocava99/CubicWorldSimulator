@@ -74,7 +74,8 @@ public class Game implements GameLogic {
             SceneLight sceneLight = new SceneLight(directionalLight, new PointLight[0], new SpotLight[0], ambientLight, specularPower);
 
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
-            worldManager.updateActiveChunksSync(new Vector3i(0, 0, 0));
+            scene.getPlayer().setPosition(2000,50,2000);
+            worldManager.updateActiveChunksSync(new Vector3i(2000, 0, 2000));
             while (commandsQueue.hasLoadCommand()) {
                 Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
                 if (pair != null) {

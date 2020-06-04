@@ -16,6 +16,7 @@ public class DefaultGenerationAlgorithm implements GenerationAlgorithm{
 
     private final OpenSimplexNoise noise;
     private final Map<Object, BlockMaterial> blockTypes;
+    private final int numIteration = 16;
     private static final int WATER_LEVEL = 30;
     private static final int STONE_LEVEL = 60;
 
@@ -28,30 +29,32 @@ public class DefaultGenerationAlgorithm implements GenerationAlgorithm{
     @Override
     public ChunkColumn generateChunkColumn(int chunkX, int chunkZ) {
         //System.out.println("Generazione colonna x:  " + chunkX + "  z:  " + chunkZ);
-        byte[] blocks = new byte[4096 * 16];
-        Chunk[] chunks = new Chunk[16];
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                double height = noise.sumOcatave(16, ((chunkX << 4) + x), ((chunkZ << 4) + z), 0.5, 0.0095, 0, 255) / 4;
+        byte[] blocks = new byte[Constants.chunkTotalBlocks * Constants.chunksPerColumn];
+        Chunk[] chunks = new Chunk[Constants.chunksPerColumn];
+        for (int x = 0; x < Constants.chunkAxisSize; x++) {
+            for (int z = 0; z < Constants.chunkAxisSize; z++) {
+                double height = noise.sumOcatave(numIteration, ((chunkX * Constants.chunkAxisSize) + x), ((chunkZ * Constants.chunkAxisSize) + z), 0.5, 0.0095, 0, 255) / 4;
                 //System.out.println(height);
                 for (int y = 0; y < height; y++) {
+                    int blockPosition = (x) + (y * Constants.chunkAxisSize * Constants.chunkAxisSize) + (z * Constants.chunkAxisSize);
                     if (y <= STONE_LEVEL) {
-                        blocks[(x) + (y * 256) + (z * 16)] = blockTypes.get("stone").getId();
+                        blocks[blockPosition] = blockTypes.get("stone").getId();
                     } else {
-                        blocks[(x) + (y * 256) + (z * 16)] = blockTypes.get("dirt").getId();
+                        blocks[blockPosition] = blockTypes.get("dirt").getId();
                     }
                 }
-                blocks[(x) + ((int) height << 8) + (z << 4)] = blockTypes.get("grass").getId();
-                for (int y = (int) height + 1; y < 256; y++) {
+                blocks[(x) + ((int) height * Constants.chunkAxisSize * Constants.chunkAxisSize) + (z * Constants.chunkAxisSize)] = blockTypes.get("grass").getId();
+                for (int y = (int) height + 1; y < Constants.chunkAxisSize * Constants.chunkAxisSize; y++) {
+                    int blockPosition = (x) + (y * Constants.chunkAxisSize * Constants.chunkAxisSize) + (z * Constants.chunkAxisSize);
                     if (y <= WATER_LEVEL) {
-                        blocks[(x) + (y << 8) + (z << 4)] = blockTypes.get("water").getId();
+                        blocks[blockPosition] = blockTypes.get("water").getId();
                     } else {
-                        blocks[(x) + (y << 8) + (z << 4)] = blockTypes.get("air").getId();
+                        blocks[blockPosition] = blockTypes.get("air").getId();
                     }
                 }
             }
         }
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < Constants.chunkAxisSize; i++) {
             chunks[i] = new Chunk(Arrays.copyOfRange(blocks, Constants.chunkTotalBlocks * i, Constants.chunkTotalBlocks * i + Constants.chunkTotalBlocks), new SerializableVector3f(chunkX, i, chunkZ));
         }
         //System.out.println("Fine generazione");
