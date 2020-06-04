@@ -1,6 +1,8 @@
 package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.*;
+import it.cubicworldsimulator.engine.Hud.GenericHud;
+import it.cubicworldsimulator.engine.Hud.UpperHud;
 import it.cubicworldsimulator.engine.graphic.*;
 
 import it.cubicworldsimulator.game.utility.Constants;
@@ -34,6 +36,7 @@ public class Game implements GameLogic {
 
     private final RendererImpl renderer;
     private final Settings mySettings;
+    private final GenericHud upperHud;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
     private LightCycleManager dayNightManager;
@@ -42,11 +45,17 @@ public class Game implements GameLogic {
         renderer = new RendererImpl();
         commandsQueue = new CommandsQueue();
         this.mySettings = mySettings;
+        this.upperHud = new UpperHud();
     }
 
     @Override
     public void init(Window window) {
         initShaderPrograms();
+        try {
+            upperHud.init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         World world = new World(mySettings.getWorldName(),
                 mySettings.getWorldSeed());
         worldManager = new WorldManager(world, commandsQueue);
@@ -71,7 +80,7 @@ public class Game implements GameLogic {
             		.addSpecularPower(specularPower)
             		.build();
 
-            dayNightManager = new DayNightManager(sceneLight);
+            dayNightManager = new DayNightManager(sceneLight, upperHud);
             dayNightManager.setDelta(0.00250f);
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
 
@@ -189,11 +198,15 @@ public class Game implements GameLogic {
     public void render(Window window) {
         logger.trace("Rendering");
         renderer.render(scene, window);
+        upperHud.renderHud(window);
     }
 
     @Override
     public void cleanUp() {
         scene.cleanUp();
+        if (upperHud != null) {
+            upperHud.cleanup();
+        }
     }
 
     private void initShaderPrograms() {
