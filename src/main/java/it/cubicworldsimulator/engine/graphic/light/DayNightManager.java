@@ -1,8 +1,9 @@
 package it.cubicworldsimulator.engine.graphic.light;
 
+import it.cubicworldsimulator.engine.Hud.GenericHud;
 import it.cubicworldsimulator.engine.Timer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import it.cubicworldsimulator.engine.Hud.UpperHud;
+
 import org.joml.Vector3f;
 
 public class DayNightManager implements LightCycleManager {
@@ -19,13 +20,19 @@ public class DayNightManager implements LightCycleManager {
 
     private final Timer timer;
     private final SceneLight sceneLight;
-    private Vector3f light = new Vector3f(0.1f, 0.1f, 0.2f);
+    private Vector3f light;
     private long time = 0;
     private float delta = 1f;
+    private final GenericHud upperHud;
 
-    public DayNightManager(SceneLight sceneLight) {
+    public DayNightManager(final SceneLight sceneLight, final GenericHud upperHud) {
         timer = new Timer();
+        this.upperHud = upperHud;
         this.sceneLight = sceneLight;
+        getTime();
+        light = (time >= START_SUNLIGHT && time < START_DARKNESS) ?
+                new Vector3f(X_UPPER_BOUND, Y_UPPER_BOUND, Z_UPPER_BOUND):
+                new Vector3f(X_LOWER_BOUND, Y_LOWER_BOUND, Z_LOWER_BOUND);
     }
 
     @Override
@@ -35,23 +42,28 @@ public class DayNightManager implements LightCycleManager {
 
     @Override
     public void updateCycle() {
-        time += timer.getElapsedTime()*500;
-        time %= DAY_DURATION;
+        getTime();
+        ((UpperHud) upperHud).setHour(String.valueOf(time/1000f));
         light = (time >= START_SUNLIGHT && time < START_DARKNESS) ? setSunlight() : setDarkness();
         sceneLight.setAmbientLight(light);
     }
 
     @Override
-    public Vector3f setSunlight() {
+    public Vector3f setDarkness() {
         return new Vector3f(Math.max(light.x - delta, X_LOWER_BOUND),
                 Math.max(light.y - delta, Y_LOWER_BOUND),
                 Math.max(light.z - delta, Z_LOWER_BOUND));
     }
 
     @Override
-    public Vector3f setDarkness() {
+    public Vector3f setSunlight() {
         return new Vector3f(Math.min(light.x + delta, X_UPPER_BOUND),
                 Math.min(light.y + delta, Y_UPPER_BOUND),
                 Math.min(light.z + delta, Z_UPPER_BOUND));
+    }
+
+    private void getTime() {
+        time += timer.getElapsedTime()*1000;
+        time %= DAY_DURATION;
     }
 }
