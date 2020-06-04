@@ -21,6 +21,10 @@ public class Player implements Observable{
     	this.rotation = new Vector3f(0,0,0);
    
     }
+    
+    public Vector3f getRotation() {
+    	return this.rotation;
+    }
 
     public boolean didPlayerMove(){
         final boolean result = this.position.equals(lastPos);
