@@ -1,8 +1,8 @@
 package it.cubicworldsimulator.engine.graphic.light;
 
-import it.cubicworldsimulator.engine.Hud.GenericHud;
+import it.cubicworldsimulator.engine.hud.GenericHud;
 import it.cubicworldsimulator.engine.Timer;
-import it.cubicworldsimulator.engine.Hud.UpperHud;
+import it.cubicworldsimulator.engine.hud.UpperHud;
 
 import org.joml.Vector3f;
 
