@@ -1,4 +1,4 @@
-package it.cubicworldsimulator.engine.Hud;
+package it.cubicworldsimulator.engine.hud;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -27,8 +27,6 @@ public class UpperHud implements GenericHud {
 
     private String hour;
 
-
-
     public void init() throws Exception {
         vg = nvgCreate(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
         if (vg == NULL) {
@@ -48,7 +46,7 @@ public class UpperHud implements GenericHud {
         nvgBeginFrame(vg, window.getWidth(), window.getHeight(), 1);
         //Upper bar
         nvgBeginPath(vg);
-        nvgRect(vg, 0, 0, window.getWidth(), 50);
+        nvgRect(vg, 0, 50, window.getWidth(), 50);
         nvgFillColor(vg, fromRgbToNvg(0x0, 0x0, 0x66, 100));
         nvgFill(vg);
         glfwGetCursorPos(window.getWindowId(), posx, posy);
