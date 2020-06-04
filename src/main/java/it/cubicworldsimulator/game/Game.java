@@ -1,8 +1,8 @@
 package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.*;
-import it.cubicworldsimulator.engine.Hud.GenericHud;
-import it.cubicworldsimulator.engine.Hud.UpperHud;
+import it.cubicworldsimulator.engine.hud.GenericHud;
+import it.cubicworldsimulator.engine.hud.UpperHud;
 import it.cubicworldsimulator.engine.graphic.*;
 
 import it.cubicworldsimulator.game.utility.Constants;
