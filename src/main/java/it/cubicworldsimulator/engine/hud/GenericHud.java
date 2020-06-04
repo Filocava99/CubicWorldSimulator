@@ -1,4 +1,4 @@
-package it.cubicworldsimulator.engine.Hud;
+package it.cubicworldsimulator.engine.hud;
 
 import it.cubicworldsimulator.engine.Window;
 import it.cubicworldsimulator.game.utility.Pair;
