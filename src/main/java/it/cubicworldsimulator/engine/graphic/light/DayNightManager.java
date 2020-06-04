@@ -1,9 +1,8 @@
 package it.cubicworldsimulator.engine.graphic.light;
 
-import it.cubicworldsimulator.engine.hud.GenericHud;
 import it.cubicworldsimulator.engine.Timer;
+import it.cubicworldsimulator.engine.hud.GenericHud;
 import it.cubicworldsimulator.engine.hud.UpperHud;
-
 import org.joml.Vector3f;
 
 public class DayNightManager implements LightCycleManager {
@@ -14,14 +13,16 @@ public class DayNightManager implements LightCycleManager {
     private static final float Y_LOWER_BOUND = 0.16f;
     private static final float Z_UPPER_BOUND = 0.729f;
     private static final float Z_LOWER_BOUND = 0.396f;
-    private static final float DAY_DURATION = 24_000;
-    private static final float START_SUNLIGHT = 5000;
-    private static final float START_DARKNESS = 21_000;
+    private static final float DAY_DURATION = 24_000f;
+    private static final float START_SUNLIGHT = 5f;
+    private static final float START_DARKNESS = 21f;
+    private static final float CYCLE_VELOCITY = 100f;
 
     private final Timer timer;
     private final SceneLight sceneLight;
     private Vector3f light;
-    private long time = 0;
+    private float hour = 0f;
+    private int minutes = 0;
     private float delta = 1f;
     private final GenericHud upperHud;
 
@@ -30,7 +31,7 @@ public class DayNightManager implements LightCycleManager {
         this.upperHud = upperHud;
         this.sceneLight = sceneLight;
         getTime();
-        light = (time >= START_SUNLIGHT && time < START_DARKNESS) ?
+        light = (hour >= START_SUNLIGHT && hour < START_DARKNESS) ?
                 new Vector3f(X_UPPER_BOUND, Y_UPPER_BOUND, Z_UPPER_BOUND):
                 new Vector3f(X_LOWER_BOUND, Y_LOWER_BOUND, Z_LOWER_BOUND);
     }
@@ -43,8 +44,8 @@ public class DayNightManager implements LightCycleManager {
     @Override
     public void updateCycle() {
         getTime();
-        ((UpperHud) upperHud).setHour(String.valueOf(time/1000f));
-        light = (time >= START_SUNLIGHT && time < START_DARKNESS) ? setSunlight() : setDarkness();
+        ((UpperHud) upperHud).setText(String.format("%d:%02d", (int)hour, (int)minutes));
+        light = (hour >= START_SUNLIGHT && hour < START_DARKNESS) ? setSunlight() : setDarkness();
         sceneLight.setAmbientLight(light);
     }
 
@@ -63,7 +64,13 @@ public class DayNightManager implements LightCycleManager {
     }
 
     private void getTime() {
-        time += timer.getElapsedTime()*1000;
-        time %= DAY_DURATION;
+        hour += ((timer.getElapsedTime() * CYCLE_VELOCITY) % DAY_DURATION) / (1000f);
+        int decimals = (int) ((hour - (int) hour) * 100);
+        if (decimals >= 60) {
+            minutes = 0;
+            hour = (int) hour == 23 ? 0 : hour + 0.1f;
+        } else {
+            minutes = decimals;
+        }
     }
 }
