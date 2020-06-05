@@ -1,6 +1,7 @@
 package it.cubicworldsimulator.graphic.light;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.joml.Vector3f;
 import org.junit.Test;
@@ -16,7 +17,7 @@ public class SceneLightBuilderTest {
 	public void checkCorrectCreation() {
 		SceneLight createdWithBuilder = createWithBuilder();
 		SceneLight createdWithoutBuilder = createWithoutBuilder();
-		assertEquals(createdWithBuilder.getPointLights().length,0 );
+		assertEquals(createdWithBuilder, createdWithoutBuilder);
 	}
 	
 	

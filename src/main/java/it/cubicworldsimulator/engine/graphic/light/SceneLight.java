@@ -47,8 +47,8 @@ public class SceneLight {
     public static class Builder implements SceneLightBuilder{
     	
     	private DirectionalLight directionalLight;
-    	private PointLight[] pointLights;
-    	private SpotLight[] spotLights;    	
+    	private PointLight[] pointLights = new PointLight[5];
+    	private SpotLight[] spotLights = new SpotLight[5];    	
     	private Vector3f ambientLight;
     	private float specularPower;
     	
@@ -98,6 +98,14 @@ public class SceneLight {
 			if( this.ambientLight == null || this.directionalLight == null ) {
 				throw new IllegalStateException();
 			}
+			if(this.pointLights[0] == null) {
+				this.pointLights = new PointLight[0];
+			}
+			
+			if(this.spotLights[0] == null) {
+				this.spotLights = new SpotLight[0];
+			}
+			
 			return new SceneLight(this.directionalLight, this.pointLights, this.spotLights, this.ambientLight, this.specularPower);
 		}
     	
