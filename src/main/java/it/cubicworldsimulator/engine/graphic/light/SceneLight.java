@@ -44,6 +44,18 @@ public class SceneLight {
         return specularPower;
     }
     
+    @Override
+    public boolean equals(Object o) {
+    	if(this == o) return true;
+    	if(o == null || getClass() != o.getClass()) return false;
+    	SceneLight sl = (SceneLight) o;
+    	return this.directionalLight == sl.getDirectionalLight() &&
+    			this.ambientLight == sl.getAmbientLight() &&
+    			this.pointLights == sl.getPointLights() &&
+    			this.spotLights == sl.getSpotLights() &&
+    			this.specularPower == sl.getSpecularPower();	
+    }
+    
     public static class Builder implements SceneLightBuilder{
     	
     	private DirectionalLight directionalLight;
