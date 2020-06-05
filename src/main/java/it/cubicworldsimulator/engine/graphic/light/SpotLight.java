@@ -50,5 +50,21 @@ public class SpotLight {
     public final void setCutOffAngle(float cutOffAngle) {
         this.setCutOff((float)Math.cos(Math.toRadians(cutOffAngle)));
     }
+    
+    @Override
+	public boolean equals(Object o) {
+		if(this == o) return true;
+    	if(o == null || getClass() != o.getClass()) return false;
+    	SpotLight light = (SpotLight) o;
+    	return this.cutOff == light.cutOff &&
+    			this.coneDirection.equals(light.coneDirection.x, light.coneDirection.y, light.coneDirection.z) &&
+    			this.pointLight.equals(light.pointLight);
+	}
+    
+    @Override
+    public int hashCode() {
+    	return this.coneDirection.hashCode() 
+    			+ this.pointLight.hashCode();
+    }
 
 }

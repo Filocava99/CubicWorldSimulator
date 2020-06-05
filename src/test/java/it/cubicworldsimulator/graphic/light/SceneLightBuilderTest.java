@@ -1,7 +1,6 @@
 package it.cubicworldsimulator.graphic.light;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import org.joml.Vector3f;
 import org.junit.Test;
@@ -19,7 +18,6 @@ public class SceneLightBuilderTest {
 		SceneLight createdWithoutBuilder = createWithoutBuilder();
 		assertEquals(createdWithBuilder, createdWithoutBuilder);
 	}
-	
 	
 	private SceneLight createWithBuilder() {
 		Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.2f);

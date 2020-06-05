@@ -1,5 +1,7 @@
 package it.cubicworldsimulator.engine.graphic.light;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import org.joml.Vector3f;
 
@@ -49,14 +51,32 @@ public class SceneLight {
     	if(this == o) return true;
     	if(o == null || getClass() != o.getClass()) return false;
     	SceneLight sl = (SceneLight) o;
-    	return this.directionalLight == sl.getDirectionalLight() &&
-    			this.ambientLight == sl.getAmbientLight() &&
-    			this.pointLights == sl.getPointLights() &&
-    			this.spotLights == sl.getSpotLights() &&
-    			this.specularPower == sl.getSpecularPower();	
+    	List<PointLight> point = Arrays.asList(this.pointLights);
+    	List<SpotLight> spot = Arrays.asList(this.spotLights);
+    	return this.directionalLight.equals(sl.getDirectionalLight()) &&
+    			this.ambientLight.equals(sl.getAmbientLight()) &&
+    			point.equals(Arrays.asList(sl.getPointLights())) &&
+    			spot.equals(Arrays.asList(sl.getSpotLights())) &&
+    			this.specularPower == sl.getSpecularPower();
     }
     
-    public static class Builder implements SceneLightBuilder{
+    @Override
+    public int hashCode() {
+    	List<PointLight> point = Arrays.asList(this.pointLights);
+    	List<SpotLight> spot = Arrays.asList(this.spotLights);
+    	return this.directionalLight.hashCode() 
+    			+ point.hashCode() 
+    			+ spot.hashCode() 
+    			+ this.ambientLight.hashCode();
+    }
+    @Override
+	public String toString() {
+		return "SceneLight [directionalLight=" + directionalLight + ", pointLights=" + Arrays.toString(pointLights)
+				+ ", spotLights=" + Arrays.toString(spotLights) + ", specularPower=" + specularPower + ", ambientLight="
+				+ ambientLight + "]";
+	}
+    
+	public static class Builder implements SceneLightBuilder{
     	
     	private DirectionalLight directionalLight;
     	private PointLight[] pointLights = new PointLight[5];

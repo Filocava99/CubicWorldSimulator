@@ -60,6 +60,25 @@ public class PointLight {
 	public void setAttenuation(Attenuation attenuation) {
 		this.attenuation = attenuation;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(this == o) return true;
+    	if(o == null || getClass() != o.getClass()) return false;
+    	PointLight light = (PointLight) o;
+    	return this.color.equals(light.color.x, light.color.y, light.color.z) &&
+    			this.intensity == light.intensity &&
+    			this.position.equals(light.position.x, light.position.y, light.position.z) &&
+    			this.attenuation.equals(light.attenuation);
+    	
+	}
+	
+	@Override
+    public int hashCode() {
+    	return this.color.hashCode() 
+    			+ this.position.hashCode() 
+    			+ this.attenuation.hashCode();
+    }
 
 	public static class Attenuation {
 
@@ -97,6 +116,17 @@ public class PointLight {
 
 		public void setExponent(float exponent) {
 			this.exponent = exponent;
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if(this == o) return true;
+	    	if(o == null || getClass() != o.getClass()) return false;
+	    	Attenuation att = (Attenuation) o;
+	    	return this.constant == att.constant &&
+	    			this.linear == att.linear &&
+	    			this.exponent == att.exponent;
+	    	
 		}
 	}
 }
