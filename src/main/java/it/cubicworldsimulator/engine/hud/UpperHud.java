@@ -52,7 +52,7 @@ public class UpperHud implements GenericHud {
         glfwGetCursorPos(window.getWindowId(), posx, posy);
         createText("Time: " + getText(), FONT_NAME, 35f,
                 new Pair<>(0, 0),fromRgbToNvg(0xe6, 0xea, 0xed, 255));
-        createText("Move: WASD - Up: Space - Down: Shift - First/third person: F/T", FONT_NAME, 35f,
+        createText("Commands: WASD - space - shift - F/T", FONT_NAME, 35f,
                 new Pair<>(window.getWidth()/2 + window.getWidth()/12, 0), fromRgbToNvg(0xe6, 0xea, 0xed, 255));
         nvgEndFrame(vg);
         // Restore state
