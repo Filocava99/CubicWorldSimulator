@@ -14,10 +14,11 @@ public class Settings {
     private final int renderingDistance;
     private final long worldSeed;
     private final String worldName;
+    private final float daySpeed;
 
     public Settings(final boolean vSync, final boolean debug, final boolean fullscreen,
                     final int width, final int height, final int renderingDistance,
-                    final long worldSeed, final String worldName) {
+                    final long worldSeed, final String worldName, final float daySpeed) {
         this.vSync = vSync;
         this.debug = debug;
         this.fullscreen = fullscreen;
@@ -26,6 +27,7 @@ public class Settings {
         this.renderingDistance = renderingDistance;
         this.worldSeed = worldSeed;
         this.worldName = worldName;
+        this.daySpeed = daySpeed;
     }
 
     public boolean getvSync() {
@@ -60,6 +62,10 @@ public class Settings {
         return worldName;
     }
 
+    public float getDaySpeed() {
+        return daySpeed;
+    }
+
     /**
      * Build a settings object by using builder design pattern.
      */
@@ -72,6 +78,7 @@ public class Settings {
         private Optional<Integer> renderingDistance = Optional.empty();
         private Optional<Long> worldSeed = Optional.empty();
         private Optional<String> worldName = Optional.empty();
+        private Optional<Float> daySpeed = Optional.empty();
 
         public Builder vSync(boolean vSync){
             this.vSync = Optional.of(vSync);
@@ -116,10 +123,16 @@ public class Settings {
             return this;
         }
 
+        public Builder daySpeed(float daySpeed) {
+            this.daySpeed = Optional.of(daySpeed);
+            return this;
+        }
+
         public Settings build() {
             return new Settings(vSync.orElse(true), debug.orElse(false),
                     fullscreen.orElse(true), width.orElse(1920), height.orElse(1080),
-                    renderingDistance.orElse(1), worldSeed.orElse(424243563456L), worldName.orElse("world-1"));
+                    renderingDistance.orElse(1), worldSeed.orElse(424243563456L),
+                    worldName.orElse("world-1"), daySpeed.orElse(10f));
         }
     }
 }

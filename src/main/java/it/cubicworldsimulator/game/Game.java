@@ -80,7 +80,7 @@ public class Game implements GameLogic {
             		.addSpecularPower(specularPower)
             		.build();
 
-            dayNightManager = new DayNightManager(sceneLight, upperHud);
+            dayNightManager = new DayNightManager(sceneLight, upperHud, mySettings.getDaySpeed());
             dayNightManager.setDelta(0.00250f);
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
 
@@ -108,7 +108,6 @@ public class Game implements GameLogic {
     @Override
     public void input(Window window, MouseInput mouseInput) {
         scene.getCamera().getCameraMovement().set(0, 0, 0);
-        
         //Player movement
         if (window.isKeyPressed(GLFW_KEY_W)) {
             scene.getCamera().getCameraMovement().z = -1;
