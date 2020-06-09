@@ -8,8 +8,6 @@ import org.joml.Vector2f;
 import org.liquidengine.legui.component.*;
 import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.listener.MouseClickEventListener;
-import org.liquidengine.legui.style.color.ColorConstants;
-import org.liquidengine.legui.theme.colored.FlatColoredTheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,6 @@ import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLICK;
-import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -37,6 +34,7 @@ public class Launcher extends GenericGui {
     private TextInput renderingDistanceInput;
     private TextInput worldSeedInput;
     private TextInput worldStringInput;
+    private TextInput daySpeedInput;
     private Button launchGame;
 
     //Screen size
@@ -103,8 +101,10 @@ public class Launcher extends GenericGui {
         objects.add(worldStringLabel);
         worldStringInput = guiFactory.createTextInput("world-1", settings);
         objects.add(worldStringInput);
-        objects.add(guiFactory.createLabel("World name can be whatever you want",
-                new Vector2f(worldStringInput.getPosition().x + worldStringInput.getSize().x + 20, worldStringLabel.getPosition().y), settings));
+        Label daySpeedLabel = createOptionLabel("Day speed", settings);
+        objects.add(daySpeedLabel);
+        daySpeedInput = guiFactory.createTextInput("100", settings);
+        objects.add(daySpeedInput);
         launchGame = guiFactory.createButton("Start game", new Vector2f(290, 50), this);
         objects.add(launchGame);
         startGame();
@@ -124,7 +124,7 @@ public class Launcher extends GenericGui {
                 try {
                     gameEngine = new GameEngine("CubicWorldSimulator",
                                  new Game(mySettings), mySettings);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
                 gameEngine.run();
             }
@@ -135,7 +135,7 @@ public class Launcher extends GenericGui {
      * Creates a specific label left to text input
      * @param title of the label
      * @param panelToAdd where label will be added
-     * @return
+     * @return created label
      */
     public Label createOptionLabel(String title, Panel panelToAdd) {
         return ((LauncherFactory)guiFactory).createOptionLabel(title, panelToAdd);
@@ -153,6 +153,7 @@ public class Launcher extends GenericGui {
                          .fullscreen(Boolean.parseBoolean(fullScreenInput.getTextState().getText()))
                          .vSync(Boolean.parseBoolean(vSyncInput.getTextState().getText()))
                          .debug(Boolean.parseBoolean(debugInput.getTextState().getText()))
+                         .daySpeed(Float.parseFloat(daySpeedInput.getTextState().getText()))
                          .build();
     }
 
@@ -165,7 +166,8 @@ public class Launcher extends GenericGui {
                 && isNumeric(heightInput.getTextState().getText())
                 && checkRenderingDistance(renderingDistanceInput.getTextState().getText())
                 && isFiled(worldStringInput.getTextState().getText())
-                && isFiled(worldSeedInput.getTextState().getText()));
+                && isFiled(worldSeedInput.getTextState().getText())
+                && isNumeric(daySpeedInput.getTextState().getText()));
     }
 
     /**
