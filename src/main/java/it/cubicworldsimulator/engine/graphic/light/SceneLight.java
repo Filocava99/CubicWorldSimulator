@@ -7,7 +7,8 @@ import org.joml.Vector3f;
 
 
 public class SceneLight {
-
+	
+	private Vector3f skyBoxLight;
     private final DirectionalLight directionalLight;
     private final PointLight[] pointLights;
     private final SpotLight[] spotLights;
@@ -44,6 +45,14 @@ public class SceneLight {
 
     public float getSpecularPower() {
         return specularPower;
+    }
+    
+    public Vector3f getSkyBoxLight() {
+        return skyBoxLight;
+    }
+
+    public void setSkyBoxLight(Vector3f skyBoxLight) {
+        this.skyBoxLight = skyBoxLight;
     }
     
     @Override
