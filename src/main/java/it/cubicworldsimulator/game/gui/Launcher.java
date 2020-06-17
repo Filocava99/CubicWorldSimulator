@@ -62,7 +62,7 @@ public class Launcher extends GenericGui {
 
 
     public void createGui() {
-        Panel settings = new Panel(0, 200, (float) widthScreen, (float) heightScreen);
+        Panel settings = new Panel(0, (float) heightScreen/5, (float) widthScreen, (float) heightScreen);
         objects.add(createOptionLabel("Settings", settings));
         objects.add(createOptionLabel("vSync", settings));
         vSyncInput = guiFactory.createTextInput("true", settings);
