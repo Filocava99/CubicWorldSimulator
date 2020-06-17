@@ -69,10 +69,13 @@ public class LauncherFactory implements GuiFactory {
     public void setAspectRatio() {
         logger.debug("Height: " + this.height);
         logger.debug("Width: " + this.width);
+        float aspectRatio=0f;
         if (this.width == 3840 && this.height==2160) {
             logger.debug("4K screen detected. I've to scale all components.");
+            aspectRatio=(height * width) / 2_000_000f;
+        } else {
+            aspectRatio = (this.height * this.width) / 800_000f;
         }
-        float aspectRatio = (this.height * this.width) / 800_000f;
         this.buttonFontSize= aspectRatio *20f;
         this.X_LABEL*= aspectRatio;
         this.Y_START_VALUE*= aspectRatio;
