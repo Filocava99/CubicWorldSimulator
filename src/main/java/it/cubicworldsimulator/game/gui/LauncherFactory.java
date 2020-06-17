@@ -34,6 +34,7 @@ public class LauncherFactory implements GuiFactory {
 
     private float inputWidth = 130;
     private float inputHeight = 35;
+    private float yInputOffset;
 
     //Screen size
     private int width;
@@ -69,23 +70,27 @@ public class LauncherFactory implements GuiFactory {
     public void setAspectRatio() {
         logger.debug("Height: " + this.height);
         logger.debug("Width: " + this.width);
-        float aspectRatio=0f;
+        float aspectRatio;
         if (this.width == 3840 && this.height==2160) {
             logger.debug("4K screen detected. I've to scale all components.");
             aspectRatio=(height * width) / 2_000_000f;
+            this.Y_OFFSET = (Y_OFFSET * aspectRatio) + 10f;
+            yInputOffset = 100;
         } else {
             aspectRatio = (this.height * this.width) / 800_000f;
+            this.Y_OFFSET = (Y_OFFSET * aspectRatio) + 5f;
+            yInputOffset = 10;
         }
         this.buttonFontSize= aspectRatio *20f;
         this.X_LABEL*= aspectRatio;
         this.Y_START_VALUE*= aspectRatio;
+
         this.X_INPUT_OFFSET*= aspectRatio;
-        this.Y_OFFSET*= aspectRatio;
         this.newYLabel=Y_START_VALUE;
         this.buttonWidth *= aspectRatio;
         this.buttonHeight *= aspectRatio;
         this.inputWidth *= aspectRatio;
-        this.inputHeight *= aspectRatio;
+        this.inputHeight = inputHeight * aspectRatio - 15f;
     }
 
     @Override
@@ -123,7 +128,7 @@ public class LauncherFactory implements GuiFactory {
 
     @Override
     public TextInput createTextInput(String title, Panel panelToAdd) {
-        TextInput input = new TextInput(newXInput, this.newYLabel-Y_OFFSET-10, inputWidth, inputHeight);
+        TextInput input = new TextInput(newXInput, this.newYLabel-Y_OFFSET-yInputOffset, inputWidth, inputHeight);
         input.getTextState().setText(title);
         input.getStyle().setTextColor(0,0,0,1);
         input.getStyle().getBackground().setColor(ColorConstants.white());
