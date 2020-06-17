@@ -31,16 +31,17 @@ public class LauncherFactory implements GuiFactory {
 
     //Every time row is created this value is updated. This will be Y position for the next row
     private float newYLabel;
-
-    private float inputWidth = 130;
-    private float inputHeight = 35;
-    private float yInputOffset;
-
+    
     //Screen size
     private int width;
     private int height;
 
-    //Fonts and colors
+    //Input
+    private float inputWidth = 130;
+    private float inputHeight = 35;
+    private float yInputOffset;
+
+    //Buttons
     protected float buttonFontSize = 30;
     protected float buttonHeight = 50;
     protected float buttonWidth = 80;
@@ -75,7 +76,7 @@ public class LauncherFactory implements GuiFactory {
             logger.debug("4K screen detected. I've to scale all components.");
             aspectRatio=(height * width) / 2_000_000f;
             this.Y_OFFSET = (Y_OFFSET * aspectRatio) + 10f;
-            yInputOffset = 100;
+            yInputOffset = 50;
         } else {
             aspectRatio = (this.height * this.width) / 800_000f;
             this.Y_OFFSET = (Y_OFFSET * aspectRatio) + 5f;
@@ -84,7 +85,6 @@ public class LauncherFactory implements GuiFactory {
         this.buttonFontSize= aspectRatio *20f;
         this.X_LABEL*= aspectRatio;
         this.Y_START_VALUE*= aspectRatio;
-
         this.X_INPUT_OFFSET*= aspectRatio;
         this.newYLabel=Y_START_VALUE;
         this.buttonWidth *= aspectRatio;
