@@ -32,6 +32,9 @@ public class LauncherFactory implements GuiFactory {
     //Every time row is created this value is updated. This will be Y position for the next row
     private float newYLabel;
 
+    private float inputWidth = 130;
+    private float inputHeight = 35;
+
     //Screen size
     private int width;
     private int height;
@@ -78,6 +81,8 @@ public class LauncherFactory implements GuiFactory {
         this.newYLabel=Y_START_VALUE;
         this.buttonWidth *= aspectRatio;
         this.buttonHeight *= aspectRatio;
+        this.inputWidth *= aspectRatio;
+        this.inputHeight *= aspectRatio;
     }
 
     @Override
@@ -115,7 +120,7 @@ public class LauncherFactory implements GuiFactory {
 
     @Override
     public TextInput createTextInput(String title, Panel panelToAdd) {
-        TextInput input = new TextInput(newXInput, this.newYLabel-Y_OFFSET-10, 130, 35);
+        TextInput input = new TextInput(newXInput, this.newYLabel-Y_OFFSET-10, inputWidth, inputHeight);
         input.getTextState().setText(title);
         input.getStyle().setTextColor(0,0,0,1);
         input.getStyle().getBackground().setColor(ColorConstants.white());
