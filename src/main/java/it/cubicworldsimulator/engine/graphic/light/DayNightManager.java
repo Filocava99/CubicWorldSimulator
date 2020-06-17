@@ -5,8 +5,6 @@ import it.cubicworldsimulator.engine.hud.GenericHud;
 import it.cubicworldsimulator.engine.hud.UpperHud;
 import org.joml.Vector3f;
 
-import java.math.BigDecimal;
-
 public class DayNightManager implements LightCycleManager {
     
     private static final float X_UPPER_BOUND = 0.4f;
