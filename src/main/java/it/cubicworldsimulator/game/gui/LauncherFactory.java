@@ -35,6 +35,7 @@ public class LauncherFactory implements GuiFactory {
     //Screen size
     private int width;
     private int height;
+    private float aspectRatio;
 
     //Input
     private float inputWidth = 130;
@@ -69,22 +70,13 @@ public class LauncherFactory implements GuiFactory {
 
     @Override
     public void setAspectRatio() {
-        logger.debug("Height: " + this.height);
-        logger.debug("Width: " + this.width);
-        float aspectRatio;
-        if (this.width == 3840 && this.height == 2160) {
-            logger.debug("4K screen detected. I've to scale all components.");
-            aspectRatio = (height * width) / 2_000_000f;
-            this.Y_OFFSET = (Y_OFFSET * aspectRatio) + 10f;
-            yInputOffset = 50;
-        } else if (this.width == 1920 && this.height == 1080) {
-            aspectRatio = (height * width) / 800_000f;
-            this.Y_OFFSET *= aspectRatio + 0f;
-            yInputOffset = 20;
-        } else {
-            aspectRatio = (this.height * this.width) / 800_000f;
-            this.Y_OFFSET = (Y_OFFSET * aspectRatio) + 5f;
-            yInputOffset = 10;
+
+        if (this.width >= 3840 && height >= 2160) {
+            set4K();
+        } else if (width >= 1920 && width <3840 && height >= 1080 && height < 2160){
+            setFullHD();
+        } else if (width >= 1440 && width <1920 && height >= 900 && height < 1080){
+           setOtherResolutions();
         }
         this.buttonFontSize= aspectRatio *20f;
         this.X_LABEL*= aspectRatio;
@@ -95,6 +87,27 @@ public class LauncherFactory implements GuiFactory {
         this.buttonHeight *= aspectRatio;
         this.inputWidth *= aspectRatio;
         this.inputHeight = inputHeight * aspectRatio - 15f;
+    }
+
+    private void set4K() {
+        logger.debug("4K screen resolution detected.");
+        aspectRatio = (height * width) / 2_000_000f;
+        Y_OFFSET = (Y_OFFSET * aspectRatio) + 10f;
+        yInputOffset = 50;
+    }
+
+    private void setFullHD(){
+        logger.debug("FullHD screen resolution detected.");
+        aspectRatio = (height * width) / 800_000f;
+        Y_OFFSET *= aspectRatio + 0f;
+        yInputOffset = 20;
+    }
+
+    private void setOtherResolutions() {
+        logger.debug(width + "x" + height + " screen resolution detected.");
+        aspectRatio = (height * width) / 800_000f;
+        Y_OFFSET = (Y_OFFSET * aspectRatio) + 5f;
+        yInputOffset = 10;
     }
 
     @Override
