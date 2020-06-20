@@ -32,7 +32,7 @@ public class World {
         return name;
     }
 
-    protected Map<Vector2f, ChunkColumn> getActiveChunks() {
+    public Map<Vector2f, ChunkColumn> getActiveChunks() {
         return activeChunks;
     }
 }

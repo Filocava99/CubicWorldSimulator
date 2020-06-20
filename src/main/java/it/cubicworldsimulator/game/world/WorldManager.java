@@ -55,7 +55,7 @@ public class WorldManager {
             System.exit(1);
         }
     }
-
+    
     //TODO Dubbio sulle perfomance. Bisogna fare profiling
     public void updateActiveChunksAsync(Vector3i chunkPosition) {
         new Thread(() -> {
@@ -175,5 +175,9 @@ public class WorldManager {
 
     public Collection<ChunkMesh> getChunkMeshes() {
         return Collections.unmodifiableCollection(chunkMeshes.values());
+    }
+    
+    public World getWorld() {
+    	return this.world;
     }
 }

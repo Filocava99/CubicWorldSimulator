@@ -148,10 +148,13 @@ public class Game implements GameLogic {
     public void update(float interval, MouseInput mouseInput) {
         logger.trace("Updating");
         // Update camera position
-        scene.getPlayer().movePosition(scene.getCamera().getCameraMovement().x * scene.getCamera().getCameraStep(),
+        Vector3f offsetCamera = new Vector3f(scene.getCamera().getCameraMovement().x * scene.getCamera().getCameraStep(),
                 scene.getCamera().getCameraMovement().y * scene.getCamera().getCameraStep(),
                 scene.getCamera().getCameraMovement().z * scene.getCamera().getCameraStep());
-       
+        
+        if(scene.getPlayer().canPlayerMove(offsetCamera, worldManager)) {
+        	scene.getPlayer().movePosition(offsetCamera.x, offsetCamera.y, offsetCamera.z);
+        }
         
         // Update scene.getPlayer()() based on mouse
         if (mouseInput.isRightButtonPressed()) {
