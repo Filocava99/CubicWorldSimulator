@@ -2,7 +2,6 @@ package it.cubicworldsimulator.engine.graphic;
 
 import it.cubicworldsimulator.engine.Transformation;
 
-import java.util.Observer;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -95,5 +94,6 @@ public class Camera implements Observer{
 		this.rotation = new Vector3f(rotation);
 		this.position = this.visualizationStrategy.calculatePosition(position, this.rotation);
 	}
+
 
 }

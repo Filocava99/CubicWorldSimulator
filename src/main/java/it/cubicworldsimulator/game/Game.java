@@ -4,19 +4,16 @@ import it.cubicworldsimulator.engine.*;
 import it.cubicworldsimulator.engine.hud.GenericHud;
 import it.cubicworldsimulator.engine.hud.UpperHud;
 import it.cubicworldsimulator.engine.graphic.*;
-<<<<<<< HEAD
+import it.cubicworldsimulator.engine.graphic.light.DayNightManager;
 import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
+import it.cubicworldsimulator.engine.graphic.light.LightCycleManager;
 import it.cubicworldsimulator.engine.graphic.light.LightFactory;
 import it.cubicworldsimulator.engine.graphic.light.LightFactoryImpl;
 import it.cubicworldsimulator.engine.graphic.light.PointLight;
-=======
-
-import it.cubicworldsimulator.game.utility.Constants;
-import it.cubicworldsimulator.engine.graphic.light.*;
->>>>>>> domini
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.gui.Settings;
+import it.cubicworldsimulator.game.utility.Constants;
 import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
@@ -85,7 +82,6 @@ public class Game implements GameLogic {
             lightPosition = new Vector3f(-1, 0, 0);
             lightColour = new Vector3f(1, 1, 1);
             DirectionalLight directionalLight = lightFactory.createDirectionalLight(lightColour, lightPosition, lightIntensity);
-            SceneLight sceneLight = new SceneLight(directionalLight, new PointLight[0], new SpotLight[0], ambientLight, specularPower);
 
             SceneLight sceneLight = new SceneLight.Builder()
             		.addDirectionalLight(directionalLight)
