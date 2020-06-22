@@ -18,12 +18,12 @@ public class BiConcurrentHashMapTest extends TestCase {
 
     public void testRemoveByKey() {
         map.put("test", 5);
-        assertEquals(Integer.valueOf(5),map.removeByKey("test"));
+        assertEquals(Integer.valueOf(5),map.removeByKey("test").get());
     }
 
     public void testRemoveByValue() {
         map.put("test", 5);
-        assertEquals("test",map.removeByValue(5));
+        assertEquals("test",map.removeByValue(5).get());
     }
 
     public void testContainsKey() {
