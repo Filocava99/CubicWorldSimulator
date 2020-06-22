@@ -2,12 +2,10 @@ package it.cubicworldsimulator.engine.graphic;
 
 
 import it.cubicworldsimulator.game.utility.Constants;
-import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
 import it.cubicworldsimulator.game.world.chunk.ChunkColumn;
 
 import java.util.HashSet;
-import java.util.Observer;
 import java.util.Set;
 
 import org.joml.Vector2f;
@@ -21,7 +19,7 @@ public class Player implements Observable{
     private Vector3f rotation;
 
     private Vector3i lastChunk;
-    private final Set<Observer> observer= new HashSet<>();
+	private final Set<Observer> observer= new HashSet<>();
 
 
     public Player(Vector3f position){
@@ -126,4 +124,5 @@ public class Player implements Observable{
   		
   		return newCameraPositionMaterial.contentEquals("air");
       }
+
 }
