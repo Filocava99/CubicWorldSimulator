@@ -41,7 +41,7 @@ public class Chunk implements Serializable {
         return blocks[x + (y << 8) + (z << 4)];
     }
 
-    public byte getBlock(Vector3f coord) {
+    public byte getBlock(Vector3i coord) {
         return blocks[(int) coord.x + (int) (coord.y) << 8 + (int) (coord.z) << 4];
     }
 

@@ -3,6 +3,7 @@ package it.cubicworldsimulator.game.world.chunk;
 import it.cubicworldsimulator.game.utility.Constants;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.io.Serializable;
@@ -22,6 +23,34 @@ public class ChunkColumn implements Serializable {
         this.chunks = chunks;
         this.position = position;
     }
+    
+    public Vector3i worldCoordToBlockCoord(Vector3i worldCoord) {
+    	Vector3i blockCoord = new Vector3i(0, Math.abs(worldCoord.y),0);
+    	
+    	if (worldCoord.x >= 0) {
+    		blockCoord.x = worldCoord.x % 16;
+    	}
+    	else {
+    		blockCoord.x = Constants.chunkAxisSize - (Math.abs(worldCoord.x) % 16);
+    	}
+    	
+    /*	if (worldCoord.y >= 0) {
+    		blockCoord.y = worldCoord.y % 16;
+    	}
+    	else {
+    		blockCoord.y = Constants.chunkAxisSize - (Math.abs(worldCoord.y) % 16);
+    	}*/
+    	
+    	if (worldCoord.z >= 0) {
+    		blockCoord.z = worldCoord.z % 16;
+    	}
+    	else {
+    		blockCoord.z = Constants.chunkAxisSize - (Math.abs(worldCoord.z) % 16);
+    	}
+    	
+    	System.out.println("blockCoord: " + blockCoord);
+    	return blockCoord;
+    }
 
     public void setBlock(Vector3i coord, byte blockId){
         int chunkY = coord.y/Constants.chunkAxisSize;
@@ -40,13 +69,14 @@ public class ChunkColumn implements Serializable {
         return Constants.maxHeight-1; //Dovrebbe essere 255 di default
     }
 
+
     public byte getBlock(Vector3i coord){
         int chunkY = coord.y/Constants.chunkAxisSize;
-        Chunk chunk = chunks[coord.y/Constants.chunkAxisSize];
+        Chunk chunk = chunks[chunkY];
         int blockY = coord.y-chunkY*Constants.chunkAxisSize;
         return chunk.getBlock(coord.x, blockY, coord.z);
     }
-
+    
     public Chunk[] getChunks() {
         return chunks;
     }

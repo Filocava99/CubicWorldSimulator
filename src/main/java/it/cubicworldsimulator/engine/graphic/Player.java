@@ -82,7 +82,7 @@ public class Player implements Observable{
         
          newPosition.y += offsetY;
          
-         System.out.println("NewPosition: " + newPosition);
+         System.out.println("Old Position: " + this.position + " NewPosition: " + newPosition);
          return newPosition;
     }
     
@@ -108,7 +108,6 @@ public class Player implements Observable{
     	System.out.println("offsetCamera: " + offsetCamera);
     	
   		Vector3f newCameraPosition = this.calculateNewPosition(offsetCamera.x, offsetCamera.y, offsetCamera.z);
-  		System.out.println("newCameraPosition: " + newCameraPosition);
   		
       	Vector3i newChunkCoord = worldCoordToChunkCoord(newCameraPosition);
       	System.out.println("newChunkCoord: " + newChunkCoord);
@@ -116,7 +115,12 @@ public class Player implements Observable{
       	ChunkColumn chunkColumn = worldManager.getWorld().getActiveChunks().get(new Vector2f(newChunkCoord.x,newChunkCoord.z));
       	System.out.println("chunkColumn: " + chunkColumn.getPosition());
       	
-      	byte blockId = chunkColumn.getBlock(new Vector3i((int)Math.floor((newCameraPosition.x)),(int)Math.floor(Math.abs(newCameraPosition.y)), (int)Math.floor((newCameraPosition.z))));
+      	if(chunkColumn == null) {
+      		return false;
+      	}
+      	Vector3i blockCoord = chunkColumn.worldCoordToBlockCoord(new Vector3i((int)newCameraPosition.x , (int)newCameraPosition.y, (int)newCameraPosition.z ));
+      	 
+      	byte blockId = chunkColumn.getBlock(blockCoord);
       	System.out.println("blockId: " + blockId);
       	
       	String newCameraPositionMaterial = worldManager.getBlockTypes().get(blockId).getName();
