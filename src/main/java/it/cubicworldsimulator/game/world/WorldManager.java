@@ -45,7 +45,7 @@ public class WorldManager {
         this.commandsQueue = commandsQueue;
         this.chunkGenerator = new ChunkGenerator(new DefaultGenerationAlgorithm(world.getSeed(), blockTypes));
         this.chunkLoader = new ChunkLoader(world.getName());
-        this.alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns(world.getName());
+        this.alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns();
         TextureFactory textureFactory = new TextureFactoryImpl();
         try {
             loadConfig("src/main/resources/default.yml");
