@@ -1,14 +1,22 @@
 package it.cubicworldsimulator.game;
 
 import it.cubicworldsimulator.engine.*;
+import it.cubicworldsimulator.engine.hud.GenericHud;
+import it.cubicworldsimulator.engine.hud.UpperHud;
 import it.cubicworldsimulator.engine.graphic.*;
+<<<<<<< HEAD
 import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
 import it.cubicworldsimulator.engine.graphic.light.LightFactory;
 import it.cubicworldsimulator.engine.graphic.light.LightFactoryImpl;
 import it.cubicworldsimulator.engine.graphic.light.PointLight;
+=======
+
+import it.cubicworldsimulator.game.utility.Constants;
+import it.cubicworldsimulator.engine.graphic.light.*;
+>>>>>>> domini
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
-import it.cubicworldsimulator.engine.graphic.light.SpotLight;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
+import it.cubicworldsimulator.game.gui.Settings;
 import it.cubicworldsimulator.game.utility.Pair;
 import it.cubicworldsimulator.game.world.World;
 import it.cubicworldsimulator.game.world.WorldManager;
@@ -29,24 +37,35 @@ public class Game implements GameLogic {
 
     private final CommandsQueue commandsQueue;
     private WorldManager worldManager;
-    private World world;
     private Scene scene;
     private final Map<Mesh, List<GameItem>> opaqueMeshMap = new HashMap<>();
     private final Map<Mesh, List<GameItem>> transparentMeshMap = new HashMap<>();
 
     private final RendererImpl renderer;
+    private final Settings mySettings;
+    private final GenericHud upperHud;
     private ShaderProgram shaderProgram;
     private ShaderProgram skyBoxShaderProgram;
-    
-    public Game() {
+
+    private LightCycleManager dayNightManager;
+
+    public Game(Settings mySettings) {
         renderer = new RendererImpl();
         commandsQueue = new CommandsQueue();
+        this.mySettings = mySettings;
+        this.upperHud = new UpperHud();
     }
 
     @Override
     public void init(Window window) {
         initShaderPrograms();
-        world = new World("test", 463456L);
+        try {
+            upperHud.init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        World world = new World(mySettings.getWorldName(),
+                mySettings.getWorldSeed());
         worldManager = new WorldManager(world, commandsQueue);
         try {
             SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
@@ -68,6 +87,14 @@ public class Game implements GameLogic {
             DirectionalLight directionalLight = lightFactory.createDirectionalLight(lightColour, lightPosition, lightIntensity);
             SceneLight sceneLight = new SceneLight(directionalLight, new PointLight[0], new SpotLight[0], ambientLight, specularPower);
 
+            SceneLight sceneLight = new SceneLight.Builder()
+            		.addDirectionalLight(directionalLight)
+            		.addAmbientLight(ambientLight)
+            		.addSpecularPower(specularPower)
+            		.build();
+
+            dayNightManager = new DayNightManager(sceneLight, upperHud, mySettings.getDaySpeed());
+            dayNightManager.setDelta(0.00250f);
             scene = new Scene(opaqueMeshMap, transparentMeshMap, shaderProgram, skyBox, sceneLight);
 
             worldManager.updateActiveChunksSync(new Vector3i(0, 0, 0));
@@ -87,49 +114,61 @@ public class Game implements GameLogic {
             }
         } catch (Exception e) {
             logger.error(e);
-
             System.exit(2);
         }
     }
 
     @Override
     public void input(Window window, MouseInput mouseInput) {
-        scene.getPlayer().getCameraMovement().set(0, 0, 0);
+        scene.getCamera().getCameraMovement().set(0, 0, 0);
+        //Player movement
         if (window.isKeyPressed(GLFW_KEY_W)) {
-            scene.getPlayer().getCameraMovement().z = -1;
+            scene.getCamera().getCameraMovement().z = -1;
         } else if (window.isKeyPressed(GLFW_KEY_S)) {
-            scene.getPlayer().getCameraMovement().z = 1;
+            scene.getCamera().getCameraMovement().z = 1;
         }
         if (window.isKeyPressed(GLFW_KEY_A)) {
-            scene.getPlayer().getCameraMovement().x = -1;
+            scene.getCamera().getCameraMovement().x = -1;
         } else if (window.isKeyPressed(GLFW_KEY_D)) {
-            scene.getPlayer().getCameraMovement().x = 1;
+            scene.getCamera().getCameraMovement().x = 1;
         }
         if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
-            scene.getPlayer().getCameraMovement().y = -1;
+            scene.getCamera().getCameraMovement().y = -1;
         } else if (window.isKeyPressed(GLFW_KEY_SPACE)) {
-            scene.getPlayer().getCameraMovement().y = 1;
+            scene.getCamera().getCameraMovement().y = 1;
+        }
+        
+        //Change visual 
+        if(window.isKeyPressed(GLFW_KEY_T)) {
+        	this.opaqueMeshMap.put(this.scene.getPlayerModel().getMesh(), List.of(this.scene.getPlayerModel()));
+        	scene.getCamera().setStrategy((p,r)->{
+        		Vector3f newPosition = new Vector3f(p);
+        		newPosition.x += (float)Math.sin(Math.toRadians(r.y)) * -1.0f * Constants.DISTANCE_FROM_CAMERA;
+                newPosition.z += (float)Math.cos(Math.toRadians(r.y)) * Constants.DISTANCE_FROM_CAMERA;
+                newPosition.y += Constants.DISTANCE_FROM_CAMERA / 2;
+        		return newPosition;
+        	});
+        }else if(window.isKeyPressed(GLFW_KEY_F)) {
+        	this.opaqueMeshMap.remove(this.scene.getPlayerModel().getMesh(), List.of(this.scene.getPlayerModel()));
+        	scene.getCamera().setStrategy( (p,r) -> {
+        		Vector3f newPosition = new Vector3f(p);
+        		return newPosition;
+        	});
         }
     }
 
     @Override
     public void update(float interval, MouseInput mouseInput) {
         logger.trace("Updating");
-        
-        Vector3f offsetCamera = new Vector3f(scene.getPlayer().getCameraMovement().x * scene.getPlayer().getCameraStep(),
-                scene.getPlayer().getCameraMovement().y * scene.getPlayer().getCameraStep(),
-                scene.getPlayer().getCameraMovement().z * scene.getPlayer().getCameraStep());
-        
-        // Update camera position
 
-     /*   scene.getPlayer().movePosition(scene.getPlayer().getCameraMovement().x * scene.getPlayer().getCameraStep(),
-                scene.getPlayer().getCameraMovement().y * scene.getPlayer().getCameraStep(),
-                scene.getPlayer().getCameraMovement().z * scene.getPlayer().getCameraStep());
-*/
+        // Update camera position
+        Vector3f offsetCamera = new Vector3f(scene.getCamera().getCameraMovement().x * scene.getCamera().getCameraStep(),
+                scene.getCamera().getCameraMovement().y * scene.getCamera().getCameraStep(),
+                scene.getCamera().getCameraMovement().z * scene.getCamera().getCameraStep());
         
-        if(scene.getPlayer().canPlayerMove(offsetCamera, world, worldManager)) {
+        if(scene.getPlayer().canPlayerMove(offsetCamera, worldManager)) {
         	scene.getPlayer().movePosition(offsetCamera.x, offsetCamera.y, offsetCamera.z);
-        };
+        }
         
         // Update scene.getPlayer()() based on mouse
 
@@ -137,11 +176,11 @@ public class Game implements GameLogic {
             Vector2f rotVec = mouseInput.getDisplacementVector();
             scene.getPlayer().moveRotation(rotVec.x * mouseInput.getMouseSensitivity(), rotVec.y * mouseInput.getMouseSensitivity(), 0);
         }
-
-		
-		  if (scene.getPlayer().didPlayerChangedChunk()) {
-		  worldManager.updateActiveChunksAsync(scene.getPlayer().getChunkPosition()); }
-		 
+        
+        if (scene.getPlayer().didPlayerChangedChunk()) {
+            worldManager.updateActiveChunksAsync(scene.getPlayer().getChunkPosition());
+        }
+        
         for (int i = 0; i < 1; i++) {
             Pair<GameItem, GameItem> pair = commandsQueue.runLoadCommand();
             if (pair != null) {
@@ -167,6 +206,7 @@ public class Game implements GameLogic {
                 }
             }
         }
+        dayNightManager.updateCycle();
         // Update directional light direction, intensity and colour
         DirectionalLight directionalLight = scene.getSceneLight().getDirectionalLight();
         directionalLight.changeAngle(directionalLight.getAngle() + 1.1f);
@@ -177,11 +217,15 @@ public class Game implements GameLogic {
     public void render(Window window) {
         logger.trace("Rendering");
         renderer.render(scene, window);
+        upperHud.renderHud(window);
     }
 
     @Override
     public void cleanUp() {
         scene.cleanUp();
+        if (upperHud != null) {
+            upperHud.cleanup();
+        }
     }
 
     private void initShaderPrograms() {
@@ -239,6 +283,7 @@ public class Game implements GameLogic {
             skyBoxShaderProgram.createUniform("projectionMatrix");
             skyBoxShaderProgram.createUniform("modelViewMatrix");
             skyBoxShaderProgram.createUniform("texture_sampler");
+            skyBoxShaderProgram.createUniform("ambientLight");
         } catch (Exception e) {
             logger.error(e);
             System.exit(4);

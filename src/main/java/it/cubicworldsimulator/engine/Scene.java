@@ -1,12 +1,17 @@
 package it.cubicworldsimulator.engine;
 
+import it.cubicworldsimulator.engine.graphic.Camera;
 import it.cubicworldsimulator.engine.graphic.Mesh;
 import it.cubicworldsimulator.engine.graphic.Player;
+import it.cubicworldsimulator.engine.graphic.PlayerModel;
 import it.cubicworldsimulator.engine.graphic.SkyBox;
+
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
-import it.cubicworldsimulator.engine.loader.Loader;
+import it.cubicworldsimulator.engine.loader.OBJLoader;
 
 import java.util.*;
+
+import org.joml.Vector3f;
 
 public class Scene {
 
@@ -14,8 +19,11 @@ public class Scene {
     private Map<Mesh, List<GameItem>> transparentMeshMap = new HashMap<>();
     private final ShaderProgram shaderProgram;
     private final SkyBox skyBox;
+
     private final SceneLight sceneLight;
-    private final Player player = new Player();
+    private final Player player = new Player( new Vector3f(0,35,0));
+    private final PlayerModel playerModel = new PlayerModel();
+    private final Camera camera = new Camera(new Vector3f(0,35,0));
 
     public Scene(Map<Mesh, List<GameItem>> opaqueMeshMap, Map<Mesh, List<GameItem>> transparentMeshMap, ShaderProgram shaderProgram, SkyBox skyBox, SceneLight sceneLight) {
         this.opaqueMeshMap = opaqueMeshMap;
@@ -23,6 +31,9 @@ public class Scene {
         this.shaderProgram = shaderProgram;
         this.skyBox = skyBox;
         this.sceneLight = sceneLight;
+        loadPlayerModel();
+        this.player.attach(this.camera);
+        this.player.attach(this.playerModel);
     }
 
     public Scene(ShaderProgram shaderProgram, SkyBox skyBox, SceneLight sceneLight, GameItem... gameItems){
@@ -31,12 +42,31 @@ public class Scene {
         this.skyBox = skyBox;
         this.sceneLight = sceneLight;
     }
-
+    
+   
     public Scene(GameItem[] gameItems, ShaderProgram shaderProgram, SkyBox skyBox, SceneLight sceneLight){
         this.shaderProgram = shaderProgram;
         setGameItems(gameItems);
         this.skyBox = skyBox;
         this.sceneLight = sceneLight;
+    }
+    
+    private void loadPlayerModel() {
+    	OBJLoader objLoader = new OBJLoader();
+		try {
+			Mesh playerMesh = objLoader.loadFromOBJ("/models/person.obj", "src/main/resources/textures/playerTexture.png");
+			this.playerModel.setMesh(playerMesh); 
+			this.playerModel.setPosition(new Vector3f(this.player.getPosition()));
+			this.playerModel.setRotation(new Vector3f(0,180,0));
+			this.playerModel.setScale(0.06f);
+			this.playerModel.setIgnoreFrustum(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public Camera getCamera() {
+    	return this.camera;
     }
 
     public void setGameItems(GameItem[] gameItems) {
@@ -54,17 +84,25 @@ public class Scene {
     }
 
     public void cleanUp(){
-        opaqueMeshMap.keySet().forEach(Loader::cleanMesh);
-        transparentMeshMap.keySet().forEach(Loader::cleanMesh);
+        opaqueMeshMap.keySet().forEach(Mesh::cleanMesh);
+        transparentMeshMap.keySet().forEach(Mesh::cleanMesh);
         shaderProgram.cleanup();
-        Loader.cleanMesh(skyBox.getMesh());
+        skyBox.getMesh().cleanMesh();
         skyBox.getShaderProgram().cleanup();
     }
 
     public SkyBox getSkyBox() {
         return skyBox;
     }
-
+    
+    public SceneLight getSceneLight() {
+    	return this.sceneLight;
+    }
+    
+    public PlayerModel getPlayerModel() {
+    	return this.playerModel;
+    }
+    
     public ShaderProgram getShaderProgram() {
         return shaderProgram;
     }
@@ -81,7 +119,5 @@ public class Scene {
         return player;
     }
 
-    public SceneLight getSceneLight() {
-        return sceneLight;
-    }
+	
 }

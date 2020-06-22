@@ -73,6 +73,7 @@ void setupColours(Material material, vec2 textCoord)
         ambientC = material.ambient;
         diffuseC = material.diffuse;
         speculrC = material.specular;
+
     }
 }
 
@@ -86,12 +87,16 @@ vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, ve
     diffuseColour = diffuseC * vec4(light_colour, 1.0) * light_intensity * diffuseFactor;
 
     // Specular Light
+
     vec3 camera_direction = normalize(-position);
+
     vec3 from_light_dir = -to_light_dir;
     vec3 reflected_light = normalize(reflect(from_light_dir , normal));
     float specularFactor = max( dot(camera_direction, reflected_light), 0.0);
     specularFactor = pow(specularFactor, specularPower);
+
     specColour = speculrC * light_intensity  * specularFactor * material.reflectance * vec4(light_colour, 1.0);
+
 
     return (diffuseColour + specColour);
 }
@@ -105,6 +110,7 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal)
     // Apply Attenuation
     float distance = length(light_direction);
     float attenuationInv = light.att.constant + light.att.linear * distance +
+
     light.att.exponent * distance * distance;
     return light_colour / attenuationInv;
 }
@@ -129,6 +135,7 @@ vec4 calcSpotLight(SpotLight light, vec3 position, vec3 normal)
 vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal)
 {
     return calcLightColour(light.colour, light.intensity, position, normalize(light.direction), normal);
+
 }
 
 void main()
@@ -136,6 +143,7 @@ void main()
     setupColours(material, outTexCoord);
 
     vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, mvVertexPos, mvVertexNormal);
+
 
     for (int i=0; i<MAX_POINT_LIGHTS; i++)
     {
@@ -155,3 +163,4 @@ void main()
 
     fragColor = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
 }
+

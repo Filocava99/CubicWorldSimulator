@@ -1,47 +1,16 @@
 package it.cubicworldsimulator.engine.graphic;
 
-import java.util.List;
+import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vao;
+import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vbo;
 
-public class Mesh {
+import java.util.Set;
 
-    private int vaoId;
-    private final List<Integer> vboList;
-    private final List<Integer> textureVboList;
-    private final int vertexCount;
-    private final Material material;
-    private final float boundingRadius;
-
-    public Mesh(Material texture, float boundingRadius, int vertexCount, int vaoId,
-                List<Integer> vboList, List<Integer> textureVboList) {
-        this.material = texture;
-        this.boundingRadius = boundingRadius;
-        this.vertexCount = vertexCount;
-        this.vaoId = vaoId;
-        this.vboList = vboList;
-        this.textureVboList = textureVboList;
-    }
-
-    public int getVertexCount() {
-        return vertexCount;
-    }
-
-    public int getVaoId() {
-        return this.vaoId;
-    }
-
-    public float getBoundingRadius() {
-        return boundingRadius;
-    }
-
-    public Material getMeshMaterial() {
-        return material;
-    }
-
-    public List<Integer> getVboList() {
-        return vboList;
-    }
-
-    public List<Integer> getTextureVboList() {
-        return textureVboList;
-    }
+public interface Mesh {
+    int getVertexCount();
+    Vao getVao();
+    float getBoundingRadius();
+    Material getMeshMaterial();
+    Set<Vbo> getVboList();
+    Set<Vbo> getTextureVboList();
+    void cleanMesh();
 }
