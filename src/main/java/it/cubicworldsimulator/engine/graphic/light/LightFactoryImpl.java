@@ -6,8 +6,7 @@ public class LightFactoryImpl implements LightFactory {
 
 	@Override
 	public PointLight createPointLight(Vector3f color, Vector3f position, float intensity) {
-		PointLight.Attenuation attenuation = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
-		return new PointLight(color, position, intensity, attenuation);
+		return new PointLight(color, position, intensity);
 	}
 
 	@Override
