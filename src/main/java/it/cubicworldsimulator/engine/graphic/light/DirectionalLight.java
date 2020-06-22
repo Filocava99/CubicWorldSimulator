@@ -5,7 +5,7 @@ import org.joml.Vector3f;
 
 public class DirectionalLight {
 
-	private float angle;
+	private final float angle;
 
     private Vector3f color;
 
@@ -73,4 +73,22 @@ public class DirectionalLight {
 	public float getAngle() {
 		return angle;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(this == o) return true;
+    	if(o == null || getClass() != o.getClass()) return false;
+    	DirectionalLight light = (DirectionalLight) o;
+    	return this.angle == light.angle &&
+    			this.color.equals(light.color.x, light.color.y, light.color.z) &&
+    			this.intensity == light.intensity &&
+    			this.direction.equals(light.direction.x,light.direction.y,light.direction.z);
+    	
+	}
+	
+	@Override
+    public int hashCode() {
+    	return this.color.hashCode() 
+    			+ this.direction.hashCode();
+    }
 }

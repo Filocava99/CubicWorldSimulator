@@ -5,7 +5,7 @@ plugins {
 }
 
 project.ext.lwjglVersion = "3.2.3"
-project.ext.jomlVersion = "1.9.19"
+project.ext.jomlVersion = "1.9.25"
 
 switch (OperatingSystem.current()) {
     case OperatingSystem.LINUX:
@@ -33,16 +33,21 @@ def le_util              = '2.2.2'
 repositories {
     maven{
         url "http://oss.sonatype.org/content/groups/public/"
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url 'https://jitpack.io' }
         maven { url "https://raw.githubusercontent.com/SpinyOwl/repo/snapshots" }
         maven { url "https://raw.githubusercontent.com/SpinyOwl/repo/releases" }
     }
     mavenCentral()
+
 }
 
 dependencies {
     // LEGUI - SNAPSHOT - https://github.com/SpinyOwl/legui
     compile group: 'org.liquidengine', name: 'legui', version: '2.2.2' + '-SNAPSHOT', changing: true;
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testCompile ('org.junit.jupiter:junit-jupiter:5.6.0')
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.0'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.0'
@@ -63,10 +68,8 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
     implementation "org.joml:joml:${jomlVersion}"
-    implementation 'com.github.orange451:LWJGUI:3147548196'
     implementation "org.lwjgl:lwjgl-nanovg"
     implementation "org.lwjgl:lwjgl-nfd"
     runtimeOnly "org.lwjgl:lwjgl-nanovg::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-nfd::$lwjglNatives"
-
 }
