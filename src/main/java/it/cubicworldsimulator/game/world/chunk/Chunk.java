@@ -8,7 +8,11 @@ import org.joml.Vector3i;
 import java.io.Serializable;
 //TODO Magic numbers
 public class Chunk implements Serializable {
-    private final byte[] blocks;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final byte[] blocks;
     private final SerializableVector3f position;
     private boolean wasModified;
 
@@ -41,7 +45,7 @@ public class Chunk implements Serializable {
         return blocks[x + (y << 8) + (z << 4)];
     }
 
-    public byte getBlock(Vector3f coord) {
+    public byte getBlock(Vector3i coord) {
         return blocks[(int) coord.x + (int) (coord.y) << 8 + (int) (coord.z) << 4];
     }
 
@@ -52,4 +56,5 @@ public class Chunk implements Serializable {
     public void setWasModified(boolean flag){
         this.wasModified = flag;
     }
+
 }

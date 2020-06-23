@@ -22,7 +22,7 @@ public class ChunkColumn implements Serializable {
         this.chunks = chunks;
         this.position = position;
     }
-
+   
     public void setBlock(Vector3i coord, byte blockId){
         int chunkY = coord.y/Constants.chunkAxisSize;
         Chunk chunk = chunks[coord.y/Constants.chunkAxisSize];
@@ -42,11 +42,11 @@ public class ChunkColumn implements Serializable {
 
     public byte getBlock(Vector3i coord){
         int chunkY = coord.y/Constants.chunkAxisSize;
-        Chunk chunk = chunks[coord.y/Constants.chunkAxisSize];
+        Chunk chunk = chunks[chunkY];
         int blockY = coord.y-chunkY*Constants.chunkAxisSize;
         return chunk.getBlock(coord.x, blockY, coord.z);
     }
-
+    
     public Chunk[] getChunks() {
         return chunks;
     }

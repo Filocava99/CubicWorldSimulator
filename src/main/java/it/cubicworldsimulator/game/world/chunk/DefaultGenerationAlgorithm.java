@@ -6,6 +6,7 @@ import it.cubicworldsimulator.game.utility.math.SerializableVector3f;
 import it.cubicworldsimulator.game.world.block.BlockMaterial;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.Arrays;
