@@ -115,8 +115,22 @@ public class Player implements Observable{
       	
       	ChunkColumn chunkColumn = worldManager.getWorld().getActiveChunks().get(new Vector2f(newChunkCoord.x,newChunkCoord.z));
       	System.out.println("chunkColumn: " + chunkColumn.getPosition());
+      	if(chunkColumn == null) return false;
+      	Vector3i blockcoord = null;
       	
-      	byte blockId = chunkColumn.getBlock(new Vector3i((int)Math.floor((newCameraPosition.x)),(int)Math.floor(Math.abs(newCameraPosition.y)), (int)Math.floor((newCameraPosition.z))));
+      	if(newCameraPosition.x >= 0 && newCameraPosition.z >= 0) {
+      		blockcoord = new Vector3i((int) newCameraPosition.x %16, (int) Math.floor(Math.abs(newCameraPosition.y)), (int) newCameraPosition.z%16);
+      	}
+      	if(newCameraPosition.x >= 0 && newCameraPosition.z < 0) {
+      		blockcoord = new Vector3i((int) newCameraPosition.x %16, (int) Math.floor(Math.abs(newCameraPosition.y)), (int) (16 - ( Math.abs(newCameraPosition.z) %16)) );
+      	}
+      	if(newCameraPosition.x < 0 && newCameraPosition.z >= 0) {
+      		blockcoord = new Vector3i((int) (16 - ( Math.abs(newCameraPosition.x) %16)), (int) Math.floor(Math.abs(newCameraPosition.y)), (int) newCameraPosition.z%16);
+      	}
+      	if(newCameraPosition.x < 0 && newCameraPosition.z < 0) {
+      		blockcoord = new Vector3i((int) (16 - ( Math.abs(newCameraPosition.x) %16)), (int) Math.floor(Math.abs(newCameraPosition.y)), (int) (16 - ( Math.abs(newCameraPosition.z) %16)));
+      	}
+      	byte blockId = chunkColumn.getBlock(blockcoord);
       	System.out.println("blockId: " + blockId);
       	
       	String newCameraPositionMaterial = worldManager.getBlockTypes().get(blockId).getName();
