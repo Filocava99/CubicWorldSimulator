@@ -24,6 +24,7 @@ public class ChunkColumn implements Serializable {
         this.position = position;
     }
     
+    //potrei inserirlo anche nella classe Chunk?
     public Vector3i worldCoordToBlockCoord(Vector3i worldCoord) {
     	Vector3i blockCoord = new Vector3i(0, Math.abs(worldCoord.y),0);
     	
