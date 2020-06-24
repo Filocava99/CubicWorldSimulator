@@ -18,6 +18,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +49,7 @@ public class WorldManager {
         this.alreadyGeneratedChunksColumns = chunkLoader.getAlreadyGeneratedChunkColumns();
         TextureFactory textureFactory = new TextureFactoryImpl();
         try {
-            loadConfig("src/main/resources/default.yml");
+            loadConfig("default.yml");
             worldTexture = new Material(textureFactory.createTexture(textureFile));
         } catch (Exception e) {
             LOGGER.error(e);

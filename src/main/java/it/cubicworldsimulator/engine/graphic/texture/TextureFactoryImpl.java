@@ -4,9 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.system.MemoryStack;
 
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Objects;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
@@ -26,13 +27,18 @@ public class TextureFactoryImpl implements TextureFactory{
             IntBuffer w = stack.mallocInt(1);
             IntBuffer h = stack.mallocInt(1);
             IntBuffer channels = stack.mallocInt(1);
-
+            OutputStream outputStream = new FileOutputStream("temp.png");
+            InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
+            assert inputStream != null;
+            inputStream.transferTo(outputStream);
+            inputStream.close();
+            outputStream.close();
             //Load image into the ByteBuffer
-            this.byteBuffer = stbi_load(filename, w, h, channels, 4);
+            this.byteBuffer = stbi_load("temp.png", w, h, channels, 4);
             if (this.byteBuffer == null) {
                 throw new FileNotFoundException("Texture file [" + filename + "] not loaded. Reason: " + stbi_failure_reason());
             }
-
+            new File("temp.png").delete();
             //Get width and height of image
             this.width = w.get();
             this.height = h.get();

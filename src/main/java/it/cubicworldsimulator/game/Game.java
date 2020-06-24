@@ -60,7 +60,7 @@ public class Game implements GameLogic {
                 mySettings.getWorldSeed());
         worldManager = new WorldManager(world, commandsQueue);
         try {
-            SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
+            SkyBox skyBox = new SkyBox("/models/skybox.obj", "textures/skybox.png", skyBoxShaderProgram);
             //LIGHTS
             Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.2f);
             Vector3f lightColour = new Vector3f(1, 1, 1);
