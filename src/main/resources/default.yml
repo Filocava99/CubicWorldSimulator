@@ -1,8 +1,7 @@
-file: "src/main/resources/textures/default.png"
+file: "textures/default.png"
 step: 0.0625
 blocks:
   air:
-    test: "ciao"
     id: 0
     transparent: true
   dirt:

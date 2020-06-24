@@ -31,6 +31,13 @@ sourceCompatibility = 1.11
 def le_cbchain           = '2.2.2'
 def le_util              = '2.2.2'
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'it.cubicworldsimulator.game.Main'
+        attributes "Multi-Release": true
+    }
+}
+
 repositories {
     maven{
         url "http://oss.sonatype.org/content/groups/public/"
