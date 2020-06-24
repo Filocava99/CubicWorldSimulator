@@ -12,12 +12,20 @@ import org.liquidengine.legui.component.TextInput;
  */
 public interface GuiFactory {
     int getHeight();
+
     void setHeight(int height);
+
     int getWidth();
+
     void setWidth(int width);
+
     void setAspectRatio();
+
     float getFontSize();
+
     Button createButton(String text, Vector2f position, Panel panelToAdd);
+
     Label createLabel(String text, Vector2f position, Panel panelToAdd);
+
     TextInput createTextInput(String title, Panel panelToAdd);
 }
