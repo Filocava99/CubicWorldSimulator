@@ -41,7 +41,7 @@ public class ChunkColumn implements Serializable {
     }
 
     public byte getBlock(Vector3i coord){
-        int chunkY = coord.y/Constants.chunkAxisSize;
+        int chunkY = (int) Math.floor(coord.y/Constants.chunkAxisSize);
         Chunk chunk = chunks[chunkY];
         int blockY = coord.y-chunkY*Constants.chunkAxisSize;
         return chunk.getBlock(coord.x, blockY, coord.z);

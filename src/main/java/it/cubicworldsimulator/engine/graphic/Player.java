@@ -65,7 +65,7 @@ public class Player implements Observable{
     }
 
     private Vector3i PlayerCoordToBlockCoord(Vector3i worldCoord) {
-    	Vector3i blockCoord = new Vector3i(0, Math.abs(worldCoord.y),0);
+    	Vector3i blockCoord = new Vector3i(0, Math.abs(worldCoord.y), 0);
     	
     	if (worldCoord.x >= 0) {
     		blockCoord.x = worldCoord.x % 16;
@@ -128,16 +128,14 @@ public class Player implements Observable{
   		
       	Vector3i chunkCoord = PlayerCoordToChunkCoord(newPlayerPosition);
       	System.out.println("newChunkCoord: " + chunkCoord);
-      	
-      	ChunkColumn chunkColumn = worldManager.getWorld().getActiveChunks().get(new Vector2f(chunkCoord.x,chunkCoord.z));
-      	System.out.println("chunkColumn: " + chunkColumn.getPosition());
-      	if(chunkColumn == null) return false;
-      	Vector3i blockcoord = null;
-
-        if(chunkColumn == null) {
+      	ChunkColumn chunkColumn = null;
+      	try {
+      		chunkColumn = worldManager.getWorld().getActiveChunks().get(new Vector2f(chunkCoord.x,chunkCoord.z));
+      	}catch(NullPointerException e) {
       		return false;
       	}
       	
+      	System.out.println("chunkColumn: " + chunkColumn.getPosition());
       	Vector3i blockCoord = this.PlayerCoordToBlockCoord(new Vector3i((int)newPlayerPosition.x , (int)newPlayerPosition.y, (int)newPlayerPosition.z ));
       	 
       	byte blockId = chunkColumn.getBlock(blockCoord);
