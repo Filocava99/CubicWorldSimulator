@@ -66,7 +66,7 @@ public class Launcher extends GenericGui {
         debugInput = guiFactory.createTextInput("false", settings);
         objects.add(debugInput);
         objects.add(createOptionLabel("Fullscreen", settings));
-        fullScreenInput = guiFactory.createTextInput("true", settings);
+        fullScreenInput = guiFactory.createTextInput("false", settings);
         objects.add(fullScreenInput);
         Label widthLabel = createOptionLabel("Width", settings);
         objects.add(widthLabel);
