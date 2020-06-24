@@ -10,7 +10,6 @@ import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vao;
 import it.cubicworldsimulator.engine.loader.OpenGLComponent.Vbo;
 
 public class MyMeshBuilder implements MeshBuilder {
-
     private final Vao myVao;
     private float boundingRadius;
     private Material texture;
@@ -18,7 +17,6 @@ public class MyMeshBuilder implements MeshBuilder {
     private final Set<Vbo> vboList = new HashSet<>();
     private final Set<Vbo> textureVboList = new HashSet<>();
     private final Set<Vbo> normalsVboList = new HashSet<>();
-
 
     public MyMeshBuilder() {
         myVao = LoaderUtility.createVao();
@@ -71,7 +69,7 @@ public class MyMeshBuilder implements MeshBuilder {
 
     @Override
     public Mesh build() throws RuntimeException {
-        Mesh myMesh = null;
+        Mesh myMesh;
         if (boundingRadius<0 || indicesLength<0) {
             throw new IllegalStateException();
         } try {

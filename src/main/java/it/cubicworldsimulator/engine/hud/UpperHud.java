@@ -2,29 +2,27 @@ package it.cubicworldsimulator.engine.hud;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
+
 import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 
 import it.cubicworldsimulator.engine.Window;
 import it.cubicworldsimulator.engine.loader.LoaderUtility;
 import it.cubicworldsimulator.game.utility.Pair;
 import org.lwjgl.nanovg.NVGColor;
+
 import static org.lwjgl.nanovg.NanoVG.*;
 import static org.lwjgl.nanovg.NanoVGGL3.*;
+
 import org.lwjgl.system.MemoryUtil;
+
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class UpperHud implements GenericHud {
-
     private static final String FONT_NAME = "BOLD";
-
     private long vg;
-
     private ByteBuffer fontBuffer;
-
     private DoubleBuffer posx;
-
     private DoubleBuffer posy;
-
     private String hour;
 
     public void init() throws Exception {
@@ -46,14 +44,14 @@ public class UpperHud implements GenericHud {
         nvgBeginFrame(vg, window.getWidth(), window.getHeight(), 1);
         //Upper bar
         nvgBeginPath(vg);
-        nvgRect(vg, 0,0, window.getWidth(), 50);
+        nvgRect(vg, 0, 0, window.getWidth(), 50);
         nvgFillColor(vg, fromRgbToNvg(0x0, 0x0, 0x66, 100));
         nvgFill(vg);
         glfwGetCursorPos(window.getWindowId(), posx, posy);
         createText("Time: " + getText(), FONT_NAME, 35f,
-                new Pair<>(0, 0),fromRgbToNvg(0xe6, 0xea, 0xed, 255));
+                new Pair<>(0, 0), fromRgbToNvg(0xe6, 0xea, 0xed, 255));
         createText("Commands: WASD - space - shift - F/T", FONT_NAME, 35f,
-                new Pair<>(window.getWidth()/2 + window.getWidth()/12, 0), fromRgbToNvg(0xe6, 0xea, 0xed, 255));
+                new Pair<>(window.getWidth() / 2 + window.getWidth() / 12, 0), fromRgbToNvg(0xe6, 0xea, 0xed, 255));
         nvgEndFrame(vg);
         // Restore state
         window.restoreState();
@@ -68,7 +66,6 @@ public class UpperHud implements GenericHud {
         nvgFillColor(vg, color);
         nvgText(vg, position.getFirstValue(), position.getSecondValue(), text);
     }
-
 
     public void cleanup() {
         nvgDelete(vg);
