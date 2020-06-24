@@ -9,7 +9,6 @@ import it.cubicworldsimulator.engine.graphic.light.DirectionalLight;
 import it.cubicworldsimulator.engine.graphic.light.LightCycleManager;
 import it.cubicworldsimulator.engine.graphic.light.LightFactory;
 import it.cubicworldsimulator.engine.graphic.light.LightFactoryImpl;
-import it.cubicworldsimulator.engine.graphic.light.PointLight;
 import it.cubicworldsimulator.engine.graphic.light.SceneLight;
 import it.cubicworldsimulator.engine.renderer.RendererImpl;
 import it.cubicworldsimulator.game.gui.Settings;
@@ -77,8 +76,7 @@ public class Game implements GameLogic {
             float specularPower = 10f;
             float lightIntensity = 1.0f;
             
-            PointLight pointLight = lightFactory.createPointLight(lightColour, lightPosition, lightIntensity);
-         
+           
             lightPosition = new Vector3f(-1, 0, 0);
             lightColour = new Vector3f(1, 1, 1);
             DirectionalLight directionalLight = lightFactory.createDirectionalLight(lightColour, lightPosition, lightIntensity);
