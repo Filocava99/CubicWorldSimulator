@@ -26,10 +26,10 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * It models a logic container for N 'LEGUI' windows
+ *
  * @author Lorenzo Balzani
  */
 public class GuiContainer {
-
     private static volatile boolean running = false;
     private final List<FrameProperty> myFrames = new ArrayList<>();
     private final GlfwHelper glfwHelper = new GlfwHelper();

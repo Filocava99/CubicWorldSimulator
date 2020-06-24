@@ -5,11 +5,8 @@ import org.joml.Vector3f;
 public class PointLight {
 
 	private Vector3f color;
-
 	private Vector3f position;
-
 	protected float intensity;
-
 	private Attenuation attenuation;
 
 	public PointLight(Vector3f color, Vector3f position, float intensity) {
@@ -70,7 +67,6 @@ public class PointLight {
     			this.intensity == light.intensity &&
     			this.position.equals(light.position.x, light.position.y, light.position.z) &&
     			this.attenuation.equals(light.attenuation);
-    	
 	}
 	
 	@Override
@@ -83,9 +79,7 @@ public class PointLight {
 	public static class Attenuation {
 
 		private float constant;
-
 		private float linear;
-
 		private float exponent;
 
 		public Attenuation(float constant, float linear, float exponent) {
@@ -126,7 +120,6 @@ public class PointLight {
 	    	return this.constant == att.constant &&
 	    			this.linear == att.linear &&
 	    			this.exponent == att.exponent;
-	    	
 		}
 	}
 }

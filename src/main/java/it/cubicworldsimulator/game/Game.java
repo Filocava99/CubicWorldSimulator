@@ -64,8 +64,9 @@ public class Game implements GameLogic {
                 mySettings.getWorldSeed());
         worldManager = new WorldManager(world, commandsQueue);
         try {
-            SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
-           
+
+            SkyBox skyBox = new SkyBox("/models/skybox.obj", "textures/skybox.png", skyBoxShaderProgram);
+
             //LIGHTS
             LightFactory lightFactory = new LightFactoryImpl();
             
@@ -75,8 +76,7 @@ public class Game implements GameLogic {
             
             float specularPower = 10f;
             float lightIntensity = 1.0f;
-            
-           
+         
             lightPosition = new Vector3f(-1, 0, 0);
             lightColour = new Vector3f(1, 1, 1);
             DirectionalLight directionalLight = lightFactory.createDirectionalLight(lightColour, lightPosition, lightIntensity);

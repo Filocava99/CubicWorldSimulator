@@ -78,6 +78,7 @@ public class SceneLight {
     			+ spot.hashCode() 
     			+ this.ambientLight.hashCode();
     }
+    
     @Override
 	public String toString() {
 		return "SceneLight [directionalLight=" + directionalLight + ", pointLights=" + Arrays.toString(pointLights)
@@ -149,6 +150,5 @@ public class SceneLight {
 			
 			return new SceneLight(this.directionalLight, this.pointLights, this.spotLights, this.ambientLight, this.specularPower);
 		}
-    	
     }
 }

@@ -6,7 +6,6 @@ import it.cubicworldsimulator.engine.hud.UpperHud;
 import org.joml.Vector3f;
 
 public class DayNightManager implements LightCycleManager {
-    
     private static final float X_UPPER_BOUND = 0.4f;
     private static final float X_LOWER_BOUND = 0.16f;
     private static final float Y_UPPER_BOUND = 0.58f;
