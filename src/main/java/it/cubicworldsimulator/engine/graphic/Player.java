@@ -77,29 +77,19 @@ public class Player implements Observable{
     }
     
     public boolean canPlayerMove(Vector3f offsetPlayer, WorldManager worldManager) {
-    	System.out.println("offsetCamera: " + offsetPlayer);
     	
   		Vector3f newPlayerPosition = this.calculateNewPosition(offsetPlayer);
-  		
       	Vector3i chunkCoord = this.playerCoordToChunkCoord(newPlayerPosition);
-      	System.out.println("newChunkCoord: " + chunkCoord);
       	
       	ChunkColumn chunkColumn = null;
-      	
       	try {
       		chunkColumn = worldManager.getWorld().getActiveChunks().get(new Vector2f(chunkCoord.x,chunkCoord.z));
-          	System.out.println("chunkColumn: " + chunkColumn.getPosition());
       	} catch(NullPointerException e) {
       		return false;
       	}
-      	
       	Vector3i blockCoord = this.playerCoordToBlockCoord(new Vector3i((int)newPlayerPosition.x , (int)newPlayerPosition.y, (int)newPlayerPosition.z ));
-      	 
       	byte blockId = chunkColumn.getBlock(blockCoord);
-      	System.out.println("blockId: " + blockId);
-      	
       	String newPlayerPositionMaterial = worldManager.getBlockTypes().get(blockId).getName();
-  		System.out.println("newCameraPositionMaterial: " + newPlayerPositionMaterial + "\n");
   		
   		return newPlayerPositionMaterial.contentEquals("air");
       }
@@ -118,17 +108,16 @@ public class Player implements Observable{
         
          newPosition.y += offset.y;
          
-         System.out.println("Old Position: " + this.position + " NewPosition: " + newPosition);
          return newPosition;
     }
     
-    private Vector3i playerCoordToChunkCoord(Vector3f playerCoord) {
+    public Vector3i playerCoordToChunkCoord(Vector3f playerCoord) {
     	return new Vector3i((int) Math.floor(playerCoord.x / Constants.chunkAxisSize), 
     			(int) Math.floor(playerCoord.y / Constants.chunkAxisSize), 
     			(int) Math.floor(playerCoord.z / Constants.chunkAxisSize));
     }
 
-    private Vector3i playerCoordToBlockCoord(Vector3i playerCoord) {
+    public Vector3i playerCoordToBlockCoord(Vector3i playerCoord) {
     	Vector3i blockCoord = new Vector3i(0, Math.abs(playerCoord.y),0);
     	
     	if (playerCoord.x >= 0) {
@@ -145,7 +134,6 @@ public class Player implements Observable{
     		blockCoord.z = (Constants.chunkAxisSize - 1) - (Math.abs(playerCoord.z) % 16);
     	}
     	
-    	System.out.println("blockCoord: " + blockCoord);
     	return blockCoord;
     }
 
