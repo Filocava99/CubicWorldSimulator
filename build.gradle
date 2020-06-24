@@ -2,6 +2,7 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
     id 'java'
+    id "com.github.johnrengelman.shadow" version "5.0.0"
 }
 
 project.ext.lwjglVersion = "3.2.3"
@@ -29,6 +30,13 @@ sourceCompatibility = 1.11
 
 def le_cbchain           = '2.2.2'
 def le_util              = '2.2.2'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'it.cubicworldsimulator.game.Main'
+        attributes "Multi-Release": true
+    }
+}
 
 repositories {
     maven{
