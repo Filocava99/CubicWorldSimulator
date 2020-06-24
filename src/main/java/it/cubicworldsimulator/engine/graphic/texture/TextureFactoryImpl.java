@@ -15,7 +15,6 @@ import static org.lwjgl.stb.STBImage.*;
 
 public class TextureFactoryImpl implements TextureFactory{
     private final static Logger logger = LogManager.getLogger(TextureFactoryImpl.class);
-
     private int height;
     private int width;
     private ByteBuffer byteBuffer;
