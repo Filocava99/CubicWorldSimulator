@@ -4,7 +4,6 @@ public interface OpenGLComponent {
     int getId();
 
     class Vao implements OpenGLComponent {
-
         int vaoId;
 
         public Vao(int id) {
@@ -18,7 +17,6 @@ public interface OpenGLComponent {
     }
 
     class Vbo implements OpenGLComponent {
-
         int vboId;
 
         public Vbo(int id) {

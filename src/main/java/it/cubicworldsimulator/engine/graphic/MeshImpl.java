@@ -12,7 +12,6 @@ import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 import static org.lwjgl.opengl.GL30C.glDeleteVertexArrays;
 
 public class MeshImpl implements Mesh {
-
     private final Vao myVao;
     private final Set<Vbo> vboList;
     private final Set<Vbo> textureVboList;

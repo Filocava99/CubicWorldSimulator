@@ -15,9 +15,7 @@ import org.liquidengine.legui.style.font.FontRegistry;
  */
 
 public class LauncherFactory implements GuiFactory {
-
     private static final Logger logger = LogManager.getLogger(LauncherFactory.class);
-
     //X position where print label
     protected float X_LABEL = 20;
     //Y position where start to print
@@ -28,20 +26,16 @@ public class LauncherFactory implements GuiFactory {
     protected float Y_OFFSET = 30;
     //Every time label is created this value is updated. This will be X position for input
     private float newXInput = 0;
-
     //Every time row is created this value is updated. This will be Y position for the next row
     private float newYLabel;
-    
     //Screen size
     private int width;
     private int height;
     private float aspectRatio;
-
     //Input
     private float inputWidth = 130;
     private float inputHeight = 35;
     private float yInputOffset;
-
     //Buttons
     protected float buttonFontSize = 30;
     protected float buttonHeight = 50;
