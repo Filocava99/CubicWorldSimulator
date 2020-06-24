@@ -22,9 +22,7 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 
 public class Launcher extends GenericGui {
-    private static final Logger logger = LogManager.getLogger(Launcher.class);
     private GameEngine gameEngine;
-
     //GuiElement
     private TextInput vSyncInput;
     private TextInput debugInput;
@@ -36,14 +34,11 @@ public class Launcher extends GenericGui {
     private TextInput worldStringInput;
     private TextInput daySpeedInput;
     private Button launchGame;
-
     //Screen size
     private final int widthScreen;
     private final int heightScreen;
-
     //Settings
     private final Settings.Builder mySettingsBuilder;
-
     private final List<Component> objects = new ArrayList<>();
 
     /**

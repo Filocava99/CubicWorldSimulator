@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.snakeyaml.engine.v1.api.Load;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -19,8 +18,8 @@ public class YAMLLoader {
         loader = new Load(new LoadSettingsBuilder().setLabel("loader").build());
     }
 
-    public YAMLComponent loadFile(String fileName) throws FileNotFoundException {
-        InputStream inputStream = new FileInputStream(fileName);
+    public YAMLComponent loadFile(String fileName){
+        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
         return new YAMLComponent(loader.loadFromInputStream(inputStream));
     }
 

@@ -7,10 +7,16 @@ import java.util.Set;
 
 public interface Mesh {
     int getVertexCount();
+
     Vao getVao();
+
     float getBoundingRadius();
+
     Material getMeshMaterial();
+
     Set<Vbo> getVboList();
+
     Set<Vbo> getTextureVboList();
+
     void cleanMesh();
 }
