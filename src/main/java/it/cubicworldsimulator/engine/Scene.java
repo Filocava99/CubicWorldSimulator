@@ -54,7 +54,7 @@ public class Scene {
     private void loadPlayerModel() {
     	OBJLoader objLoader = new OBJLoader();
 		try {
-			Mesh playerMesh = objLoader.loadFromOBJ("/models/person.obj", "src/main/resources/textures/playerTexture.png");
+			Mesh playerMesh = objLoader.loadFromOBJ("/models/person.obj", "textures/playerTexture.png");
 			this.playerModel.setMesh(playerMesh); 
 			this.playerModel.setPosition(new Vector3f(this.player.getPosition()));
 			this.playerModel.setRotation(new Vector3f(0,180,0));

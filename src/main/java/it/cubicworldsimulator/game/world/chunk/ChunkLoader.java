@@ -12,10 +12,8 @@ public class ChunkLoader {
 
     private static final Logger logger = LogManager.getLogger(ChunkLoader.class);
     private final String chunkFolderPath;
-    private final String worldName;
 
     public ChunkLoader(String worldName) {
-        this.worldName = worldName;
         chunkFolderPath = Constants.installationFolder + File.separator + "data" + File.separator + worldName + File.separator + "chunks";
         logger.info(chunkFolderPath);
     }
@@ -46,7 +44,7 @@ public class ChunkLoader {
         try{
             File chunkFolder = new File(chunkFolderPath);
             chunkFolder.mkdirs();
-            File chunkFile = new File(chunkFolderPath + File.separator + chunkColumn.getPosition().x + "_" + chunkColumn.getPosition().y + ".chunk");
+            File chunkFile = new File(chunkFolderPath + File.separator + (int)chunkColumn.getPosition().x + "_" + (int)chunkColumn.getPosition().y + ".chunk");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(chunkFile));
             objectOutputStream.writeObject(chunkColumn);
         } catch (Exception e) {
@@ -55,7 +53,7 @@ public class ChunkLoader {
         }
     }
 
-    public Set<Vector2f> getAlreadyGeneratedChunkColumns(String worldName){
+    public Set<Vector2f> getAlreadyGeneratedChunkColumns(){
         Set<Vector2f> alreadyGeneratedChunkColumns = new HashSet<>();
         File chunkFolder = new File(chunkFolderPath);
         if(chunkFolder.exists()){

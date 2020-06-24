@@ -1,6 +1,5 @@
 package it.cubicworldsimulator.engine.loader;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.IOException;
@@ -26,7 +25,6 @@ import static org.lwjgl.opengl.GL20C.*;
 import static org.lwjgl.opengl.GL30C.*;
 
 public class LoaderUtility {
-
     public static Vao createVao() {
         Vao myVao = new Vao(glGenVertexArrays());
         glBindVertexArray(myVao.getId());
@@ -71,7 +69,6 @@ public class LoaderUtility {
     public static void insertNormalsIntoVbo(Vbo myVbo, float[] normals) {
         FloatBuffer normalsBuffer = MemoryUtil.memAllocFloat(normals.length);
         for (Float normal : normals) {
-
             normalsBuffer.put(normal);
         }
         normalsBuffer.flip();
@@ -88,7 +85,6 @@ public class LoaderUtility {
 
     public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
         ByteBuffer buffer;
-
         Path path = Paths.get(resource);
         if (Files.isReadable(path)) {
             try (SeekableByteChannel fc = Files.newByteChannel(path)) {
@@ -99,7 +95,7 @@ public class LoaderUtility {
             try (
                     InputStream source = LoaderUtility.class.getResourceAsStream(resource);
                     ReadableByteChannel rbc = Channels.newChannel(source)) {
-                    buffer = createByteBuffer(bufferSize);
+                buffer = createByteBuffer(bufferSize);
                 while (true) {
                     int bytes = rbc.read(buffer);
                     if (bytes == -1) {
@@ -111,7 +107,6 @@ public class LoaderUtility {
                 }
             }
         }
-
         buffer.flip();
         return buffer;
     }

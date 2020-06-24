@@ -69,6 +69,7 @@ public class OBJLoader {
         List<Integer> indices = new ArrayList<>();
         float[] posArr = new float[vertices.size() * 3];
         int i = 0;
+
         for (final Vector3f pos : vertices) {
             posArr[i * 3] = pos.x();
             posArr[i * 3 + 1] = pos.y();
@@ -105,6 +106,7 @@ public class OBJLoader {
                                           final List<Vector3f> normList, final List<Integer> indicesList,
                                           final float[] texCoordArr, final float[] normArr) {
         final int posIndex = indices.getIdxPos();
+
         indicesList.add(posIndex);
         if (indices.getIdxTextCoord() >= 0) {
             final Vector2f textCoord = textCoordList.get(indices.getIdxTextCoord());
@@ -131,11 +133,9 @@ public class OBJLoader {
             this.indexGroups.add(parseLine(v2));
             this.indexGroups.add(parseLine(v3));
         }
-
         private List<IdxGroup> getFaceVertexIndices() {
             return this.indexGroups;
         }
-
         private IdxGroup parseLine(final String line) {
             Objects.requireNonNull(line, "Line missing!");
             IdxGroup idxGroup = new IdxGroup();

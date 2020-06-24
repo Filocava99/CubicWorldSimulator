@@ -67,7 +67,7 @@ public abstract class GenericGui extends Panel {
                         fromInt(192, 57, 43, 1), // denyColor
                         fromInt(0, 0, 0, 1f),  // shadowColor
                         ColorConstants.white(),
-                        FontRegistry.getDefaultFont(),30f
+                        FontRegistry.getDefaultFont(), 30f
                 ));
                 break;
             default:

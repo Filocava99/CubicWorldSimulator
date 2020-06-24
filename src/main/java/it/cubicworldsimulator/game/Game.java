@@ -64,8 +64,9 @@ public class Game implements GameLogic {
                 mySettings.getWorldSeed());
         worldManager = new WorldManager(world, commandsQueue);
         try {
-            SkyBox skyBox = new SkyBox("/models/skybox.obj", "src/main/resources/textures/skybox.png", skyBoxShaderProgram);
-           
+
+            SkyBox skyBox = new SkyBox("/models/skybox.obj", "textures/skybox.png", skyBoxShaderProgram);
+
             //LIGHTS
             LightFactory lightFactory = new LightFactoryImpl();
             
