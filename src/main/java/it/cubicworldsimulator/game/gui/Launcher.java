@@ -18,6 +18,7 @@ import static org.liquidengine.legui.event.MouseClickEvent.MouseClickAction.CLIC
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
+ * It models the initial Launcher GUI
  * @author Lorenzo Balzani
  */
 
@@ -55,7 +56,7 @@ public class Launcher extends GenericGui {
         this.mySettingsBuilder = new Settings.Builder();
     }
 
-
+    @Override
     public void createGui() {
         Panel settings = new Panel(0, (float) heightScreen/5, (float) widthScreen, (float) heightScreen);
         objects.add(createOptionLabel("Settings", settings));
@@ -66,7 +67,7 @@ public class Launcher extends GenericGui {
         debugInput = guiFactory.createTextInput("false", settings);
         objects.add(debugInput);
         objects.add(createOptionLabel("Fullscreen", settings));
-        fullScreenInput = guiFactory.createTextInput("true", settings);
+        fullScreenInput = guiFactory.createTextInput("false", settings);
         objects.add(fullScreenInput);
         Label widthLabel = createOptionLabel("Width", settings);
         objects.add(widthLabel);
@@ -177,6 +178,7 @@ public class Launcher extends GenericGui {
         return false;
     }
 
+    @Override
     public String getTitle() {
         return "CubicWorldSimulator Launcher";
     }

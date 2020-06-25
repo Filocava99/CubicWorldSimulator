@@ -4,6 +4,9 @@ import it.cubicworldsimulator.engine.Window;
 import it.cubicworldsimulator.game.utility.Pair;
 import org.lwjgl.nanovg.NVGColor;
 
+/**
+ * It models a generic hud. It can be used to show text on screen
+ */
 public interface GenericHud {
     /**
      * Init all needed libraries

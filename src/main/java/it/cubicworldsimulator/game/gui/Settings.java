@@ -3,6 +3,7 @@ package it.cubicworldsimulator.game.gui;
 import java.util.Optional;
 
 /**
+ * It models a Settings object. Only get methods are available.
  * @author Lorenzo Balzani
  */
 public class Settings {
@@ -68,6 +69,7 @@ public class Settings {
 
     /**
      * Build a settings object by using builder design pattern.
+     * @author Lorenzo Balzani
      */
     public static class Builder {
         private Optional<Boolean> vSync = Optional.empty();
