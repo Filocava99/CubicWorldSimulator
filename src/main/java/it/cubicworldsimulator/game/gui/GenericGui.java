@@ -9,9 +9,9 @@ import org.liquidengine.legui.theme.colored.FlatColoredTheme;
 import static org.liquidengine.legui.style.color.ColorUtil.fromInt;
 
 /**
+ * It models a generic LEGUI gui
  * @author Lorenzo Balzani
  */
-
 
 public abstract class GenericGui extends Panel {
     protected final GuiFactory guiFactory;
@@ -26,28 +26,48 @@ public abstract class GenericGui extends Panel {
     }
 
     /**
-     * It creates gui components
+     * It creates the GUI items.
      */
     protected abstract void createGui();
 
+    /**
+     * Set the aspect ration for the gui
+     */
     public void setAspectRatio() {
         guiFactory.setAspectRatio();
     }
 
+    /**
+     * @param text
+     * @return text is filed
+     */
     protected boolean isFiled(String text) {
         return !text.isEmpty();
     }
 
+    /**
+     * @return the window title
+     */
     public abstract String getTitle();
 
+    /**
+     * @return the window id in which the gui is
+     */
     protected long getWindowId() {
         return windowId;
     }
 
+    /**
+     * Set the window id
+     * @param windowId
+     */
     protected void setWindowId(long windowId) {
         this.windowId = windowId;
     }
 
+    /**
+     * @return the font size
+     */
     protected float getFontSize() {
         return guiFactory.getFontSize();
     }

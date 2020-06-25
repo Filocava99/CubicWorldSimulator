@@ -59,6 +59,7 @@ public class MeshImpl implements Mesh {
         return textureVboList;
     }
 
+    @Override
     public void cleanMesh() {
         glDisableVertexAttribArray(0);
         // Delete the VBOs

@@ -1,6 +1,7 @@
 package it.cubicworldsimulator.game.gui;
 
 /**
+ * It models a generic monitor property
  * @author Lorenzo Balzani
  */
 

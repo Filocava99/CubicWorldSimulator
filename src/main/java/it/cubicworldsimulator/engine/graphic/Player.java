@@ -19,7 +19,11 @@ public class Player implements Observable{
     private Vector3f rotation;
     private Vector3i lastChunk;
 	private final Set<Observer> observer= new HashSet<>();
-
+	
+	/**
+	 * Creates a new player in a specified position
+	 * @param position Position of the player
+	 */
     public Player(Vector3f position){
     	this.position  = position;
     	this.rotation = new Vector3f(0,0,0);
@@ -48,7 +52,11 @@ public class Player implements Observable{
         }
         return result;
     }
-
+    
+    /**
+     * Check if the player has changed the chunk 
+     * @return True if the player has changed chunk or false if not
+     */
     public boolean didPlayerChangedChunk(){
     	Vector3i chunkCoord = this.playerCoordToChunkCoord(this.position);
         final boolean result = !chunkCoord.equals(this.lastChunk);
@@ -58,6 +66,12 @@ public class Player implements Observable{
         return result;
     }
     
+    /**
+     * Updates player position coordinates and notifies observers
+     * @param offsetX Displacement of the new x coord from the old
+     * @param offsetY Displacement of the new y coord from the old
+     * @param offsetZ Displacement of the new z coord from the old
+     */
     public void movePosition(float offsetX, float offsetY, float offsetZ) {
     	this.position = calculateNewPosition(new Vector3f(offsetX, offsetY, offsetZ));
    
@@ -66,6 +80,12 @@ public class Player implements Observable{
         });   
     }
     
+    /**
+     * Updates player rotation coordinates and notifies observers
+     * @param offsetX Displacement of the new x coord from the old
+     * @param offsetY Displacement of the new y coord from the old
+     * @param offsetZ Displacement of the new z coord from the old
+     */
     public void moveRotation(float offsetX, float offsetY, float offsetZ) {
         this.rotation.x += offsetX;
         this.rotation.y += offsetY;
@@ -76,6 +96,12 @@ public class Player implements Observable{
         });
     }
     
+    /**
+     * Check if the player can move in a new position
+     * @param offsetPlayer Displacement from the old position
+     * @param worldManager
+     * @return True if the player can move or false if not
+     */
     public boolean canPlayerMove(Vector3f offsetPlayer, WorldManager worldManager) {
     	
   		Vector3f newPlayerPosition = this.calculateNewPosition(offsetPlayer);
@@ -111,12 +137,22 @@ public class Player implements Observable{
          return newPosition;
     }
     
+    /**
+     * Calculate the coordinates of a chunk starting from the world coordinates
+     * @param playerCoord
+     * @return 3D vector of integers that represent the chunk coordinates
+     */
     public Vector3i playerCoordToChunkCoord(Vector3f playerCoord) {
     	return new Vector3i((int) Math.floor(playerCoord.x / Constants.chunkAxisSize), 
     			(int) Math.floor(playerCoord.y / Constants.chunkAxisSize), 
     			(int) Math.floor(playerCoord.z / Constants.chunkAxisSize));
     }
-
+    
+    /**
+     * Calculate the coordinates of a block starting from the world coordinates
+     * @param playerCoord
+     * @return 3D vector of integers that represent the block coordinates
+     */
     public Vector3i playerCoordToBlockCoord(Vector3i playerCoord) {
     	Vector3i blockCoord = new Vector3i(0, Math.abs(playerCoord.y),0);
 

@@ -111,7 +111,7 @@ public class Game implements GameLogic {
             System.exit(2);
         }
     }
-
+    
     @Override
     public void input(Window window, MouseInput mouseInput) {
         scene.getCamera().getCameraMovement().set(0, 0, 0);
@@ -248,8 +248,6 @@ public class Game implements GameLogic {
             shaderProgram.createDirectionalLightUniform("directionalLight");
             shaderProgram.createUniform("specularPower");
             shaderProgram.createUniform("ambientLight");
-//            shaderProgram.createUniform("MAX_POINT_LIGHTS");
-//            shaderProgram.createUniform("MAX_SPOT_LIGHTS");
             shaderProgram.createPointLightListUniform("pointLights", 0);
             shaderProgram.createSpotLightListUniform("spotLights", 0);
         } catch (Exception e) {
