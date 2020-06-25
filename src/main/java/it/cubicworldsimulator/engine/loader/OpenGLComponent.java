@@ -1,8 +1,11 @@
 package it.cubicworldsimulator.engine.loader;
 
+/**
+ * A generic OpenGL component
+ */
 public interface OpenGLComponent {
     int getId();
-
+    
     class Vao implements OpenGLComponent {
         int vaoId;
 

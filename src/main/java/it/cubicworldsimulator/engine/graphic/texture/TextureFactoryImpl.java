@@ -22,7 +22,6 @@ public class TextureFactoryImpl implements TextureFactory{
     @Override
     public Texture createTexture(String filename) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            //Height, width and colour channels are 1 byte each
             IntBuffer w = stack.mallocInt(1);
             IntBuffer h = stack.mallocInt(1);
             IntBuffer channels = stack.mallocInt(1);
@@ -32,7 +31,6 @@ public class TextureFactoryImpl implements TextureFactory{
             inputStream.transferTo(outputStream);
             inputStream.close();
             outputStream.close();
-            //Load image into the ByteBuffer
             this.byteBuffer = stbi_load("temp.png", w, h, channels, 4);
             if (this.byteBuffer == null) {
                 throw new FileNotFoundException("Texture file [" + filename + "] not loaded. Reason: " + stbi_failure_reason());
@@ -41,7 +39,6 @@ public class TextureFactoryImpl implements TextureFactory{
             //Get width and height of image
             this.width = w.get();
             this.height = h.get();
-
             int textureID = this.generateTexture();
             this.generateMipMap();
             this.clean();
