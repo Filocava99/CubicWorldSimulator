@@ -6,6 +6,7 @@ import org.liquidengine.legui.system.handler.processor.SystemEventProcessor;
 import org.liquidengine.legui.system.renderer.Renderer;
 
 /**
+ * It models a generic frame.
  * @author Lorenzo Balzani
  */
 
