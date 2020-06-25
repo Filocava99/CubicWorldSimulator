@@ -25,6 +25,10 @@ public class UpperHud implements GenericHud {
     private DoubleBuffer posy;
     private String hour;
 
+    /**
+     * Init the NVG library
+     * @throws Exception
+     */
     public void init() throws Exception {
         vg = nvgCreate(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
         if (vg == NULL) {
@@ -67,6 +71,9 @@ public class UpperHud implements GenericHud {
         nvgText(vg, position.getFirstValue(), position.getSecondValue(), text);
     }
 
+    /**
+     * Cleanup all NVG stuff
+     */
     public void cleanup() {
         nvgDelete(vg);
         if (posx != null) {
@@ -77,10 +84,17 @@ public class UpperHud implements GenericHud {
         }
     }
 
+    /**
+     * Set the hour on left corner of the screen
+     * @param hour
+     */
     public void setText(String hour) {
         this.hour = hour;
     }
 
+    /**
+     * @return the actual hour
+     */
     private String getText() {
         return hour;
     }

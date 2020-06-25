@@ -11,6 +11,7 @@ import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
 
 /**
+ * The implementation of a generic GuiFactory
  * @author Lorenzo Balzani
  */
 
@@ -64,7 +65,6 @@ public class LauncherFactory implements GuiFactory {
 
     @Override
     public void setAspectRatio() {
-
         if (this.width >= 3840 && height >= 2160) {
             set4K();
         } else if (width >= 1920 && width <3840 && height >= 1080 && height < 2160){
@@ -83,6 +83,10 @@ public class LauncherFactory implements GuiFactory {
         this.inputHeight = inputHeight * aspectRatio - 15f;
     }
 
+    /**
+     * Set items scaling on 4K monitors.
+     * @author Lorenzo Balzani
+     */
     private void set4K() {
         logger.debug("4K screen resolution detected.");
         aspectRatio = (height * width) / 2_000_000f;
@@ -90,6 +94,10 @@ public class LauncherFactory implements GuiFactory {
         yInputOffset = 50;
     }
 
+    /**
+     * Set items scaling on FULL HD monitors.
+     * @author Lorenzo Balzani
+     */
     private void setFullHD(){
         logger.debug("FullHD screen resolution detected.");
         aspectRatio = (height * width) / 800_000f;
@@ -97,6 +105,10 @@ public class LauncherFactory implements GuiFactory {
         yInputOffset = 20;
     }
 
+    /**
+     * Set items scaling on other monitors.
+     * @author Lorenzo Balzani
+     */
     private void setOtherResolutions() {
         logger.debug(width + "x" + height + " screen resolution detected.");
         aspectRatio = (height * width) / 800_000f;
@@ -127,6 +139,10 @@ public class LauncherFactory implements GuiFactory {
         return message;
     }
 
+    /**
+     * It create a specific label. It's left to a TextInput
+     * @author Lorenzo Balzani
+     */
     public Label createOptionLabel(String title, Panel panelToAdd) {
         Label label = new Label(title);
         panelToAdd.add(label);
