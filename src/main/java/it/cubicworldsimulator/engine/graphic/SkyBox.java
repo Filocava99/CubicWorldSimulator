@@ -8,7 +8,12 @@ public class SkyBox extends GameItem {
 
     private final ShaderProgram shaderProgram;
 
-    public SkyBox(String objModel, String textureFile, ShaderProgram shaderProgram) throws Exception {
+    /**
+     * @param objModel obj file path
+     * @param textureFile texture file path
+     * @param shaderProgram skybox shader program
+     */
+    public SkyBox(String objModel, String textureFile, ShaderProgram shaderProgram) {
         super();
         OBJLoader objLoader = new OBJLoader();
         Mesh skyBoxMesh = objLoader.loadFromOBJ(objModel, textureFile);
@@ -18,6 +23,10 @@ public class SkyBox extends GameItem {
         this.shaderProgram = shaderProgram;
     }
 
+    /**
+     * Returns the shader program
+     * @return the skybox shader program
+     */
     public ShaderProgram getShaderProgram() {
         return shaderProgram;
     }

@@ -15,8 +15,7 @@ public class BlockTexture {
     private final float step;
 
     /**
-     *
-     * @param step
+     * @param step the step in pixel between every face in the texture file
      * @param coords 0 -> top | 1 -> bot | 2 -> left | 3 -> right | 4 -> front | 5 -> back
      */
     public BlockTexture(float step, Vector2f[] coords) {

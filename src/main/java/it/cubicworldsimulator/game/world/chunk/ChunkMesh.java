@@ -25,6 +25,11 @@ public class ChunkMesh implements Serializable {
     private final VBOContainer transparentMesh;
     private transient boolean meshesReady = false;
 
+    /**
+     * @param chunk chunk instance
+     * @param blocksTypes map of the block types
+     * @param material material instance
+     */
     public ChunkMesh(final Chunk chunk, Map<Object, BlockMaterial> blocksTypes, Material material) {
         this.chunk = chunk;
         this.blocksTypes = blocksTypes;
@@ -40,14 +45,12 @@ public class ChunkMesh implements Serializable {
         if (chunk.wasModified()) {
             prepareVAOContent();
         }
-
         try {
             opaqueMesh.buildMesh();
             transparentMesh.buildMesh();
             meshesReady = true;
         } catch (Exception e) {
-
-
+            e.printStackTrace();
         }
     }
 
