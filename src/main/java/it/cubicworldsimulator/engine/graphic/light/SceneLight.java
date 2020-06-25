@@ -14,7 +14,15 @@ public class SceneLight {
     private final SpotLight[] spotLights;
     private final float specularPower;
     private Vector3f ambientLight;
-
+    
+    /**
+     * Creates a new scene light that contains all the types of light in the game
+     * @param directionalLight
+     * @param pointLights
+     * @param spotLights
+     * @param ambientLight
+     * @param specularPower
+     */
     public SceneLight(DirectionalLight directionalLight, PointLight[] pointLights, SpotLight[] spotLights, Vector3f ambientLight, float specularPower) {
         this.directionalLight = directionalLight;
         this.pointLights = pointLights;
