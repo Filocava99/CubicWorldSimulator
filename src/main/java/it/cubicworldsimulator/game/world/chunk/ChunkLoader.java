@@ -13,17 +13,26 @@ public class ChunkLoader {
     private static final Logger logger = LogManager.getLogger(ChunkLoader.class);
     private final String chunkFolderPath;
 
+    /**
+     * @param worldName world name
+     */
     public ChunkLoader(String worldName) {
         chunkFolderPath = Constants.installationFolder + File.separator + "data" + File.separator + worldName + File.separator + "chunks";
         logger.info(chunkFolderPath);
     }
 
-    public Optional<ChunkColumn> loadChunkColumn(float x, float y){
+    /**
+     * Loads a chunk column from disk
+     * @param x x coordinate
+     * @param z z coordinate
+     * @return the loaded chunkColumn
+     */
+    public Optional<ChunkColumn> loadChunkColumn(float x, float z){
         Optional<ChunkColumn> chunkColumnOptional = Optional.empty();
         try{
             File chunkFolder = new File(chunkFolderPath);
             chunkFolder.mkdirs();
-            File chunkFile = new File(chunkFolderPath + File.separator + x + "_" + y + ".chunk");
+            File chunkFile = new File(chunkFolderPath + File.separator + x + "_" + z + ".chunk");
             ChunkColumn chunkColumn = null;
             if(chunkFile.exists()){
                 ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(chunkFile));
@@ -40,6 +49,10 @@ public class ChunkLoader {
         return loadChunkColumn(position.x, position.y);
     }
 
+    /**
+     * Saves a chunk column on disk
+     * @param chunkColumn chunkColumn to be saved
+     */
     public void saveChunkColumn(ChunkColumn chunkColumn){
         try{
             File chunkFolder = new File(chunkFolderPath);
@@ -53,6 +66,10 @@ public class ChunkLoader {
         }
     }
 
+    /**
+     * Returns a set of the coordinates of the already generated chunk columns
+     * @return set of coordinates
+     */
     public Set<Vector2f> getAlreadyGeneratedChunkColumns(){
         Set<Vector2f> alreadyGeneratedChunkColumns = new HashSet<>();
         File chunkFolder = new File(chunkFolderPath);

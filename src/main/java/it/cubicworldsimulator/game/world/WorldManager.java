@@ -41,6 +41,10 @@ public class WorldManager {
     private float textureStep;
     private Material worldTexture;
 
+    /**
+     * @param world world instance
+     * @param commandsQueue OpenGL CommandsQueue instance (the same instance must be used in the main thread)
+     */
     public WorldManager(World world, CommandsQueue commandsQueue) {
         this.world = world;
         this.commandsQueue = commandsQueue;
@@ -58,17 +62,28 @@ public class WorldManager {
     }
     
     //TODO Dubbio sulle perfomance. Bisogna fare profiling
+    /**
+     * Updates on another thread the map of the currently loaded chunks based on the new player position
+     * @param chunkPosition position of the chunk where the player currently is
+     */
     public void updateActiveChunksAsync(Vector3i chunkPosition) {
         new Thread(() -> {
             updateActiveChunksSync(chunkPosition);
         }).start();
     }
-
+    /**
+     * Updates  the map of the currently loaded chunks based on the new player position
+     * @param chunkPosition position of the chunk where the player currently is
+     */
     public void updateActiveChunksSync(Vector3i chunkPosition) {
         unloadOldChunks(chunkPosition);
         loadNewChunks(chunkPosition);
     }
 
+    /**
+     * Unloads the no more used chunks
+     * @param chunkPosition position of the chunk where the player currently is
+     */
     private void unloadOldChunks(Vector3i chunkPosition) {
         Queue<Vector2f> dumpQueue = new LinkedBlockingQueue<>();
         for (Map.Entry<Vector2f, ChunkColumn> entry : world.getActiveChunks().entrySet()) {
@@ -92,6 +107,10 @@ public class WorldManager {
         }
     }
 
+    /**
+     * Loads the need chunks
+     * @param chunkPosition position of the chunk where the player currently is
+     */
     private void loadNewChunks(Vector3i chunkPosition) {
         var activeChunks = world.getActiveChunks();
         for (int x = chunkPosition.x - LOADED_CHUNKS_RADIUS; x <= chunkPosition.x + LOADED_CHUNKS_RADIUS; x++) {
@@ -170,14 +189,25 @@ public class WorldManager {
         });
     }
 
+    /**
+     * Returns the map of the block types. You can use both the name(String) and the id*byte) as key
+     * @return the map of the block types
+     */
     public Map<Object, BlockMaterial> getBlockTypes() {
         return Collections.unmodifiableMap(blockTypes);
     }
 
+    /**
+     * Returns the meshes of the loaded chunks
+     * @return an unmodifiable collection of the meshes of the loaded chunks
+     */
     public Collection<ChunkMesh> getChunkMeshes() {
         return Collections.unmodifiableCollection(chunkMeshes.values());
     }
-    
+
+    /**
+     * @return the world instance
+     */
     public World getWorld() {
     	return this.world;
     }
