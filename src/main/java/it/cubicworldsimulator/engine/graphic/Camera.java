@@ -14,15 +14,27 @@ public class Camera implements Observer{
     private final Transformation transformation;
     private Matrix4f viewMatrix;
     private VisualizationStrategy visualizationStrategy;
-
+    
+    /**
+     * Creates a new Camera in a default position
+     */
     public Camera() {
         this(new Vector3f(0, 35, 0), new Vector3f(0, 0, 0));
     }
     
+    /**
+     * Creates a new Camera in a specified position
+     * @param position Position of the camera
+     */
     public Camera(Vector3f position) {
     	this(position, new Vector3f(0, 0, 0));
     }
 
+    /**
+     * Creates a new Camera in a specified position with a specified rotation
+     * @param position Position of the camera
+     * @param rotation Rotation of the camera
+     */
     public Camera(Vector3f position, Vector3f rotation) {
         this.position = position;
         this.rotation = rotation;
@@ -75,7 +87,11 @@ public class Camera implements Observer{
         rotation.y = y;
         rotation.z = z;
     }
-    
+    /**
+     * Set a new method to calculate new coordinates
+     * 
+     * @param visualizationStrategy functional interface that implements the calculation method of new coordinates
+     */
     public void setStrategy(VisualizationStrategy visualizationStrategy) {
     	this.visualizationStrategy = visualizationStrategy;
     }
@@ -90,7 +106,6 @@ public class Camera implements Observer{
 
 	@Override
 	public void update(Vector3f position, Vector3f rotation) {
-		// TODO Auto-generated method stub
 		this.rotation = new Vector3f(rotation);
 		this.position = this.visualizationStrategy.calculatePosition(position, this.rotation);
 	}

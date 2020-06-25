@@ -8,19 +8,35 @@ public class PointLight {
 	private Vector3f position;
 	protected float intensity;
 	private Attenuation attenuation;
-
+	
+	/**
+	 * Creates a new point light from a color, position and intensity
+	 * @param color
+	 * @param position
+	 * @param intensity
+	 */
 	public PointLight(Vector3f color, Vector3f position, float intensity) {
 		attenuation = new Attenuation(1, 0, 0);
 		this.color = color;
 		this.position = position;
 		this.intensity = intensity;
 	}
-
+	
+	/**
+	 * Creates a new point light that represent the light emitted from a lamp
+	 * @param color
+	 * @param position
+	 * @param intensity
+	 * @param attenuation
+	 */
 	public PointLight(Vector3f color, Vector3f position, float intensity, Attenuation attenuation) {
 		this(color, position, intensity);
 		this.attenuation = attenuation;
 	}
-
+	/**
+	 * Creates a new point light from an existing one
+	 * @param pointLight
+	 */
 	public PointLight(PointLight pointLight) {
 		this(new Vector3f(pointLight.getColor()), new Vector3f(pointLight.getPosition()),
 				pointLight.getIntensity(), pointLight.getAttenuation());
@@ -81,7 +97,13 @@ public class PointLight {
 		private float constant;
 		private float linear;
 		private float exponent;
-
+		
+		/**
+		 * Creates an attenuation for the point light
+		 * @param constant
+		 * @param linear
+		 * @param exponent
+		 */
 		public Attenuation(float constant, float linear, float exponent) {
 			this.constant = constant;
 			this.linear = linear;
