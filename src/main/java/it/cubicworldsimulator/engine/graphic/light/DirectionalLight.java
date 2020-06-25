@@ -6,20 +6,27 @@ import org.joml.Vector3f;
 public class DirectionalLight {
 
 	private final float angle;
-
     private Vector3f color;
-
     private Vector3f direction;
-
     private float intensity;
-
+    
+    /**
+     * Creates a new direction light that represent the sun light 
+     * @param color
+     * @param direction
+     * @param intensity
+     */
     public DirectionalLight(Vector3f color, Vector3f direction, float intensity) {
         this.color = color;
         this.direction = direction;
         this.intensity = intensity;
         this.angle = 0f;
     }
-
+    
+    /**
+     * Creates a new directional light starting from an existing one
+     * @param light
+     */
     public DirectionalLight(DirectionalLight light) {
         this(new Vector3f(light.getColor()), new Vector3f(light.getDirection()), light.getIntensity());
     }
@@ -47,7 +54,11 @@ public class DirectionalLight {
 	public void setIntensity(float intensity) {
 		this.intensity = intensity;
 	}
-
+	
+	/**
+	 * Modifies the light angle
+	 * @param angle
+	 */
 	public void changeAngle(float angle){
 		if (angle > 90) {
 			setIntensity(0);

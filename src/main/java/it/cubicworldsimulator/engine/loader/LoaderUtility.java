@@ -24,17 +24,32 @@ import static org.lwjgl.opengl.GL15C.*;
 import static org.lwjgl.opengl.GL20C.*;
 import static org.lwjgl.opengl.GL30C.*;
 
+/**
+ * Utility class for loading data in memory
+ * @author Lorenzo Balzani
+ */
 public class LoaderUtility {
+    /**
+     * @return the created Vao
+     */
     public static Vao createVao() {
         Vao myVao = new Vao(glGenVertexArrays());
         glBindVertexArray(myVao.getId());
         return myVao;
     }
 
+    /**
+     * @return the created Vbo
+     */
     public static Vbo createVbo() {
         return new Vbo(glGenBuffers());
     }
 
+    /**
+     * It inserts a float array (in this case position) into a Vbo
+     * @param myVbo the given Vbo
+     * @param positions float array
+     */
     public static void insertPositionIntoVbo(Vbo myVbo, float[] positions) {
         FloatBuffer posBuffer = MemoryUtil.memAllocFloat(positions.length);
         for (Float position : positions) {
@@ -45,6 +60,11 @@ public class LoaderUtility {
         MemoryUtil.memFree(posBuffer);
     }
 
+    /**
+     * It inserts a float array (in this case textCoords) into a Vbo
+     * @param myVbo the given Vbo
+     * @param textCoords float array
+     */
     public static void insertTextureIntoVbo(Vbo myVbo, float[] textCoords) {
         FloatBuffer textCoordsBuffer = MemoryUtil.memAllocFloat(textCoords.length);
         for (Float textCoord : textCoords) {
@@ -55,6 +75,11 @@ public class LoaderUtility {
         MemoryUtil.memFree(textCoordsBuffer);
     }
 
+    /**
+     * It inserts a int array (in this case indices) into a Vbo
+     * @param myVbo the given Vbo
+     * @param indices float array
+     */
     public static void insertIndicesIntoVbo(Vbo myVbo, int[] indices) {
         IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
         for (Integer index : indices) {
@@ -66,6 +91,11 @@ public class LoaderUtility {
         MemoryUtil.memFree(indicesBuffer);
     }
 
+    /**
+     * It inserts a float array (in this case normals) into a Vbo
+     * @param myVbo the given Vbo
+     * @param normals float array
+     */
     public static void insertNormalsIntoVbo(Vbo myVbo, float[] normals) {
         FloatBuffer normalsBuffer = MemoryUtil.memAllocFloat(normals.length);
         for (Float normal : normals) {
@@ -76,6 +106,13 @@ public class LoaderUtility {
         MemoryUtil.memFree(normalsBuffer);
     }
 
+    /**
+     * It inserts a generic Buffer into a Vbo
+     * @param buffer the buffer in which we have previously loaded data.
+     * @param myVbo the given Vbo
+     * @param size size of whole array
+     * @param index from the method has to load data
+     */
     private static void insertIntoVbo(Buffer buffer, Vbo myVbo, int size, int index) {
         glBindBuffer(GL_ARRAY_BUFFER, myVbo.getId());
         glBufferData(GL_ARRAY_BUFFER, (FloatBuffer) buffer, GL_STATIC_DRAW);
@@ -83,6 +120,12 @@ public class LoaderUtility {
         glVertexAttribPointer(index, size, GL_FLOAT, false, 0, 0);
     }
 
+    /**
+     * @param resource path to the resource
+     * @param bufferSize
+     * @return ByteBuffer with loaded resource
+     * @throws IOException
+     */
     public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
         ByteBuffer buffer;
         Path path = Paths.get(resource);
@@ -111,6 +154,11 @@ public class LoaderUtility {
         return buffer;
     }
 
+    /**
+     * @param buffer the given buffer
+     * @param newCapacity new capacity in byte
+     * @return a new resized buffer
+     */
     private static ByteBuffer resizeBuffer(ByteBuffer buffer, int newCapacity) {
         ByteBuffer newBuffer = createByteBuffer(newCapacity);
         buffer.flip();

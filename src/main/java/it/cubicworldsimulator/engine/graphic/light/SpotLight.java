@@ -7,13 +7,23 @@ public class SpotLight {
     private PointLight pointLight;
     private Vector3f coneDirection;
     private float cutOff;
-
+    
+    /**
+     * Creates a new spot light that represent the light emitted from a lamp but restricted at a cone
+     * @param pointLight
+     * @param coneDirection
+     * @param cutOffAngle
+     */
     public SpotLight(PointLight pointLight, Vector3f coneDirection, float cutOffAngle) {
         this.pointLight = pointLight;
         this.coneDirection = coneDirection;
         setCutOffAngle(cutOffAngle);
     }
-
+    
+    /**
+     * Creates a new spot light from an existing one
+     * @param spotLight
+     */
     public SpotLight(SpotLight spotLight) {
         this(new PointLight(spotLight.getPointLight()),
                 new Vector3f(spotLight.getConeDirection()),

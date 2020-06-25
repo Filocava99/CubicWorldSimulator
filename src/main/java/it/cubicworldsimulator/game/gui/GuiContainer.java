@@ -26,7 +26,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * It models a logic container for N 'LEGUI' windows
- *
  * @author Lorenzo Balzani
  */
 public class GuiContainer {
@@ -36,8 +35,84 @@ public class GuiContainer {
     private MonitorProperty myMonitor;
     private List<GenericGui> guiList;
 
-    public List<GenericGui> getGuiList() {
-        return guiList;
+    public GuiContainer() {
+        glfwInit();
+        System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
+        System.setProperty("java.awt.headless", Boolean.TRUE.toString());
+        if (!GLFW.glfwInit()) {
+            throw new RuntimeException("Can't initialize GLFW");
+        }
+    }
+
+    /**
+     * Init a generic GUI container
+     * @param guiList list of generic guis
+     */
+    public void initContainer(List<GenericGui> guiList) {
+        this.guiList = guiList;
+        glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err));
+        GLFWKeyCallbackI glfwKeyCallbackI = (w1, key, code, action, mods) -> running = !(key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE);
+        GLFWWindowCloseCallbackI glfwWindowCloseCallbackI = w -> running = false;
+        this.myMonitor = glfwHelper.getMonitorProperty();
+        IntStream.range(0, guiList.size()).forEach(i -> {
+            FrameProperty myFrameProperty = new FrameProperty();
+            myFrames.add(myFrameProperty);
+            myFrameProperty.setGui(guiList.get(i));
+            long windowId = glfwHelper.createWindow(guiList.get(i).getTitle(), myMonitor);
+            guiList.get(i).setWindowId(windowId);
+            myFrameProperty.setWindowId(windowId);
+            myFrameProperty.setRenderer(new NvgRenderer());
+            myFrameProperty.getRenderer().initialize();
+            myFrames.get(i).setFrame(new Frame(myMonitor.getWidth(), myMonitor.getHeight()));
+            createGuiElements(myFrames.get(i).getFrame(), guiList.get(i));
+            myFrameProperty.setContext(new Context(windowId));
+            CallbackKeeper keeper = glfwHelper.createKeeper(windowId);
+            keeper.getChainKeyCallback().add(glfwKeyCallbackI);
+            keeper.getChainWindowCloseCallback().add(glfwWindowCloseCallbackI);
+            myFrameProperty.setSystemEventProcessor(new SystemEventProcessorImpl());
+            SystemEventProcessor.addDefaultCallbacks(keeper, myFrameProperty.getSystemEventProcessor());
+        });
+        loop();
+        glfwHelper.destroyWindows();
+    }
+
+    /**
+     * Rendering items loop
+     */
+    private void loop() {
+        running = true;
+        while (running) {
+            myFrames.forEach(myFrame -> {
+                glfwMakeContextCurrent(myFrame.getWindowId());
+                GL.getCapabilities();
+                glfwSwapInterval(0);
+                myFrame.getContext().updateGlfwWindow();
+                Vector2i windowSize = myFrame.getContext().getFramebufferSize();
+                glClearColor(1, 1, 1, 1);
+                glViewport(0, 0, windowSize.x, windowSize.y);
+                glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+                myFrame.getRenderer().render(myFrame.getFrame(), myFrame.getContext());
+                glfwPollEvents();
+                glfwSwapBuffers(myFrame.getWindowId());
+                myFrame.getSystemEventProcessor().processEvents(myFrame.getFrame(), myFrame.getContext());
+                EventProcessorProvider.getInstance().processEvents();
+                LayoutManager.getInstance().layout(myFrame.getFrame());
+            });
+        }
+    }
+
+    /**
+     * Link a gui to a frame
+     * @param frame the gui has to be linked with
+     * @param myGui the selected gui
+     */
+    private void createGuiElements(Frame frame, GenericGui myGui) {
+        myGui.setFocusable(false);
+        myGui.getListenerMap().addListener(WindowSizeEvent.class, (WindowSizeEventListener) event -> {
+            myGui.setSize(event.getWidth(), event.getHeight());
+        });
+        frame.getContainer().add(myGui);
+        frame.getContainer().setFocusable(false);
     }
 
     private class GlfwHelper {
@@ -94,71 +169,4 @@ public class GuiContainer {
         }
     }
 
-    public GuiContainer() {
-        glfwInit();
-        System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
-        System.setProperty("java.awt.headless", Boolean.TRUE.toString());
-        if (!GLFW.glfwInit()) {
-            throw new RuntimeException("Can't initialize GLFW");
-        }
-    }
-
-    public void initContainer(List<GenericGui> guiList) {
-        this.guiList = guiList;
-        glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err));
-        GLFWKeyCallbackI glfwKeyCallbackI = (w1, key, code, action, mods) -> running = !(key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE);
-        GLFWWindowCloseCallbackI glfwWindowCloseCallbackI = w -> running = false;
-        this.myMonitor = glfwHelper.getMonitorProperty();
-        IntStream.range(0, guiList.size()).forEach(i -> {
-            FrameProperty myFrameProperty = new FrameProperty();
-            myFrames.add(myFrameProperty);
-            myFrameProperty.setGui(guiList.get(i));
-            long windowId = glfwHelper.createWindow(guiList.get(i).getTitle(), myMonitor);
-            guiList.get(i).setWindowId(windowId);
-            myFrameProperty.setWindowId(windowId);
-            myFrameProperty.setRenderer(new NvgRenderer());
-            myFrameProperty.getRenderer().initialize();
-            myFrames.get(i).setFrame(new Frame(myMonitor.getWidth(), myMonitor.getHeight()));
-            createGuiElements(myFrames.get(i).getFrame(), guiList.get(i));
-            myFrameProperty.setContext(new Context(windowId));
-            CallbackKeeper keeper = glfwHelper.createKeeper(windowId);
-            keeper.getChainKeyCallback().add(glfwKeyCallbackI);
-            keeper.getChainWindowCloseCallback().add(glfwWindowCloseCallbackI);
-            myFrameProperty.setSystemEventProcessor(new SystemEventProcessorImpl());
-            SystemEventProcessor.addDefaultCallbacks(keeper, myFrameProperty.getSystemEventProcessor());
-        });
-        loop();
-        glfwHelper.destroyWindows();
-    }
-
-    private void loop() {
-        running = true;
-        while (running) {
-            myFrames.forEach(myFrame -> {
-                glfwMakeContextCurrent(myFrame.getWindowId());
-                GL.getCapabilities();
-                glfwSwapInterval(0);
-                myFrame.getContext().updateGlfwWindow();
-                Vector2i windowSize = myFrame.getContext().getFramebufferSize();
-                glClearColor(1, 1, 1, 1);
-                glViewport(0, 0, windowSize.x, windowSize.y);
-                glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-                myFrame.getRenderer().render(myFrame.getFrame(), myFrame.getContext());
-                glfwPollEvents();
-                glfwSwapBuffers(myFrame.getWindowId());
-                myFrame.getSystemEventProcessor().processEvents(myFrame.getFrame(), myFrame.getContext());
-                EventProcessorProvider.getInstance().processEvents();
-                LayoutManager.getInstance().layout(myFrame.getFrame());
-            });
-        }
-    }
-
-    private void createGuiElements(Frame frame, GenericGui myGui) {
-        myGui.setFocusable(false);
-        myGui.getListenerMap().addListener(WindowSizeEvent.class, (WindowSizeEventListener) event -> {
-            myGui.setSize(event.getWidth(), event.getHeight());
-        });
-        frame.getContainer().add(myGui);
-        frame.getContainer().setFocusable(false);
-    }
 }
