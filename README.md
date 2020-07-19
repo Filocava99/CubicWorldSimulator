@@ -3,6 +3,9 @@
 
 Use -XstartOnFirstThread JVM argument to launch game on Mac OS platform.
 
+##Disclaimers
+This project was developed for a university project and was my first attempt to build a multithreaded 3D game, that exaplains the bad structure of the code.
+
 [![JProfiler logo](https://www.ej-technologies.com/images/product_banners/jprofiler_large.png)](https://www.ej-technologies.com/products/jprofiler/overview.html)  
 
 [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html) is an award-winning all-in-one [Java profiler](https://www.ej-technologies.com/products/jprofiler/overview.html). JProfiler's intuitive UI helps you find performance bottlenecks, pin down memory leaks and resolve threading issues.
