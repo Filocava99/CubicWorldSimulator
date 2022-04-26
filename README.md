@@ -25,5 +25,3 @@ and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).
 <a href="https://github.com/FiloCava99/CubicWorldSimulator/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=FiloCava99/CubicWorldSimulator" />
 </a>
-
-=======
