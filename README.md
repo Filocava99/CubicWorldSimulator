@@ -20,3 +20,10 @@ YourKit is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/p
 and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).
 
 ***
+
+# Contributors
+<a href="https://github.com/FiloCava99/CubicWorldSimulator/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=FiloCava99/CubicWorldSimulator" />
+</a>
+
+=======
